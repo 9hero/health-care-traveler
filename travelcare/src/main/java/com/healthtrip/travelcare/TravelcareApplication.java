@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class TravelcareApplication {
 
 	public static void main(String[] args) {
+		System.out.println("-------------"+System.getenv("DBurl")+":5432/postgres");
 		SpringApplication.run(TravelcareApplication.class, args);
 	}
 
