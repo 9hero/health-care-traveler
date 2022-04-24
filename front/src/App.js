@@ -17,7 +17,9 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         hello {restText}
-        <a href="http://localhost:8080/swagger-ui/index.html#/">look swagger</a>
+        <a href="http://3.39.185.254:8080/swagger-ui/index.html#/">
+          look swagger
+        </a>
       </header>
       {restText}
     </div>
