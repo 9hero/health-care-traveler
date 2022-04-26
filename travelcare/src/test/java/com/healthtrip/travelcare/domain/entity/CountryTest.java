@@ -23,6 +23,7 @@ class CountryTest {
     @Transactional
     @Rollback
     void countrySave(){
+
         Country countrySaved = countryRepository.save(Country.builder().id(1L).name("korea").build());
         System.out.println("------------>>>----------"+countrySaved.getCreatedAt());
     }

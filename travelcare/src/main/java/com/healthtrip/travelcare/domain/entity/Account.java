@@ -31,6 +31,9 @@ public class Account extends BaseTimeEntity{
     @ToString.Exclude
     private List<NoticeBoard> noticeBoard;
 
+    @OneToMany()
+    private List<ReservationInfo> reservationInfoList;
+
     public enum UserRole{
         ROLE_COMMON,
         ROLE_ADMIN,
