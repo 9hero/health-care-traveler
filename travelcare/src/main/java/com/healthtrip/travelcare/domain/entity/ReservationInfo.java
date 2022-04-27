@@ -2,10 +2,7 @@ package com.healthtrip.travelcare.domain.entity;
 
 import javax.persistence.*;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @AllArgsConstructor
@@ -19,13 +16,17 @@ public class ReservationInfo extends BaseTimeEntity{
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @JoinColumn(name = "user_id")
     private Account account;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude
     private TripPackage tripPackage;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
+    @JoinColumn(name = "date_id")
+    @ToString.Exclude
     private ReservationDate reservationDate;
 
     private short personCount;

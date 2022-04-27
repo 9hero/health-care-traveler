@@ -33,6 +33,7 @@ public class TripPackage extends BaseTimeEntity{
     private short peopleLimit;
 //    private Moneta //Moneta jsr354 국제 통화표현 라이브러리
     @OneToMany(mappedBy = "tripPackage")
+    @ToString.Exclude
     private List<ReservationInfo> reservationInfoList;
 
 
