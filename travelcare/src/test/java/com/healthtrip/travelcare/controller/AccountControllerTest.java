@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.platform.commons.logging.Logger;
+import org.junit.platform.commons.logging.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -30,7 +32,7 @@ import java.net.URI;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureMockMvc
@@ -57,6 +59,7 @@ class AccountControllerTest {
                                         .status(Account.Status.N)
                                                 .userRole(Account.UserRole.ROLE_COMMON)
                                                         .build();
+
         given(accountService.create(accountRequestDto)).willReturn(ResponseEntity.created(URI.create("/")).build());
         String requestJson = objectMapper.writeValueAsString(accountRequestDto);
 
@@ -69,12 +72,13 @@ class AccountControllerTest {
         )
                 //then
                 .andExpect(MockMvcResultMatchers.status().is(201))
-                .andExpect(MockMvcResultMatchers.header().string("Location","/"))
+               // .andExpect(MockMvcResultMatchers.header().string("Location","/"))
                 .andDo(MockMvcResultHandlers.print());
-
+        verify(accountService,atLeast(1)).create(accountRequestDto);
     }
 
     @Test
     void login() {
+
     }
 }

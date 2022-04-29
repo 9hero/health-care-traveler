@@ -1,16 +1,22 @@
 package com.healthtrip.travelcare.repository.dto.response;
 
 import com.healthtrip.travelcare.domain.entity.Account;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
-@AllArgsConstructor
+
+@Getter
 @NoArgsConstructor
-@Builder
 public class AccountResponseDto {
+    @Builder
+    public AccountResponseDto(Long id, String email, String password, Account.Status status, Account.UserRole userRole) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.status = status;
+        this.userRole = userRole;
+    }
+
+    private Long id;
 
     private String email;
 
