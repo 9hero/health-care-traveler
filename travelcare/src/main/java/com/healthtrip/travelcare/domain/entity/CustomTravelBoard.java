@@ -1,15 +1,9 @@
 package com.healthtrip.travelcare.domain.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Data
 @AllArgsConstructor
@@ -18,6 +12,8 @@ import javax.persistence.ManyToOne;
 @Entity
 public class CustomTravelBoard extends BaseTimeEntity{
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
     private String question;
@@ -25,6 +21,7 @@ public class CustomTravelBoard extends BaseTimeEntity{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reservation_id")
+    @ToString.Exclude
     private ReservationInfo reservationInfo;
 
 

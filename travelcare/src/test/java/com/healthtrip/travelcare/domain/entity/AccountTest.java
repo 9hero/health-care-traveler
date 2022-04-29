@@ -15,7 +15,8 @@ class AccountTest {
 
     @Test
     void findUser(){
-        accountsRepository.findAll().forEach(System.out::println);
+       // accountsRepository.findAll().forEach(System.out::println);
+        System.out.println(accountsRepository.existsByEmail("e"));
     }
 
     @Test
@@ -26,14 +27,15 @@ class AccountTest {
         Account account = new Account();
         account.setEmail("zero@gmail.com");
         account.setPassword("1234");
-        account.setStatus(Account.Status.Y);
-        account.setUserRole(Account.UserRole.ROLE_COMMON);
+//        account.setStatus(Account.Status.Y);
+//        account.setUserRole(Account.UserRole.ROLE_COMMON);
 
         accountsRepository.save(account);
         accountsRepository.flush();
         System.out.println("---->>>");
 
         accountsRepository.findAll().forEach(findedAccount-> {
+            System.out.println("유저 상태, 역할"+findedAccount.getStatus()+"\n"+findedAccount.getUserRole());
             System.out.println("가입일"+findedAccount.getCreatedAt());
         });
     }

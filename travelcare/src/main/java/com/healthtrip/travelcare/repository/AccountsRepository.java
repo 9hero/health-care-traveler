@@ -5,4 +5,8 @@ import com.healthtrip.travelcare.domain.entity.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AccountsRepository extends JpaRepository<Account,Long> {
+
+    Boolean existsByEmail(String email);
+
+    Account findByEmail(String email);
 }

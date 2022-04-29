@@ -1,6 +1,7 @@
 package com.healthtrip.travelcare.domain.entity;
 
 import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
+@DynamicInsert
 public class Account extends BaseTimeEntity{
 
     @Id
@@ -38,7 +40,6 @@ public class Account extends BaseTimeEntity{
         ROLE_COMMON,
         ROLE_ADMIN,
         ROLE_AGENT;
-
 
     }
     public enum Status {
