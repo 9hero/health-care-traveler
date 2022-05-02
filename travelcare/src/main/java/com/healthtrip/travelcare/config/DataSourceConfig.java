@@ -1,5 +1,6 @@
 package com.healthtrip.travelcare.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +22,6 @@ public class DataSourceConfig {
 
     @Bean
     public DataSource datasource() {
-        System.out.println(System.getenv("DBusername")+"why is it null");
         return DataSourceBuilder.create()
                 .url(url)
                 .username(username)

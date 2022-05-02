@@ -21,13 +21,11 @@ class TripPackageTest {
 
     @Test
     @Transactional
-    @Rollback
+    @Rollback(value = false)
     void tripPackSave() {
-
         var tp = TripPackage.builder()
                 .description("떠나요 여행을")
                 .account(accountsRepository.findById(4L).get())
-                .peopleLimit((short) 5)
                 .price(BigDecimal.valueOf(1399.1563))
                 .type("오사카")
                 .build();
