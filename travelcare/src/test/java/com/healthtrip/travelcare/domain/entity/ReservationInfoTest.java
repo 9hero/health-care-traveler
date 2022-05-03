@@ -40,12 +40,14 @@ class ReservationInfoTest {
     @Transactional
     @Rollback
     void saveAndFind(){
-        ReservationInfo reservationInfo = new ReservationInfo();
-        reservationInfo.setAccount(accountsRepository.getById(4L));
-        reservationInfo.setReservationDate(reservationDateRepository.findAll().get(0));
-        reservationInfo.setTripPackage(tripPackageRepository.findAll().get(0));
-        reservationInfo.setPersonCount((short)5);
-        reservationInfo.setStatus(ReservationInfo.Status.Y);
+        ReservationInfo reservationInfo = ReservationInfo
+                .builder()
+                .account(accountsRepository.findAll().get(0))
+                .reservationDate(reservationDateRepository.findAll().get(0))
+                .tripPackage(tripPackageRepository.findAll().get(0))
+                .personCount((short)5)
+                .status(ReservationInfo.Status.Y)
+                .build();
         repository.save(reservationInfo);
         repository.flush();
         repository.findAll().forEach(revInfo-> System.out.println(revInfo.getReservationDate()));

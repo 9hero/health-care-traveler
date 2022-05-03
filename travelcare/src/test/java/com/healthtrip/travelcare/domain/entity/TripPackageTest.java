@@ -21,7 +21,7 @@ class TripPackageTest {
 
     @Test
     @Transactional
-    @Rollback(value = false)
+    @Rollback(value = true)
     void tripPackSave() {
         var tp = TripPackage.builder()
                 .description("떠나요 여행을")
@@ -35,6 +35,11 @@ class TripPackageTest {
 
         System.out.println("----------->>>");
         repository.findAll().forEach(System.out::println);
+    }
+
+    @Test
+    void findTripPack(){
+
     }
 
 }

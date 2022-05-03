@@ -4,12 +4,20 @@ import javax.persistence.*;
 
 import lombok.*;
 
-@Data
-@AllArgsConstructor
+@Getter
 @NoArgsConstructor
-@Builder
 @Entity
 public class ReservationInfo extends BaseTimeEntity{
+
+    @Builder
+    public ReservationInfo(Long id, Account account, TripPackage tripPackage, ReservationDate reservationDate, short personCount, Status status) {
+        this.id = id;
+        this.account = account;
+        this.tripPackage = tripPackage;
+        this.reservationDate = reservationDate;
+        this.personCount = personCount;
+        this.status = status;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

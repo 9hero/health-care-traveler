@@ -5,12 +5,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 
-@Data
-@AllArgsConstructor
+@Getter
 @NoArgsConstructor
-@Builder
 @Entity
 public class CustomTravelBoard extends BaseTimeEntity{
+
+    @Builder
+    public CustomTravelBoard(Long id, String title, String question, String answer, ReservationInfo reservationInfo) {
+        this.id = id;
+        this.title = title;
+        this.question = question;
+        this.answer = answer;
+        this.reservationInfo = reservationInfo;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

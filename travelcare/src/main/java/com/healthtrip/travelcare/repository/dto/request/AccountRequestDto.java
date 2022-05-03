@@ -1,6 +1,7 @@
 package com.healthtrip.travelcare.repository.dto.request;
 
 import com.healthtrip.travelcare.domain.entity.Account;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
@@ -10,6 +11,7 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 //@ToString
 @EqualsAndHashCode
+@Schema(name = "(REQUEST) 계정 API",description = "회원 가입 시 email & password만 작성해서 보내주세요")
 public class AccountRequestDto {
 
     @Builder
@@ -26,6 +28,7 @@ public class AccountRequestDto {
 
     private String password;
 
+    @Schema(description = "Y: 인증 완료 N: 인증전 B: 차단")
     private Account.Status status;
 
     private Account.UserRole userRole;

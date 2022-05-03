@@ -5,12 +5,20 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Data
-@AllArgsConstructor
+@Getter
 @NoArgsConstructor
-@Builder
 @Entity
 public class ReservationDate extends BaseTimeEntity{
+
+    @Builder
+    public ReservationDate(Long id, TripPackage tripPackage, LocalDateTime departAt, LocalDateTime arriveAt, short currentNumPeople, short peopleLimit) {
+        this.id = id;
+        this.tripPackage = tripPackage;
+        this.departAt = departAt;
+        this.arriveAt = arriveAt;
+        this.currentNumPeople = currentNumPeople;
+        this.peopleLimit = peopleLimit;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,4 +33,6 @@ public class ReservationDate extends BaseTimeEntity{
     private LocalDateTime arriveAt;
 
     private short currentNumPeople;
+
+    private short peopleLimit;
 }
