@@ -14,14 +14,17 @@ import java.util.List;
 public class TripPackage extends BaseTimeEntity{
 
     @Builder
-    public TripPackage(Long id, Account account, String description, BigDecimal price, String type, List<ReservationInfo> reservationInfoList) {
+    public TripPackage(Long id, Account account,String title, String description, BigDecimal price, String type, List<ReservationInfo> reservationInfoList, List<TripPackageFile> tripPackageFileList) {
         this.id = id;
         this.account = account;
+        this.title = title;
         this.description = description;
         this.price = price;
         this.type = type;
         this.reservationInfoList = reservationInfoList;
+        this.tripPackageFileList = tripPackageFileList;
     }
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +36,8 @@ public class TripPackage extends BaseTimeEntity{
     @JoinColumn(name = "user_id")
     private Account account;
 
+    private String title;
+
     private String description;
 
     private BigDecimal price;
@@ -43,6 +48,9 @@ public class TripPackage extends BaseTimeEntity{
     @OneToMany(mappedBy = "tripPackage")
     @ToString.Exclude
     private List<ReservationInfo> reservationInfoList;
+
+    @OneToMany(mappedBy = "tripPackage",fetch = FetchType.LAZY)
+    private List<TripPackageFile> tripPackageFileList;
 
     public void setAccount(Account account){
         this.account = account;

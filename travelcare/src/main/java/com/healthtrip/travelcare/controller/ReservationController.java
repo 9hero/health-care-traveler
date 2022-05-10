@@ -3,6 +3,7 @@ package com.healthtrip.travelcare.controller;
 
 import com.healthtrip.travelcare.service.ReservationDateService;
 import com.healthtrip.travelcare.service.ReservationInfoService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/reservation")
 @RequiredArgsConstructor
 @RestController
+@Tag(name = "(비활성)예약 API",description = "예약 정보,예약 일짜")
 public class ReservationController {
 
     private final ReservationDateService reservationDateService;

@@ -26,19 +26,29 @@ public class TripPackageService {
 
     @Transactional(readOnly = true)
     public ResponseEntity allTripPack() {
+        // 레포지에서 정보 꺼내오기
+        // 제목,가격 담기
+        // 이미지 담기
+        // 전달
         List<TpResponseDto> tpResponseDtoList = new ArrayList<>();
 
         List<TripPackage> tripPackageList = tpRepository.findAll();
 
         tripPackageList.forEach((entity) -> {
+            TpResponseDto tpResponseDto = TpResponseDto.entityToDto(entity);
+
+//            tpResponseDto.setTripPackageFileResponseDto();
             // entity -> dto -> dtoList
-            tpResponseDtoList.add(TpResponseDto.entityToDto(entity));
+//            tpResponseDtoList.add();
         });
         return ResponseEntity.ok().body(tpResponseDtoList);
     }
 
     @Transactional(readOnly = true)
     public ResponseEntity oneTripPack(Long id) {
+        // 패키지 정보
+        // 패키지 이미지 정보
+        // 패키지 여행 가능날짜 정보, 현인원/최대인원
 
         Optional<TripPackage> tripPackage = tpRepository.findById(17L);
 
