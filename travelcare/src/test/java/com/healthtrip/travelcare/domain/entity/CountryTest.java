@@ -2,6 +2,7 @@ package com.healthtrip.travelcare.domain.entity;
 
 import com.healthtrip.travelcare.config.DataSourceConfig;
 import com.healthtrip.travelcare.repository.CountryRepository;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -22,6 +23,7 @@ class CountryTest {
     @Test
     @Transactional
     @Rollback
+    @Disabled(value = "중복 데이터")
     void countrySave(){
 
         Country countrySaved = countryRepository.save(Country.builder().id(1L).name("korea").build());

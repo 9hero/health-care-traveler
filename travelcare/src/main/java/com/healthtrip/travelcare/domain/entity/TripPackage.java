@@ -14,14 +14,13 @@ import java.util.List;
 public class TripPackage extends BaseTimeEntity{
 
     @Builder
-    public TripPackage(Long id, Account account,String title, String description, BigDecimal price, String type, List<ReservationInfo> reservationInfoList, List<TripPackageFile> tripPackageFileList) {
+    public TripPackage(Long id, Account account,String title, String description, BigDecimal price, String type, List<TripPackageFile> tripPackageFileList) {
         this.id = id;
         this.account = account;
         this.title = title;
         this.description = description;
         this.price = price;
         this.type = type;
-        this.reservationInfoList = reservationInfoList;
         this.tripPackageFileList = tripPackageFileList;
     }
 
@@ -45,10 +44,6 @@ public class TripPackage extends BaseTimeEntity{
     private String type;
 
 //    private Moneta //Moneta jsr354 국제 통화표현 라이브러리
-    @OneToMany(mappedBy = "tripPackage")
-    @ToString.Exclude
-    private List<ReservationInfo> reservationInfoList;
-
     @OneToMany(mappedBy = "tripPackage",fetch = FetchType.LAZY)
     private List<TripPackageFile> tripPackageFileList;
 

@@ -44,7 +44,6 @@ class ReservationInfoTest {
                 .builder()
                 .account(accountsRepository.findAll().get(0))
                 .reservationDate(reservationDateRepository.findAll().get(0))
-                .tripPackage(tripPackageRepository.findAll().get(0))
                 .personCount((short)5)
                 .status(ReservationInfo.Status.Y)
                 .build();

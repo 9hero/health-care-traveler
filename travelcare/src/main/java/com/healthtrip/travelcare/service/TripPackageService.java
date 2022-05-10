@@ -5,7 +5,8 @@ import com.healthtrip.travelcare.domain.entity.TripPackage;
 import com.healthtrip.travelcare.repository.AccountsRepository;
 import com.healthtrip.travelcare.repository.TripPackageRepository;
 import com.healthtrip.travelcare.repository.dto.request.TripPackageRequestDto;
-import com.healthtrip.travelcare.repository.dto.response.TpResponseDto;
+import com.healthtrip.travelcare.repository.dto.response.TripPackageFileResponseDto;
+import com.healthtrip.travelcare.repository.dto.response.TripPackageResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,45 +26,44 @@ public class TripPackageService {
     private final AccountsRepository accountsRepository;
 
     @Transactional(readOnly = true)
-    public ResponseEntity allTripPack() {
-        // 레포지에서 정보 꺼내오기
-        // 제목,가격 담기
-        // 이미지 담기
-        // 전달
-        List<TpResponseDto> tpResponseDtoList = new ArrayList<>();
+    public List<TripPackageResponseDto.mainPagePack> allTripPack() {
+        // 초기화
+        List<TripPackageResponseDto.mainPagePack> mainPagePackPackages = new ArrayList<>();
 
+        // 레포지에서 정보 꺼내오기
         List<TripPackage> tripPackageList = tpRepository.findAll();
 
-        tripPackageList.forEach((entity) -> {
-            TpResponseDto tpResponseDto = TpResponseDto.entityToDto(entity);
+        // 정보 dto에 담기
+        tripPackageList.forEach(tripPackage -> {
+            // 썸네일 이미지 객체 받기
+            var tripPackageFile = tripPackage.getTripPackageFileList().get(0);
 
-//            tpResponseDto.setTripPackageFileResponseDto();
-            // entity -> dto -> dtoList
-//            tpResponseDtoList.add();
+            // 썸네일 dto로 변환
+            var tpfr = TripPackageFileResponseDto.mainPagePackImage.builder()
+                    .id(tripPackageFile.getId())
+                    .url(tripPackageFile.getUrl())
+                    .build();
+
+            // id 제목 가격 담기
+            var mtpr= TripPackageResponseDto.mainPagePack.builder()
+                    .id(tripPackage.getId())
+                    .title(tripPackage.getTitle())
+                    .price(tripPackage.getPrice())
+                    .build();
+
+            // 이미지 담기
+            mtpr.setThumbnail(tpfr);
+
+            mainPagePackPackages.add(mtpr);
         });
-        return ResponseEntity.ok().body(tpResponseDtoList);
+
+        return mainPagePackPackages;
     }
 
     @Transactional(readOnly = true)
     public ResponseEntity oneTripPack(Long id) {
-        // 패키지 정보
-        // 패키지 이미지 정보
-        // 패키지 여행 가능날짜 정보, 현인원/최대인원
 
-        Optional<TripPackage> tripPackage = tpRepository.findById(17L);
-
-        ResponseEntity responseEntity;
-
-        if (tripPackage.isPresent()){
-            return responseEntity = tripPackage.map(tpPackageEntity ->
-                            ResponseEntity
-                                    .ok()
-                                    .body(TpResponseDto.entityToDto(tpPackageEntity)))
-                                    .get();
-        }else{
-            return responseEntity = ResponseEntity.status(200).body("패키지를 찾을 수 없음");
-        }
-
+        return ResponseEntity.status(200).body("패키지를 찾을 수 없음");
     }
 
 

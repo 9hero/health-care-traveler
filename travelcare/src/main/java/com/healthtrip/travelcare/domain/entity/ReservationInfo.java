@@ -10,10 +10,10 @@ import lombok.*;
 public class ReservationInfo extends BaseTimeEntity{
 
     @Builder
-    public ReservationInfo(Long id, Account account, TripPackage tripPackage, ReservationDate reservationDate, short personCount, Status status) {
+    public ReservationInfo(Long id, Account account, ReservationDate reservationDate, short personCount, Status status) {
         this.id = id;
         this.account = account;
-        this.tripPackage = tripPackage;
+
         this.reservationDate = reservationDate;
         this.personCount = personCount;
         this.status = status;
@@ -27,10 +27,6 @@ public class ReservationInfo extends BaseTimeEntity{
     @ToString.Exclude
     @JoinColumn(name = "user_id")
     private Account account;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @ToString.Exclude
-    private TripPackage tripPackage;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "date_id")

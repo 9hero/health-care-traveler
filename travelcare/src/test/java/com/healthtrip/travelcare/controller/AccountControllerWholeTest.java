@@ -5,10 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.healthtrip.travelcare.domain.entity.Account;
 import com.healthtrip.travelcare.repository.dto.request.AccountRequestDto;
 import com.healthtrip.travelcare.service.AccountService;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.RepetitionInfo;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -74,6 +71,7 @@ class AccountControllerWholeTest {
 
     @Test
     @DisplayName("정확한 로그인,비밀번호 오류,이메일 오류")
+    @Disabled(value = "db 데이터에 종속적")
     void login() {
         List<AccountRequestDto> requestDtoList = new ArrayList<>();
         requestDtoList.add(request("e","p"));

@@ -2,6 +2,7 @@ package com.healthtrip.travelcare.domain.entity;
 
 import com.healthtrip.travelcare.config.DataSourceConfig;
 import com.healthtrip.travelcare.repository.AccountsRepository;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -23,8 +24,8 @@ class AccountTest {
 
     @Test
     void findUser(){
-       // accountsRepository.findAll().forEach(System.out::println);
-        System.out.println(accountsRepository.existsByEmail("e"));
+        accountsRepository.findAll().forEach(System.out::println);
+//        System.out.println(accountsRepository.existsByEmail("e"));
     }
 
     @Test

@@ -24,8 +24,9 @@ class TripPackageTest {
     @Rollback(value = true)
     void tripPackSave() {
         var tp = TripPackage.builder()
+                .title("신비한 제목")
                 .description("떠나요 여행을")
-                .account(accountsRepository.findById(4L).get())
+                .account(accountsRepository.findAll().get(0))
                 .price(BigDecimal.valueOf(1399.1563))
                 .type("오사카")
                 .build();

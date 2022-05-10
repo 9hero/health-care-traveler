@@ -31,7 +31,7 @@ class TripPackageFileRepositoryTest {
         var tp = TripPackage.builder()
                 .description("파일레포 테스트")
                 .title("간단한 패키지 제목")
-                .account(accountsRepository.findById(4L).get())
+                .account(accountsRepository.findAll().get(0))
                 .price(BigDecimal.valueOf(1399.1563))
                 .type("테스트")
                 .tripPackageFileList(new ArrayList<TripPackageFile>())
@@ -48,6 +48,6 @@ class TripPackageFileRepositoryTest {
         tripPackageFileRepository.save(tpf);
         tripPackageFileRepository.flush();
 
-
+        tripPackageFileRepository.findAll().forEach(System.out::println);
     }
 }
