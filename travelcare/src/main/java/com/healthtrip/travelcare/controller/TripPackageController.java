@@ -13,14 +13,14 @@ import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/trip-packages")
+@RequestMapping("/api/trip-package")
 @RequiredArgsConstructor
 @Tag(name = "여행 패키지 API")
 public class TripPackageController {
 
     private final TripPackageService tpService;
 
-    @Operation(summary = "메인 화면을 위한 여행 패키지 리스트를 불러옵니다", description = "id\ntitle\nprice\ntripPackageFileResponseDto:{id,url} (no param, no paging)")
+    @Operation(summary = "메인 화면을 위한 여행 패키지 리스트를 불러옵니다")
     @GetMapping("")
     public List<TripPackageResponseDto.mainPagePack> allTripPack(){
         var tpList = tpService.allTripPack();

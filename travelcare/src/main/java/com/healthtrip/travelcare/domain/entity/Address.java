@@ -1,18 +1,26 @@
 package com.healthtrip.travelcare.domain.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Data
-@AllArgsConstructor
+
+
+@Getter
 @NoArgsConstructor
 @Entity
-@Builder
 public class Address extends BaseTimeEntity{
+
+    @Builder
+    public Address(Long id, String address, String addressDetail, String district, String city, Country country, String postalCode) {
+        this.id = id;
+        this.address = address;
+        this.addressDetail = addressDetail;
+        this.district = district;
+        this.city = city;
+        this.country = country;
+        this.postalCode = postalCode;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

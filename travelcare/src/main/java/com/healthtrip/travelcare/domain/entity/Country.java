@@ -1,21 +1,24 @@
 package com.healthtrip.travelcare.domain.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-@Data
-@AllArgsConstructor
+
+
+@Getter
 @NoArgsConstructor
 @Entity
-@Builder
 public class Country extends BaseTimeEntity{
+
+    @Builder
+    public Country(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

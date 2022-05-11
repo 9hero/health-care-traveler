@@ -4,12 +4,18 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@Data
-@AllArgsConstructor
+@Getter
 @NoArgsConstructor
-@Builder
 @Entity
 public class NoticeBoard extends BaseTimeEntity{
+
+    @Builder
+    public NoticeBoard(Long id, Account account, String title, String announcement) {
+        this.id = id;
+        this.account = account;
+        this.title = title;
+        this.announcement = announcement;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
