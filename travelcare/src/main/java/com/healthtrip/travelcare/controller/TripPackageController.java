@@ -1,7 +1,7 @@
 package com.healthtrip.travelcare.controller;
 
 import com.healthtrip.travelcare.repository.dto.request.TripPackageRequestDto;
-import com.healthtrip.travelcare.repository.dto.response.TripPackageResponseDto;
+import com.healthtrip.travelcare.repository.dto.response.TripPackageResponse;
 import com.healthtrip.travelcare.service.TripPackageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RestController
@@ -22,15 +21,15 @@ public class TripPackageController {
 
     @Operation(summary = "메인 화면을 위한 여행 패키지 리스트를 불러옵니다")
     @GetMapping("")
-    public List<TripPackageResponseDto.mainPagePack> allTripPack(){
+    public List<TripPackageResponse.MainPagePack> allTripPack(){
         var tpList = tpService.allTripPack();
         return tpList;
     }
 
     @Operation(summary = "여행 패키지의 정보를 가져옵니다.",description = "패키지 기본 정보, 추가 이미지들,예약 가능한 날짜, 현재정원/최대정원")
-    @GetMapping("{id}")
-    public ResponseEntity tripPackInfo(@PathParam("id") Long id) {
-        ResponseEntity tpResponseDto = tpService.oneTripPack(id);
+    @GetMapping("/{id}")
+    public TripPackageResponse.TripPackInfo tripPackInfo(@PathVariable("id") Long id) {
+        var tpResponseDto = tpService.oneTripPack(id);
         return tpResponseDto;
     }
 

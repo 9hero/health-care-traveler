@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TripPackageDetailResponseDto {
+public class TripPackageDetailResponse {
 
     private Long id;
 
@@ -25,11 +25,11 @@ public class TripPackageDetailResponseDto {
 
     private String type;
 
-    private List<ReservationDateResponseDto> reservationDateList;
+    private List<ReservationDateResponse> reservationDateList;
 
-    public TripPackageDetailResponseDto entityToResponseBasic(TripPackage tripPackage) {
+    public TripPackageDetailResponse entityToResponseBasic(TripPackage tripPackage) {
         return
-        TripPackageDetailResponseDto.builder()
+        TripPackageDetailResponse.builder()
                 .id(tripPackage.getId())
                 .description(tripPackage.getDescription())
                 .price(tripPackage.getPrice())

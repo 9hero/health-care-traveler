@@ -24,8 +24,8 @@ public class ReservationDate extends BaseTimeEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "trip_package_id")
     private TripPackage tripPackage;
 
     private LocalDateTime departAt;

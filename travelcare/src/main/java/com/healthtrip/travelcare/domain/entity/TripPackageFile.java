@@ -7,7 +7,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Entity
-public class TripPackageFile {
+public class TripPackageFile extends BaseTimeEntity{
 
     @Builder
     public TripPackageFile(Long id, TripPackage tripPackage, String url, String fileName, String originalName, int fileSize) {

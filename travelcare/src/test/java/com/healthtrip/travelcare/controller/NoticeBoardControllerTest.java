@@ -1,6 +1,7 @@
 package com.healthtrip.travelcare.controller;
 
 import com.healthtrip.travelcare.service.NoticeBoardService;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -24,6 +25,7 @@ class NoticeBoardControllerTest {
 
     @Test
     @Transactional
+    @Disabled("로컬호스트")
     void allPosts() throws Exception {
         mockMvc.perform(
                 MockMvcRequestBuilders.get("http://localhost:8080/api/notice-board")

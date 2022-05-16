@@ -47,6 +47,9 @@ public class TripPackage extends BaseTimeEntity{
     @OneToMany(mappedBy = "tripPackage",fetch = FetchType.LAZY)
     private List<TripPackageFile> tripPackageFileList;
 
+    @OneToMany(mappedBy = "tripPackage")
+    private List<ReservationDate> reservationDateList;
+
     public void setAccount(Account account){
         this.account = account;
     }

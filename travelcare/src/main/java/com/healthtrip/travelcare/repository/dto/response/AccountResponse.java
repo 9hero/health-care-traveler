@@ -7,13 +7,12 @@ import lombok.*;
 
 @Getter
 @NoArgsConstructor
-@Schema(name = "계정 응답 객체")
-public class AccountResponseDto {
+@Schema(name = "로그인 Response")
+public class AccountResponse {
     @Builder
-    public AccountResponseDto(Long id, String email, String password, Account.Status status, Account.UserRole userRole) {
+    public AccountResponse(Long id, String email, Account.Status status, Account.UserRole userRole) {
         this.id = id;
         this.email = email;
-        this.password = password;
         this.status = status;
         this.userRole = userRole;
     }
@@ -21,8 +20,6 @@ public class AccountResponseDto {
     private Long id;
 
     private String email;
-
-    private String password;
 
     private Account.Status status;
 

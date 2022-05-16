@@ -1,6 +1,5 @@
 package com.healthtrip.travelcare.domain.entity;
 
-import com.healthtrip.travelcare.repository.dto.request.AccountRequestDto;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 
