@@ -1,29 +1,8 @@
-import React, { useEffect, useState } from "react";
-import logo from "./logo.svg";
-import "./App.css";
-import axios from "axios";
+import React from "react";
+import Main from "./pages/Main";
 
 function App() {
-  const [restText, setRestText] = useState("");
-  useEffect(() => {
-    console.log("useEffect");
-    axios.get("/api/helo/").then((response) => {
-      const { name } = response.data;
-      setRestText(name);
-    });
-  });
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        hello {restText}
-        <a href="http://3.39.185.254:8080/swagger-ui/index.html#/">
-          look swagger
-        </a>
-      </header>
-      {restText}
-    </div>
-  );
+  return <Main />;
 }
 
 export default App;
