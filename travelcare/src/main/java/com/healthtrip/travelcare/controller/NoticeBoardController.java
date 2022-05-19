@@ -1,20 +1,18 @@
 package com.healthtrip.travelcare.controller;
 
+import com.healthtrip.travelcare.repository.dto.request.NoticeBoardRequest;
 import com.healthtrip.travelcare.repository.dto.response.NoticeBoardResponse;
 import com.healthtrip.travelcare.service.NoticeBoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/notice-board")
-@Tag(name = "공지사항 API",description = "공지사항을 불러와요")
+@Tag(name = "공지사항 API",description = "공지사항을 관리하는 API")
 public class NoticeBoardController {
 
     NoticeBoardService noticeBoardService;
@@ -33,5 +31,23 @@ public class NoticeBoardController {
     @GetMapping("/{id}")
     public ResponseEntity<NoticeBoardResponse.NoticeBoardDetails> postDetails(@PathVariable Long id){
         return noticeBoardService.postDetails(id);
+    }
+
+    @Operation(summary = "공지사항 등록")
+    @PostMapping("")
+    public ResponseEntity addPost(@RequestBody NoticeBoardRequest.addNoticeBoard request) {
+        return noticeBoardService.addPost(request);
+    }
+
+    // 업데이트 방식 선택바람 1. 덮어씌우기(리액트에서 작업) 2. 부분변경
+    @Operation(summary = "공지사항 변경")
+    @PutMapping("")
+    public ResponseEntity updatePost(@RequestBody NoticeBoardRequest.updateNoticeBoard request) {
+        return noticeBoardService.updatePost(request);
+    }
+    @Operation(summary = "공지 삭제")
+    @DeleteMapping("{id}")
+    public ResponseEntity deletePost(@PathVariable Long id) {
+        return noticeBoardService.deletePost(id);
     }
 }

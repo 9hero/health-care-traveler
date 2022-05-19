@@ -30,4 +30,8 @@ public class NoticeBoard extends BaseTimeEntity{
 
     private String announcement;
 
+    public void update(String title,String announcement) {
+        this.title =title;
+        this.announcement = announcement;
+    }
 }

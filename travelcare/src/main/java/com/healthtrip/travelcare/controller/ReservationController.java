@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
+
 @RequestMapping("/api/reservation")
 @RequiredArgsConstructor
 @RestController
@@ -20,6 +21,23 @@ public class ReservationController {
     private final ReservationDateService reservationDateService;
     private final ReservationInfoService reservationInfoService;
 
+
+    /* 예약 필요항목
+    request body
+    국가 id,
+    주소: 주소1, 주소2, 지역, 도시, 우편번호
+    예약자: 성,이름,성별,생년월일,연락처,비상 연락처
+    개인정보 기관이던 유저던 req or find
+    예약날짜 id,
+    유저 id,
+    인원수,
+    예약상태 default
+
+    Repository
+    Resv_Info
+    Resv_date
+
+     */
 
     // GET
     // 1. 모든 예약날짜 확인 x
