@@ -6,7 +6,6 @@ import com.healthtrip.travelcare.repository.NoticeBoardRepository;
 import com.healthtrip.travelcare.repository.dto.request.NoticeBoardRequest;
 import com.healthtrip.travelcare.repository.dto.response.NoticeBoardResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,7 +61,7 @@ public class NoticeBoardService {
     }
 
     @Transactional // 미완성
-    public ResponseEntity updatePost(NoticeBoardRequest.updateNoticeBoard updateRequest) {
+    public ResponseEntity updatePost(NoticeBoardRequest.Update updateRequest) {
         var optionalNoticeBoard= noticeBoardRepository.findById(updateRequest.getNoticePostId());
         if(optionalNoticeBoard.isPresent()){
             var noticeBoard = optionalNoticeBoard.get();
@@ -75,7 +74,7 @@ public class NoticeBoardService {
     }
 
     @Transactional
-    public ResponseEntity addPost(NoticeBoardRequest.addNoticeBoard addRequest) {
+    public ResponseEntity addPost(NoticeBoardRequest.AddPost addRequest) {
         // 유저검증 필요
         Long userId = addRequest.getUserId();
         var account = accountsRepository.getById(userId);

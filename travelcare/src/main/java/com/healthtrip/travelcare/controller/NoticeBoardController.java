@@ -35,14 +35,14 @@ public class NoticeBoardController {
 
     @Operation(summary = "공지사항 등록")
     @PostMapping("")
-    public ResponseEntity addPost(@RequestBody NoticeBoardRequest.addNoticeBoard request) {
+    public ResponseEntity addPost(@RequestBody NoticeBoardRequest.AddPost request) {
         return noticeBoardService.addPost(request);
     }
 
     // 업데이트 방식 선택바람 1. 덮어씌우기(리액트에서 작업) 2. 부분변경
     @Operation(summary = "공지사항 변경")
     @PutMapping("")
-    public ResponseEntity updatePost(@RequestBody NoticeBoardRequest.updateNoticeBoard request) {
+    public ResponseEntity updatePost(@RequestBody NoticeBoardRequest.Update request) {
         return noticeBoardService.updatePost(request);
     }
     @Operation(summary = "공지 삭제")

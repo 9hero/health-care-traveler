@@ -4,18 +4,19 @@ import javax.persistence.*;
 
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 @Entity
 public class ReservationInfo extends BaseTimeEntity{
-
     @Builder
-    public ReservationInfo(Long id, Account account, ReservationDate reservationDate, short personCount, Status status) {
+    public ReservationInfo(Long id, Account account, ReservationDate reservationDate, short personCount, List<ReservationPerson> reservationPerson, Status status) {
         this.id = id;
         this.account = account;
-
         this.reservationDate = reservationDate;
         this.personCount = personCount;
+        this.reservationPerson = reservationPerson;
         this.status = status;
     }
 
@@ -34,6 +35,10 @@ public class ReservationInfo extends BaseTimeEntity{
     private ReservationDate reservationDate;
 
     private short personCount;
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "reservationInfo",fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
+    private List<ReservationPerson> reservationPerson;
 
     @Enumerated(EnumType.STRING)
     private Status status;
