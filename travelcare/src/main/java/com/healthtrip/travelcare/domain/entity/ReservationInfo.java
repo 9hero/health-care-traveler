@@ -2,6 +2,7 @@ package com.healthtrip.travelcare.domain.entity;
 
 import javax.persistence.*;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.util.List;
@@ -43,7 +44,18 @@ public class ReservationInfo extends BaseTimeEntity{
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    public void customTravelOn() {
+        this.status = Status.B;
+    }
+    public void customStatusUpdate(Status status){
+        this.status = status;
+    }
     public enum Status{
-        Y,N,B
+        @Schema(description = "예약 가능")
+        Y,
+        @Schema(description = "예약 불가능")
+        N,
+        @Schema(description = "답변전:Before")
+        B
     }
 }

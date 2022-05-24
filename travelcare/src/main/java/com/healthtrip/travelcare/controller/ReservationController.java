@@ -25,25 +25,11 @@ public class ReservationController {
 
 
     /*
-    예약 필요항목
-
-    request body
-    국가 id,
-    주소: 주소1, 주소2, 지역, 도시, 우편번호
-    예약자: 성,이름,성별,생년월일,연락처,비상 연락처
-    예약정보: 유저 id, 예약날짜 id, 인원수, 예약상태
-    예약상태 N default
-
-    Repository
-    Resv_Info
-    Resv_date
-
         기관용/개인용/관리자용
 
-    1. 예약 등록 / 예약 취소
-    2. 내 예약 조회 / 수정
-    3. 커스텀 여행 등록/조회/수정/취소
-    4. 예약 허가 <- 관리자 controller
+    1. 예약 등록 / 예약 취소 O/O
+    2. 내 예약 조회 / 수정 O/X
+    3. 예약 허가 <- 관리자 controller X
 
     기관과 관리자
     기관: 내 예약목록(간략 목록) -> 하나 눌러서 상세정보 보기 -> 작업
@@ -53,13 +39,15 @@ public class ReservationController {
     // 내 예약목록 도메인 정해야함 (유저 or 예약)
 
     //여기서 모든 내 예약정보 끌어옴
-    @Operation(summary = "특정 유저의 예약목록",description = " 예약자, 패키지명, 예약상태, 출발일, 도착일을 가져옵니다. 필요한 정보가 있을 시 말해주세요. test= id:70 사용해주세요")
+    @Operation(summary = "특정 유저의 예약목록",description = " 예약번호, 예약자, 패키지명, 예약상태, 출발일, 도착일을 가져옵니다. 필요한 정보가 있을 시 말해주세요. test= id:70 사용해주세요")
     @GetMapping("/user/{userId}")// ㅇ
     public ResponseEntity<List<ReservationInfoResponse.MyInfo>> myReservation(@PathVariable Long userId){
         return reservationInfoService.myReservation(userId);
     }
 
     // 패키지 등록-> 패키지 날짜 추가 -> 패키지의 예약 날짜 입력 -> POST API
+    // 예약 상태 Y,N,B 있음 일반 패키지 예약에 대해서는 status를 뺄지 넣을지
+    // 아니면 처음엔 무조건 Y(결제했으니까) 그 후에 custom 여행 신청시 status를 업데이트 B: 답변대기 Y:허가 N:거부
     @Operation(summary = "예약하기(예약시 한명만 가능 가족단위 예약시 변경필요)")
     @PostMapping("/info")// ㅇ
     public ResponseEntity reservePackage(@RequestBody ReservationRequest.ReserveData reserveData) {
@@ -80,31 +68,6 @@ public class ReservationController {
         return null;
     }
 
-
-    // ---커스텀여행---
-    @Operation(summary = "커스텀 여행 등록")
-    @PostMapping("/custom")
-    public ResponseEntity reserveCustom() {
-        return null;
-    }
-
-    @Operation(summary = "커스텀 여행 조회")
-    @GetMapping("/custom")
-    public ResponseEntity myCustom() {
-        return null;
-    }
-
-    @Operation(summary = "커스텀 여행 수정")
-    @PutMapping("/custom")
-    public ResponseEntity modifyCustom() {
-        return null;
-    }
-    @Operation(summary = "커스텀 여행 삭제")
-    @DeleteMapping("/custom")
-    public ResponseEntity deleteCustom() {
-        return null;
-    }
-    //---------------
 
     // ---관리자용----
 //    @Operation(summary = "예약 조회")

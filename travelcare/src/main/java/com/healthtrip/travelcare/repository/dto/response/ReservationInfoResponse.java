@@ -19,10 +19,14 @@ public class ReservationInfoResponse {
     @Schema(name = "나의 예약 정보 보기 Response")
     public static class MyInfo {
 //        private List<ReservationPersonResponse.rpInfo> reservationPeople;
+        @Schema(description = "예약고유번호")
+        private Long reservationInfoId;
+
         private String personName;
         private String packageTitle;
         private BigDecimal price;
         private ReservationInfo.Status status;
+        @Schema(description = "예약한 인원수")
         private short personCount;
         private LocalDateTime departAt;
         private LocalDateTime arrivedAt;

@@ -42,7 +42,7 @@ public class ReservationInfoService {
                 .reservationDate(reservationDate)
                 .account(account)
                 .personCount(reserveData.getPersonCount())
-                .status(ReservationInfo.Status.N)
+                .status(ReservationInfo.Status.Y)
                 .build();
         var savedReservationInfo = reservationInfoRepository.save(reservationInfo);
 
@@ -106,6 +106,8 @@ public class ReservationInfoService {
                 var reservedPerson = reservationInfo.getReservationPerson();
                 var representPerson = reservedPerson.get(0);
 
+                // 예약 번호
+                myInfo.setReservationInfoId(reservationInfo.getId());
                 // 예약자(임시로 대표자 이름만)
                 myInfo.setPersonName(representPerson.getFirstName() + " "+representPerson.getLastName());
                 // 예약상태, 에약인원

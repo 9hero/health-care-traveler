@@ -21,4 +21,6 @@ public interface ReservationInfoRepository extends JpaRepository<ReservationInfo
             "inner join trip_package tp ON tp.id = rd.trip_package_id " +
             "where a.user_id = :userId",nativeQuery = true)
     Map<String, Object> findMyReservation(Long userId);
+
+    List<ReservationInfo> getByAccountId(Long uid);
 }
