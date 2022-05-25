@@ -46,7 +46,7 @@ public class CustomTravelController {
     public ResponseEntity<List<CustomTravelResponse.Title>> getCustomReserve(@RequestParam Long reservationId) {
         return customTravelService.myCustomReserve(reservationId);
     }
-
+        // 이거 위아래 하나로 합치삼 한 예약 id에 대해서 배열로 [커스텀여행 문의사항 상세조회] 가져오기
     @Operation(summary = "해당 커스텀 여행 문의 상세사항 조회", description = "커스텀 여행 id,제목,답변, 패키지 예약 id,(필요시: 등록일,수정일) ")
     @GetMapping("/{customTravelId}")
     public ResponseEntity<CustomTravelResponse.Info> getCustomTravelDetails(@PathVariable Long customTravelId) {

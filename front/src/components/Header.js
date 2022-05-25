@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const HeaderBlock = styled.header`
@@ -48,7 +49,11 @@ function Header() {
   return (
     <HeaderBlock>
       <div class="logo">로고</div>
-      <div class="userMenu">로그인/회원가입/마이페이지</div>
+      <div class="userMenu">
+        <Link to={"/signin"}>로그인</Link>/
+        <Link to={"/signup"}>회원가입</Link>/
+        <Link to={"/mypage"}>마이페이지</Link>
+      </div>
       <nav>
         <ul>
           <li>홈</li>

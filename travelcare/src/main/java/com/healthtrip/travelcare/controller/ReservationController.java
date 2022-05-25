@@ -48,14 +48,13 @@ public class ReservationController {
     // 패키지 등록-> 패키지 날짜 추가 -> 패키지의 예약 날짜 입력 -> POST API
     // 예약 상태 Y,N,B 있음 일반 패키지 예약에 대해서는 status를 뺄지 넣을지
     // 아니면 처음엔 무조건 Y(결제했으니까) 그 후에 custom 여행 신청시 status를 업데이트 B: 답변대기 Y:허가 N:거부
-    @Operation(summary = "예약하기(예약시 한명만 가능 가족단위 예약시 변경필요)")
+    @Operation(summary = "변경: (가족단위로 묶어서) 예약하기")
     @PostMapping("/info")// ㅇ
     public ResponseEntity reservePackage(@RequestBody ReservationRequest.ReserveData reserveData) {
         return reservationInfoService.reservePackage(reserveData);
-
     }
 
-    @Operation(summary = "(임시)예약취소",description = "(임시:처리 로직없이 삭제만 함),해당하는 예약id를 입력해주세요 예약자와 함께 삭제됩니다., 예약취소로그 테이블만드는거 어떤가요?")
+    @Operation(summary = "(임시)예약취소",description = "추가: 예약취소기록 남기기(임시:처리 로직없이 삭제만 함),해당하는 예약id를 입력해주세요 예약자와 함께 삭제됩니다., 예약취소로그 테이블만드는거 어떤가요?")
     @DeleteMapping("/info/{reservationId}")
     public ResponseEntity cancelReservation(@PathVariable Long reservationId) {
         return reservationInfoService.cancelReservation(reservationId);
