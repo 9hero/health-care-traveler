@@ -50,7 +50,7 @@ class AccountCommonTest {
                 .address(savedAddress)
                 .firstName("커몬계정")
                 .lastName("일반계정")
-                .gender('M')
+//                .gender('M')
                 .birth(LocalDate.now())
                 .phone("010-1234-1234")
                 .emergencyContact("01031131515")

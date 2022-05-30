@@ -9,12 +9,16 @@ import java.time.LocalDate;
 
 @Getter
 @AllArgsConstructor
-@Schema(name = "예약자 등록 Request ")
-public class ReservationPersonRequest {
+@Schema(name = "인적 사항 Request ")
+public class PersonData {
     private String firstName;
     private String lastName;
-    private ReservationPerson.Gender gender;
+    private Gender gender;
     private LocalDate birth;
     private String phone;
     private String emergencyContact;
+
+    public enum Gender {
+        M,W
+    }
 }

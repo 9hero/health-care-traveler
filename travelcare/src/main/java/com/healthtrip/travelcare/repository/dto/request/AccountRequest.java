@@ -12,15 +12,26 @@ import lombok.*;
 //@Schema(name = "(REQUEST) 계정 API")
 public class AccountRequest {
 
+
     @Data
     @AllArgsConstructor
     @Builder
-    @Schema(name = "회원가입 Request")
-    public static class SignUpDto {
+    @Schema(name = "일반유저 회원가입 Request")
+    public static class commonSignUp{
         private String email;
         private String password;
-        @Schema(description = "유저 권한",defaultValue = "ROLE_COMMON")
-        private Account.UserRole userRole;
+        private AddressRequest addressData;
+        private PersonData personDataRequest;
+    }
+    @Data
+    @AllArgsConstructor
+    @Builder
+    @Schema(name = "기관유저 회원가입 Request")
+    public static class agentSignUp{
+        private String email;
+        private String password;
+        private String name;
+        private String companyNumber;
     }
     @Data
     @AllArgsConstructor

@@ -2,6 +2,7 @@ package com.healthtrip.travelcare.repository;
 
 import com.healthtrip.travelcare.domain.entity.TripPackage;
 import com.healthtrip.travelcare.domain.entity.TripPackageFile;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Disabled
 class TripPackageFileRepositoryTest {
 
     @Autowired

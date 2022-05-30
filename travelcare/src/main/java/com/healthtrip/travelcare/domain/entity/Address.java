@@ -1,5 +1,6 @@
 package com.healthtrip.travelcare.domain.entity;
 
+import com.healthtrip.travelcare.repository.dto.request.AddressRequest;
 import lombok.*;
 
 import javax.persistence.*;
@@ -38,8 +39,23 @@ public class Address extends BaseTimeEntity{
     private String city;
 
     @JoinColumn
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Country country;
 
     private String postalCode;
+
+    public static Address toEntityBasic(AddressRequest addressData){
+        return Address.builder()
+                .address(addressData.getAddress1())
+                .addressDetail(addressData.getAddress2())
+                .district(addressData.getDistrict())
+                .city(addressData.getCityName())
+                .postalCode(addressData.getPostalCode())
+                .build();
+    }
+    public void setCountry(Country country) {
+        this.country = country;
+    }
+
+
 }

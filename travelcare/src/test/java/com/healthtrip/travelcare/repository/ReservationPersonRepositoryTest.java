@@ -9,13 +9,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Disabled
-class CustomTravelBoardRepositoryTest {
+class ReservationPersonRepositoryTest {
 
     @Autowired
-    CustomTravelBoardRepository customTravelBoardRepository;
+    ReservationPersonRepository reservationPersonRepository;
 
     @Test
     void findByReservationInfoId() {
-        customTravelBoardRepository.findByReservationInfoId(23L).forEach(System.out::println);
+        reservationPersonRepository.findByReservationInfoId(32L).forEach(System.out::println);
     }
 }

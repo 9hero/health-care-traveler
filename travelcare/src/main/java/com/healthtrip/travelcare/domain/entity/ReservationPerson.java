@@ -1,6 +1,7 @@
 package com.healthtrip.travelcare.domain.entity;
 
 
+import com.healthtrip.travelcare.repository.dto.request.PersonData;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ import java.time.LocalDate;
 @ToString
 public class ReservationPerson extends BaseTimeEntity{
     @Builder
-    public ReservationPerson(Long id,String lastName ,ReservationInfo reservationInfo, Address address, String firstName, Gender gender, LocalDate birth, String phone, String emergencyContact) {
+    public ReservationPerson(Long id,String lastName ,ReservationInfo reservationInfo, Address address, String firstName, PersonData.Gender gender, LocalDate birth, String phone, String emergencyContact) {
         this.id = id;
         this.reservationInfo = reservationInfo;
         this.firstName = firstName;
@@ -34,7 +35,7 @@ public class ReservationPerson extends BaseTimeEntity{
     private String lastName;
 
     @Enumerated(EnumType.STRING)
-    private Gender gender;
+    private PersonData.Gender gender;
 
     private LocalDate birth;
     private String phone;
@@ -45,13 +46,27 @@ public class ReservationPerson extends BaseTimeEntity{
     @ToString.Exclude
     private ReservationInfo reservationInfo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
     @JoinColumn
     @ToString.Exclude
     private Address address;
 
-    public enum Gender {
-        M,W
+
+
+    public static ReservationPerson reservationPersonBasicEntity(PersonData personData){
+        return ReservationPerson.builder()
+                .firstName(personData.getFirstName())
+                .lastName(personData.getLastName())
+                .gender(personData.getGender())
+                .birth(personData.getBirth())
+                .phone(personData.getPhone())
+                .emergencyContact(personData.getEmergencyContact())
+                .build();
+    }
+
+    public void relationSet(ReservationInfo reservationInfo,Address address) {
+        this.reservationInfo = reservationInfo;
+        this.address = address;
     }
 }
 

@@ -43,8 +43,8 @@ public class CustomTravelController {
     // 1. 유저 id로 조회 홈페이지에서 조회
     // 2. 예약 id로 조회 마이페이지에서 조회 이거랑
     // 3. 커스텀 여행 id로 조회 마이페이지에서 조회 이거로 결정
-    public ResponseEntity<List<CustomTravelResponse.Title>> getCustomReserve(@RequestParam Long reservationId) {
-        return customTravelService.myCustomReserve(reservationId);
+    public ResponseEntity<List<CustomTravelResponse.Info>> getCustomReserve(@RequestParam Long reservationId) {
+        return customTravelService.temp(reservationId);
     }
         // 이거 위아래 하나로 합치삼 한 예약 id에 대해서 배열로 [커스텀여행 문의사항 상세조회] 가져오기
     @Operation(summary = "해당 커스텀 여행 문의 상세사항 조회", description = "커스텀 여행 id,제목,답변, 패키지 예약 id,(필요시: 등록일,수정일) ")

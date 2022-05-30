@@ -26,17 +26,17 @@ class AccountServiceTest {
     public void create() {
         String email = "testEmails";
         //given
-        var accountRequestDto = AccountRequest.SignUpDto.builder()
+        var accountRequestDto = AccountRequest.commonSignUp.builder()
 //                .id(3L)
                 .email(email)
                 .password("testWords")
 //                .status(Account.Status.N)
-                .userRole(Account.UserRole.ROLE_COMMON)
+//                .userRole(Account.UserRole.ROLE_COMMON)
                 .build();
 
         Account account = Account.builder()
-                .email(accountRequestDto.getEmail())
-                .password(accountRequestDto.getPassword())
+//                .email(accountRequestDto.getEmail())
+//                .password(accountRequestDto.getPassword())
                 .status(Account.Status.N)
                 .userRole(Account.UserRole.ROLE_COMMON)
                 .build();

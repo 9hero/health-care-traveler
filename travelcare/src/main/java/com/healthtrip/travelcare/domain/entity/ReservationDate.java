@@ -35,4 +35,13 @@ public class ReservationDate extends BaseTimeEntity{
     private short currentNumPeople;
 
     private short peopleLimit;
+
+    public boolean plusCurrentPeopleNumber(Short currentNumPeople) {
+        if(peopleLimit < (this.currentNumPeople + currentNumPeople)){
+            return true;
+        }else {
+            this.currentNumPeople += currentNumPeople;
+            return false;
+        }
+    }
 }

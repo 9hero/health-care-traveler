@@ -44,14 +44,14 @@ class AccountControllerTest {
     void accounts() throws Exception {
 
         //given
-        var accountRequestDto = AccountRequest.SignUpDto.builder()
+        var accountRequestDto = AccountRequest.commonSignUp.builder()
                         .email("testEmail")
                                 .password("testword")
 //                                        .status(Account.Status.N)
-                                                .userRole(Account.UserRole.ROLE_COMMON)
+//                                                .userRole(Account.UserRole.ROLE_COMMON)
                                                         .build();
 
-        given(accountService.create(accountRequestDto)).willReturn(ResponseEntity.created(URI.create("/")).build());
+        given(accountService.createCommon(accountRequestDto)).willReturn(ResponseEntity.created(URI.create("/")).build());
         String requestJson = objectMapper.writeValueAsString(accountRequestDto);
 
         //when
@@ -65,7 +65,7 @@ class AccountControllerTest {
                 .andExpect(MockMvcResultMatchers.status().is(201))
                // .andExpect(MockMvcResultMatchers.header().string("Location","/"))
                 .andDo(MockMvcResultHandlers.print());
-        verify(accountService,atLeast(1)).create(accountRequestDto);
+        verify(accountService,atLeast(1)).createCommon(accountRequestDto);
     }
 
     @Test

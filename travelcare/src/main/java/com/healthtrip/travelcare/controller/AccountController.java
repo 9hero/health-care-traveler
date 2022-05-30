@@ -25,12 +25,17 @@ public class AccountController {
 
     @ApiResponses({
             @ApiResponse(responseCode = "201",headers = {@Header(name = "Location",description = "/")}),
-            @ApiResponse(responseCode = "401",description = "이메일 중복"),
+            @ApiResponse(responseCode = "409",description = "이메일 중복"),
     })
-    @Operation(summary = "아이디 생성")
-    @PostMapping("")
-    public ResponseEntity signUp(@RequestBody AccountRequest.SignUpDto signUpDto){
-        return accountService.create(signUpDto);
+    @Operation(summary = "일반 아이디 생성")
+    @PostMapping("/common")
+    public ResponseEntity commonSignUp(@RequestBody AccountRequest.commonSignUp commonSignUp){
+        return accountService.createCommon(commonSignUp);
+    }
+    @Operation(summary = "기관 아이디 생성")
+    @PostMapping("/agent")
+    public ResponseEntity agentSignUp(@RequestBody AccountRequest.agentSignUp agentSignUp){
+        return accountService.createAgent(agentSignUp);
     }
 
     @Operation(summary = "로그인")

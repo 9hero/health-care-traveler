@@ -38,12 +38,12 @@ class AccountControllerWholeTest {
     @Disabled
     void accounts() throws Exception {
         //given
-        AccountRequest.SignUpDto accountRequestDto = AccountRequest.SignUpDto.builder()
+        AccountRequest.commonSignUp accountRequestDto = AccountRequest.commonSignUp.builder()
                 .email("testEmail") // 사용가능한 이메일
 //                .email("e") // 사용 불가능한 이메일
                 .password("testword")
 //                .status(Account.Status.N)
-                .userRole(Account.UserRole.ROLE_COMMON)
+//                .userRole(Account.UserRole.ROLE_COMMON)
                 .build();
 
         String requestJson = objectMapper.writeValueAsString(accountRequestDto);

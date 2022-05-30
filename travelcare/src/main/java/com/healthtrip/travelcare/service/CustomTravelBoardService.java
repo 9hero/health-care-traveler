@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -77,6 +78,24 @@ public class CustomTravelBoardService {
                     .build()
             )
         );
+
+        return ResponseEntity.ok(responseBody);
+    }
+    @Transactional(readOnly = true)
+    public ResponseEntity<List<CustomTravelResponse.Info>> temp(Long reservationId) {
+        // 커스텀 예약 목록 조회
+        List<CustomTravelBoard> myCustomReservations= customTravelRepository.findByReservationInfoId(reservationId);
+        // 응답객체 생성
+        List<CustomTravelResponse.Info> responseBody =
+        myCustomReservations.stream().map(customTravelBoard ->
+                        CustomTravelResponse.Info.builder()
+                                .customReserveId(customTravelBoard.getId())
+                                .ReservationInfoId(customTravelBoard.getReservationInfo().getId())
+                                .title(customTravelBoard.getTitle())
+                                .question(customTravelBoard.getQuestion())
+                                .answer(customTravelBoard.getAnswer())
+                                .build()
+        ).collect(Collectors.toList());
 
         return ResponseEntity.ok(responseBody);
     }

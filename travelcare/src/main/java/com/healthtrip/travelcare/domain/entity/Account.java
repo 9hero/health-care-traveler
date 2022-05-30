@@ -16,7 +16,7 @@ import java.util.List;
 @ToString(callSuper = true)
 public class Account extends BaseTimeEntity{
     @Builder
-    public Account(Long id, String email, String password, Status status, UserRole userRole, List<NoticeBoard> noticeBoard, List<ReservationInfo> reservationInfoList, AccountCommon accountCommon) {
+    public Account(Long id, String email, String password, Status status, UserRole userRole, List<NoticeBoard> noticeBoard, List<ReservationInfo> reservationInfoList) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -24,7 +24,6 @@ public class Account extends BaseTimeEntity{
         this.userRole = userRole;
         this.noticeBoard = noticeBoard;
         this.reservationInfoList = reservationInfoList;
-//        this.accountCommon = accountCommon;
     }
 
 

@@ -3,6 +3,7 @@ package com.healthtrip.travelcare.controller;
 
 import com.healthtrip.travelcare.repository.dto.request.ReservationRequest;
 import com.healthtrip.travelcare.repository.dto.response.ReservationInfoResponse;
+import com.healthtrip.travelcare.repository.dto.response.ReservationPersonResponse;
 import com.healthtrip.travelcare.service.ReservationDateService;
 import com.healthtrip.travelcare.service.ReservationInfoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,13 +46,21 @@ public class ReservationController {
         return reservationInfoService.myReservation(userId);
     }
 
+    @Operation(summary = "예약id로 예약인원정보 모두 보기")
+    @GetMapping("/info/{reservationId}")
+    public ResponseEntity<List<ReservationPersonResponse.rpInfo>> reservationDetails(@PathVariable Long reservationId){
+        return reservationInfoService.getPeopleDataByInfoId(reservationId);
+    }
+
     // 패키지 등록-> 패키지 날짜 추가 -> 패키지의 예약 날짜 입력 -> POST API
     // 예약 상태 Y,N,B 있음 일반 패키지 예약에 대해서는 status를 뺄지 넣을지
     // 아니면 처음엔 무조건 Y(결제했으니까) 그 후에 custom 여행 신청시 status를 업데이트 B: 답변대기 Y:허가 N:거부
-    @Operation(summary = "변경: (가족단위로 묶어서) 예약하기")
+    @Operation(summary = "여러명 묶어서 예약하기 대표자(계정주인 or 주소입력값)의 주소를 따라감(단일주소)",
+    description = "AddressType: Single <br/>ROLE_COMMON: 본인 계정의 주소로 저장하기 때문에 주소 데이터는 필요없음 , ROLE_AGENT: 입력한 하나의 주소값이 모든 예약자의 주소로 저장됨" +
+            "<br/> AddressType: ForEach = 주소 데이터 개별 입력")
     @PostMapping("/info")// ㅇ
     public ResponseEntity reservePackage(@RequestBody ReservationRequest.ReserveData reserveData) {
-        return reservationInfoService.reservePackage(reserveData);
+        return reservationInfoService.temp(reserveData);
     }
 
     @Operation(summary = "(임시)예약취소",description = "추가: 예약취소기록 남기기(임시:처리 로직없이 삭제만 함),해당하는 예약id를 입력해주세요 예약자와 함께 삭제됩니다., 예약취소로그 테이블만드는거 어떤가요?")
@@ -89,10 +98,5 @@ public class ReservationController {
         return null;
     }
     // 상세 예약보기 (새로운 예약 추가시 분리 ex) 병원, 비행기 예약)
-    @Operation(summary = "(비활성)예약 상세 보기",description = "필요한 데이터 상의바람")
-    @GetMapping("/info/{reservationId}")
-    public ResponseEntity reservationDetails(@PathVariable Long reservationId){
-        return null;
-    }
 
 }
