@@ -33,14 +33,16 @@ public class TripPackageController {
         return tpResponseDto;
     }
 
-    @Operation(summary = "(현재 비활성)패키지를 등록합니다.",description = "현재 사용하지 않습니다.")
+    @Operation(summary = "패키지를 등록합니다.",description = "이미지 뭉치와 패키지 등록정보를 보내주세요, 여행일자도 같이 받을까요?")
     @PostMapping("/add") // 테스트 전
-    public ResponseEntity addTripPack(@RequestBody TripPackageRequestDto tripPackageRequestDto,
-                                      @RequestHeader(name = "role") String role){
-        if(role.equals("ROLE_ADMIN")){ // 후에 JWT로 변경 예정, user와 단방향 설정됨 trippack -> account
-            return tpService.addTripPack(tripPackageRequestDto);
-        }else {
-            return ResponseEntity.status(403).body("관리자가 아닙니다.");
+    public ResponseEntity addTripPack(@ModelAttribute TripPackageRequestDto tripPackageRequestDto){
+         // 후에 JWT로 변경 예정, user와 단방향 설정됨 trippack -> account
+        try {
+        return tpService.addTripPack(tripPackageRequestDto);
+        }catch (RuntimeException e){
+            System.out.println(e);
+            return ResponseEntity.badRequest().body("오류 발생"+e);
         }
     }
+
 }

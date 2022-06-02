@@ -1,0 +1,13 @@
+cloud:
+  aws:
+    s3:
+      bucket: bukito-for-mylitt
+      folder:
+        folderName: images
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+    credentials:
+      instance-profile: true
+

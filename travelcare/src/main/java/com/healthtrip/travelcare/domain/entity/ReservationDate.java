@@ -2,6 +2,7 @@ package com.healthtrip.travelcare.domain.entity;
 
 import lombok.*;
 
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 public class ReservationDate extends BaseTimeEntity{
+
 
     @Builder
     public ReservationDate(Long id, TripPackage tripPackage, LocalDateTime departAt, LocalDateTime arriveAt, short currentNumPeople, short peopleLimit) {

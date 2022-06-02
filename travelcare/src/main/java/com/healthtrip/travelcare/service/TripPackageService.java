@@ -13,7 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.EntityManager;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +27,12 @@ public class TripPackageService {
 
     private final TripPackageRepository tpRepository;
 
+    private final TripPackageFileService tripPackageFileService;
+
     private final AccountsRepository accountsRepository;
 
     private final ReservationDateRepository reservationDateRepository;
+
 
     @Transactional(readOnly = true)
     public List<TripPackageResponse.MainPagePack> allTripPack() {
@@ -149,19 +154,37 @@ public class TripPackageService {
         // 1. 패키지 생성
         Optional<Account> account = accountsRepository.findById(tripPackageRequestDto.getAccountId());
         if(account.isPresent()) {
+
             TripPackage tripPackage = tripPackageRequestDto.toEntity(tripPackageRequestDto);
             tripPackage.setAccount(account.get());
             TripPackage savedTripPackage = tpRepository.save(tripPackage);
-            return ResponseEntity.created(URI.create("/")).build();
+
+        // 파일 널체크
+            List<MultipartFile> files = tripPackageRequestDto.getMultipartFiles();
+            for (MultipartFile file:files){
+                boolean nullCheck = file.getSize() == 0;
+                boolean equalsCheck =file.getOriginalFilename().equals("");
+
+                if (nullCheck || equalsCheck){
+                    System.out.println("you send void file");
+                    throw new RuntimeException("you send void file");
+                };
+            }
+        // 2. 이미지 생성
+            try {
+            tripPackageFileService.uploadTripImage(files,savedTripPackage);
+            }catch (Exception e){
+                System.out.println("생성오류"+e); // 이거 로그로 처리
+                throw new RuntimeException("업로드 생성오류");
+            }
+            return ResponseEntity.ok("생성완료");
         }else{
             return ResponseEntity.status(401).body("패키지를 등록하려는 계정을 찾을 수 없습니다. " +
                     "관리자에게 문의 해주세요.");
         }
 
 
-        // 2. 이미지 생성
-
-        // 3. 연관관계 설정
+        // 3. 연관관계 설정(여행일자도 한번에 등록시)
 
 
     }

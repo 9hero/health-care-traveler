@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class TripPackageFile extends BaseTimeEntity{
 
     @Builder
-    public TripPackageFile(Long id, TripPackage tripPackage, String url, String fileName, String originalName, int fileSize) {
+    public TripPackageFile(Long id, TripPackage tripPackage, String url, String fileName, String originalName, long fileSize) {
         this.id = id;
         this.tripPackage = tripPackage;
         this.url = url;
@@ -33,7 +33,8 @@ public class TripPackageFile extends BaseTimeEntity{
 
     private String originalName;
 
-    private int fileSize;
+    private long fileSize;
+
 
     public void setTripPackage(TripPackage tripPackage){
         this.tripPackage = tripPackage;
