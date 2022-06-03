@@ -76,13 +76,13 @@ public class ReservationController {
         return null;
     }
 
-
-    // ---관리자용----
-//    @Operation(summary = "예약 조회")
-//    @GetMapping("/info/{reservationId}")
-//    public ResponseEntity reservation(@PathVariable Long reservationId){
-//        return null;
-//    }
+/*
+     ---관리자용----
+    @Operation(summary = "예약 조회")
+    @GetMapping("/info/{reservationId}")
+    public ResponseEntity reservation(@PathVariable Long reservationId){
+        return null;
+    }
     @Operation(summary = "(관리자용 현재 비활성)모든 패키지 예약 조회",description = "패키지 예약을 조회합니다. ")
     @GetMapping("/info")
     public ResponseEntity allReservation(){
@@ -98,5 +98,7 @@ public class ReservationController {
         return null;
     }
     // 상세 예약보기 (새로운 예약 추가시 분리 ex) 병원, 비행기 예약)
+
+ */
 
 }

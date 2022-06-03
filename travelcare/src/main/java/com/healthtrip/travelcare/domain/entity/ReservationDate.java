@@ -1,5 +1,6 @@
 package com.healthtrip.travelcare.domain.entity;
 
+import com.healthtrip.travelcare.repository.dto.request.ReservationDateRequest;
 import lombok.*;
 
 
@@ -45,5 +46,11 @@ public class ReservationDate extends BaseTimeEntity{
             this.currentNumPeople += currentNumPeople;
             return false;
         }
+    }
+    public void modifyEntity(ReservationDateRequest.Modify modifyReq){
+        this.currentNumPeople=modifyReq.getCurrentNumPeople();
+        this.peopleLimit= modifyReq.getPeopleLimit();
+        this.departAt = modifyReq.getDepartAt();
+        this.arriveAt = modifyReq.getArriveAt();
     }
 }
