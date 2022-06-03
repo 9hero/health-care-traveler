@@ -1,9 +1,13 @@
 spring:
-  datasource:
-#    driver-class-name: org.postgresql.Driver
-  #    url: jdbc:postgresql://localhost:5432/postgres
-  #    username: postgres
-  #    password: root
+  servlet:
+    multipart:
+      max-file-size:
+        20MB
+      max-request-size:
+        20MB
+  config:
+    import: optional:credential.yml,aws.yml
+
   jpa:
     show-sql: true
     properties:
