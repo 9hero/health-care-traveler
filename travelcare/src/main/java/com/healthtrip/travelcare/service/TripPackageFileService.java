@@ -4,7 +4,11 @@ import com.healthtrip.travelcare.common.CommonUtils;
 import com.healthtrip.travelcare.domain.entity.TripPackage;
 import com.healthtrip.travelcare.domain.entity.TripPackageFile;
 import com.healthtrip.travelcare.repository.TripPackageFileRepository;
+import com.healthtrip.travelcare.repository.TripPackageRepository;
+import com.healthtrip.travelcare.repository.dto.request.TripPackageFileRequest;
+import com.healthtrip.travelcare.repository.dto.response.TripPackageFileResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,9 +20,10 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class TripPackageFileService {
+    private final TripPackageRepository tripPackageRepository;
     private final TripPackageFileRepository tripPackageFileRepository;
-    private final AwsS3Service awsS3Service;
 
+    private final AwsS3Service awsS3Service;
     private static final String IMAGE_DIRECTORY = "images/trip-package"; // 패키지 이미지폴더로 이동예정
 
     @Transactional
@@ -49,7 +54,61 @@ public class TripPackageFileService {
         // updateAll
     }
 
+    @Transactional(readOnly = true)
+    public List<TripPackageFileResponse.FileInfo> getData(Long tripPackageId) {
+        var files = tripPackageFileRepository.findByTripPackageId(tripPackageId);
+
+        boolean fileEmpty = files.isEmpty();
+        if (fileEmpty) {
+            System.out.println((">>>tripPackage ID: "+tripPackageId+"'s File Empty"));
+            throw new RuntimeException();
+        }
+        var imageDtoList = new ArrayList<TripPackageFileResponse.FileInfo>();
+        files.forEach(tripPackageFile -> {
+            imageDtoList.add(
+                    TripPackageFileResponse.FileInfo.builder()
+                            .id(tripPackageFile.getId())
+                            .name(tripPackageFile.getFileName())
+                            .url(tripPackageFile.getUrl())
+                            .build()
+            );
+        });
+        return imageDtoList;
+    }
+
     @Transactional
-    public void getData() {
+    public void addImage(TripPackageFileRequest request) {
+        TripPackage tripPackage = tripPackageRepository.getById(request.getTripPackageId());
+
+        // 파일 널체크
+        List<MultipartFile> files = request.getFiles();
+        for (MultipartFile file:files){
+            boolean nullCheck = file.getSize() == 0;
+            boolean equalsCheck =file.getOriginalFilename().equals("");
+
+            if (nullCheck || equalsCheck){
+                System.out.println("you send void file");
+                throw new RuntimeException("you send void file");
+            };
+        }
+        // 2. 이미지 생성
+        try {
+            uploadTripImage(files,tripPackage);
+        }catch (Exception e){
+            System.out.println("생성오류"+e); // 이거 로그로 처리
+            throw new RuntimeException("업로드 생성오류");
+        }
+
+    }
+
+    @Transactional
+    public void deleteImage(List<Long> ids) {
+        List<TripPackageFile> files = tripPackageFileRepository.findAllById(ids);
+        var nameList = files.stream().map(TripPackageFile::getFileName);
+        boolean result = awsS3Service.deleteFileByNameList(nameList);
+        if(result){
+        tripPackageFileRepository.deleteAllById(ids);
+            System.out.println("성공");
+        }
     }
 }
