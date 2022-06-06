@@ -10,10 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,12 +35,23 @@ public class AccountController {
         return accountService.createAgent(agentSignUp);
     }
 
+    // 이메일체크
+    @Operation(summary = "이메일 체크")
+    @PostMapping("/email-check")
+    public boolean emailCheck(@RequestParam String email) {
+        return accountService.emailCheck(email);
+    }
+
     @Operation(summary = "로그인")
     @PostMapping("/login")
     public ResponseEntity<AccountResponse> signIn(@RequestBody AccountRequest.SignInDto signInDto){
         return accountService.login(signInDto);
     }
 
-
+//    @Operation(summary = "메일 테스트")
+//    @PostMapping("/mailtest")
+//    public void mail(@RequestBody MailRequest mailRequest) {
+//        accountService.mailTest(mailRequest);
+//    }
 }
 

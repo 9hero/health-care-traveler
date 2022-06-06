@@ -9,13 +9,14 @@ import com.healthtrip.travelcare.repository.AccountCommonRepository;
 import com.healthtrip.travelcare.repository.AccountsRepository;
 import com.healthtrip.travelcare.repository.CountryRepository;
 import com.healthtrip.travelcare.repository.dto.request.AccountRequest;
-import com.healthtrip.travelcare.repository.dto.request.AddressRequest;
 import com.healthtrip.travelcare.repository.dto.response.AccountResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -106,4 +107,13 @@ public class AccountService {
         }
     }
 
+//    private final Sender sender;
+//    @Transactional
+//    public void mailTest(MailRequest mailRequest) {
+//        sender.send(mailRequest);
+//    }
+
+    public boolean emailCheck(String email) {
+        return accountsRepository.existsByEmail(email);
+    }
 }
