@@ -38,3 +38,5 @@ out/
 
 ### secret ###
 credential.yml
+
+/src/test/java/com/healthtrip/travelcare/SimpleTest.java
