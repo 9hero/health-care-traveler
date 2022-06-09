@@ -44,7 +44,7 @@ public class TripPackage extends BaseTimeEntity{
     private String type;
 
 //    private Moneta //Moneta jsr354 국제 통화표현 라이브러리
-    @OneToMany(mappedBy = "tripPackage",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "tripPackage",fetch = FetchType.LAZY,cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
     private List<TripPackageFile> tripPackageFileList;
 
     @OneToMany(mappedBy = "tripPackage")

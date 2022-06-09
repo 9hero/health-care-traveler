@@ -44,7 +44,18 @@ public class TripPackageService {
 
         // 정보 dto에 담기
         tripPackageList.forEach(tripPackage -> {
+
             // 썸네일 이미지 객체 받기
+            var files = tripPackage.getTripPackageFileList();
+            if(files.isEmpty()){
+                return;
+            }
+            // id 제목 가격 담기
+            var mtpr= TripPackageResponse.MainPagePack.builder()
+                    .id(tripPackage.getId())
+                    .title(tripPackage.getTitle())
+                    .price(tripPackage.getPrice())
+                    .build();
             var tripPackageFile = tripPackage.getTripPackageFileList().get(0);
 
             // 썸네일 dto로 변환
@@ -53,12 +64,6 @@ public class TripPackageService {
                     .url(tripPackageFile.getUrl())
                     .build();
 
-            // id 제목 가격 담기
-            var mtpr= TripPackageResponse.MainPagePack.builder()
-                    .id(tripPackage.getId())
-                    .title(tripPackage.getTitle())
-                    .price(tripPackage.getPrice())
-                    .build();
 
             // 이미지 담기
             mtpr.setThumbnail(tpfr);
@@ -150,7 +155,7 @@ public class TripPackageService {
 
     @Transactional
     public ResponseEntity addTripPack(TripPackageRequestDto tripPackageRequestDto) {
-
+        System.out.println(tripPackageRequestDto);
         // 1. 패키지 생성
         Optional<Account> account = accountsRepository.findById(tripPackageRequestDto.getAccountId());
         if(account.isPresent()) {

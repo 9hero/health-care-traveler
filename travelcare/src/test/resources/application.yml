@@ -6,7 +6,7 @@ spring:
       max-request-size:
         20MB
   config:
-    import: optional:credential.yml,aws.yml
+    import: optional:credential.yml,aws.yml,mail.yml
 
   jpa:
     show-sql: true

@@ -40,8 +40,8 @@ public class TripPackageController {
         try {
         return tpService.addTripPack(tripPackageRequestDto);
         }catch (RuntimeException e){
-            System.out.println(e);
-            return ResponseEntity.badRequest().body("오류 발생"+e);
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("오류 발생: "+e.getMessage());
         }
     }
 

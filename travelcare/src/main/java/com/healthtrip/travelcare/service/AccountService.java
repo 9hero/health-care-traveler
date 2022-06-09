@@ -1,5 +1,6 @@
 package com.healthtrip.travelcare.service;
 
+import com.healthtrip.travelcare.common.Sender;
 import com.healthtrip.travelcare.domain.entity.Account;
 import com.healthtrip.travelcare.domain.entity.AccountAgent;
 import com.healthtrip.travelcare.domain.entity.AccountCommon;
@@ -9,14 +10,13 @@ import com.healthtrip.travelcare.repository.AccountCommonRepository;
 import com.healthtrip.travelcare.repository.AccountsRepository;
 import com.healthtrip.travelcare.repository.CountryRepository;
 import com.healthtrip.travelcare.repository.dto.request.AccountRequest;
+import com.healthtrip.travelcare.repository.dto.request.MailRequest;
 import com.healthtrip.travelcare.repository.dto.response.AccountResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -61,7 +61,8 @@ public class AccountService {
 
     @Transactional
     public ResponseEntity createCommon(AccountRequest.commonSignUp commonSignUp) {
-        boolean emailPresent = accountsRepository.existsByEmail(commonSignUp.getEmail());
+        String email = commonSignUp.getEmail();
+        boolean emailPresent = accountsRepository.existsByEmail(email);
         if(emailPresent) {
             //아이디 존재
             return ResponseEntity.status(HttpStatus.CONFLICT).body("이메일 중복");
@@ -73,15 +74,20 @@ public class AccountService {
             address.setCountry(countryRepository.getById(addressRequest.getCountryId()));
 
             Account account = Account.builder()
-                    .email(commonSignUp.getEmail())
+                    .email(email)
                     .password(commonSignUp.getPassword())
                     .userRole(Account.UserRole.ROLE_COMMON)
-                    .status(Account.Status.Y)
+                    .status(Account.Status.N)
                     .build();
             AccountCommon newAccount = AccountCommon.toEntityBasic(personData);
             newAccount.setRelation(address,account);
             accountCommonRepository.save(newAccount);
-
+            var mail = MailRequest.builder()
+                    .to(email)
+                    .subject("Welcome to Travel Heath Care Service (Sign Up Confirmation)")
+//                    .content()
+                    .build();
+            sender.naverSender(mail);
             return ResponseEntity.ok("가입 완료");
         }
     }
@@ -107,11 +113,12 @@ public class AccountService {
         }
     }
 
-//    private final Sender sender;
-//    @Transactional
-//    public void mailTest(MailRequest mailRequest) {
-//        sender.send(mailRequest);
-//    }
+    private final Sender sender;
+    @Transactional
+    public void mailTest(MailRequest mailRequest) {
+//        sender.awsSender(mailRequest);
+        sender.naverSender(mailRequest);
+    }
 
     public boolean emailCheck(String email) {
         return accountsRepository.existsByEmail(email);
