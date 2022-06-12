@@ -39,6 +39,7 @@ out/
 ### secret ###
 credential.yml
 mail.yml
+env.yml
 
 /src/test/java/com/healthtrip/travelcare/SimpleTest.java
 

@@ -41,4 +41,14 @@ public class AccountRequest {
         private String email;
         private String password;
     }
+
+    @Data
+    @AllArgsConstructor
+    @Builder
+    @Schema(name = "잃어버린 패스워드 재설정")
+    public static class PasswordReset {
+        private String email;
+        private String authToken;
+        private String password;
+    }
 }

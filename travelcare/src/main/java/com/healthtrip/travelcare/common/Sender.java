@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
+import javax.mail.SendFailedException;
 import javax.mail.internet.MimeMessage;
 
 @Component
@@ -39,21 +40,27 @@ public class Sender {
 
     @Value("${spring.mail.username}")
     private String naverFrom;
+    @Value("${current.ipAddress}")
+    private String ipAddress;
     @Async
-    public void naverSender(MailRequest mailRequest) {
+    public void naverSender(MailRequest mailRequest) throws RuntimeException {
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
         try{
-        helper.setFrom(naverFrom);
-        helper.setTo(mailRequest.getTo());
-        helper.setSubject(mailRequest.getSubject());
-        helper.setText(mailRequest.getContent());
-        javaMailSender.send(message);
-        System.out.println("메일 보내기 메소드");
-        }catch (MessagingException e){
+            helper.setFrom(naverFrom);
+            helper.setTo(mailRequest.getTo());
+            helper.setSubject(mailRequest.getSubject());
+            helper.setText(mailRequest.getContent());
+            javaMailSender.send(message);
+            System.out.println("메일 보내기 메소드"+helper);
+        }catch (SendFailedException e){
+            System.out.println(e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        }
+        catch (MessagingException e){
             System.out.println("naver email error");
             e.printStackTrace();
-
+            throw new RuntimeException(e.getMessage());
         }
     }
 

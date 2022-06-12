@@ -50,6 +50,10 @@ public class Account extends BaseTimeEntity{
     @ToString.Exclude
     private List<ReservationInfo> reservationInfoList;
 
+    public void resetPasswordAs(String password) {
+        this.password = password;
+    }
+
 
     // 단방향도 괜찮을것같음
 //    @OneToOne(mappedBy = "account",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
@@ -83,6 +87,7 @@ public class Account extends BaseTimeEntity{
     }
 
     public void accountConfirm() {
+        if (this.status == Status.N)
         this.status = Status.Y;
     }
 

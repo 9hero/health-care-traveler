@@ -1,7 +1,6 @@
 package com.healthtrip.travelcare.controller;
 
 import com.healthtrip.travelcare.repository.dto.request.AccountRequest;
-import com.healthtrip.travelcare.repository.dto.request.MailRequest;
 import com.healthtrip.travelcare.repository.dto.response.AccountResponse;
 import com.healthtrip.travelcare.service.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,10 +35,13 @@ public class AccountController {
         return accountService.createAgent(agentSignUp);
     }
 
+    @Value("${current.ipAddress}")
+    private String IPADDRESS;
     // 이메일체크
     @Operation(summary = "이메일 체크")
     @PostMapping("/email-check")
     public boolean emailCheck(@RequestParam String email) {
+        System.out.println("다시프로필테스트"+IPADDRESS);
         return accountService.emailCheck(email);
     }
 
@@ -49,10 +51,28 @@ public class AccountController {
         return accountService.login(signInDto);
     }
 
-    @Operation(summary = "메일 테스트")
-    @PostMapping("/mailtest")
-    public void mail(@RequestBody MailRequest mailRequest) {
-        accountService.mailTest(mailRequest);
+    @Operation(summary = "(비활성: 프론트페이지 필요)비밀번호를 잊었어요 재설정 요청! 흐름: 요청 ->사용자 메일-> 비밀번호 재설정(/reset-password)")
+    @PostMapping("/forgot-password")
+    public void passwordReset(@RequestBody String email) {
+        System.out.println("비번 초기화 요청의 이메일 "+email);
+        accountService.sendPasswordResetMail(email);
+    }
+    @Operation(summary = "비밀번호 재설정(수정아님) Form",description = "input hidden email,authToken")
+    @PostMapping("/reset-password")
+    public boolean resetPassword(@ModelAttribute AccountRequest.PasswordReset dto){
+        return accountService.passwordReset(dto);
+    }
+    @Operation(summary = "이메일 회원가입 확인")
+    @GetMapping("/confirm") // 프론트 붙으면 패치로로
+    public boolean confirmAccount(@RequestParam String email,@RequestParam String authToken){
+        return accountService.confirmAccount(email, authToken);
+        // 생각 해볼 예외: 만료기간 지남, 잘못된 토큰 or 이메일
+    }
+
+    @Operation(summary = "이메일 인증 재신청(만료기간이 지났을 경우)")
+    @PostMapping
+    public boolean reConfirmation(@RequestParam String email) {
+        return accountService.reConfirm(email);
     }
 }
 
