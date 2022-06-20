@@ -27,6 +27,7 @@ import static org.mockito.Mockito.*;
 @MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureMockMvc
 @WebMvcTest(controllers = AccountController.class)
+@Disabled
 class AccountControllerTest {
 
     @MockBean

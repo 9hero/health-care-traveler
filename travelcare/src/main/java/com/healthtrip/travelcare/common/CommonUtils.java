@@ -1,9 +1,13 @@
 package com.healthtrip.travelcare.common;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ContentDisposition;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.nio.charset.StandardCharsets;
-
+@Configuration
 public class CommonUtils {
     private static final String FILE_EXTENSION_SEPARATOR = ".";
     private static final String TIME_SEPARATOR = "_";
@@ -15,5 +19,9 @@ public class CommonUtils {
         String now = String.valueOf(System.currentTimeMillis());
 
         return directory + "/" + fileName + TIME_SEPARATOR + now + fileExtension;
+    }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

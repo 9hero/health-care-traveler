@@ -3,9 +3,11 @@ package com.healthtrip.travelcare.domain.entity;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.*;
 
 
 @Getter
@@ -14,7 +16,8 @@ import java.util.List;
 @DynamicUpdate
 @Entity
 @ToString(callSuper = true)
-public class Account extends BaseTimeEntity{
+public class Account extends BaseTimeEntity implements UserDetails {
+
     @Builder
     public Account(Long id, String email, String password, Status status, UserRole userRole, List<NoticeBoard> noticeBoard, List<ReservationInfo> reservationInfoList) {
         this.id = id;
@@ -24,6 +27,7 @@ public class Account extends BaseTimeEntity{
         this.userRole = userRole;
         this.noticeBoard = noticeBoard;
         this.reservationInfoList = reservationInfoList;
+        authorities = new HashSet<>();
     }
 
 
@@ -36,12 +40,6 @@ public class Account extends BaseTimeEntity{
 
     private String password; // bcrypt 필수적용
 
-    @Enumerated(value = EnumType.STRING)
-    private Status status;
-
-    @Enumerated(value = EnumType.STRING)
-    private UserRole userRole;
-
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "account")
     @ToString.Exclude
     private List<NoticeBoard> noticeBoard;
@@ -50,34 +48,73 @@ public class Account extends BaseTimeEntity{
     @ToString.Exclude
     private List<ReservationInfo> reservationInfoList;
 
-    public void resetPasswordAs(String password) {
-        this.password = password;
+    @Enumerated(value = EnumType.STRING)
+    private Status status;
+
+    // --------ROLES-----------
+    @Enumerated(value = EnumType.STRING)
+    private UserRole userRole;
+
+    // UserDetailsService loadUserByUserName 에서 Set userRole
+    // 이유: 우리는 1계정 1권한이고 아직 많은 권한이 필요하지 않음
+    @Transient
+    private Set<UserRole> authorities;
+
+    public void addAuthorities(UserRole userRole){
+        if (authorities == null){
+            authorities = new HashSet<>();
+        }
+        authorities.add(userRole);
     }
-
-
-    // 단방향도 괜찮을것같음
-//    @OneToOne(mappedBy = "account",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-//    @ToString.Exclude
-//    private AccountCommon accountCommon;
-//
-//    @OneToOne(mappedBy = "account",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-//    @ToString.Exclude
-//    private AccountAgent accountAgent;
-
-    public enum UserRole{
+    public enum UserRole implements GrantedAuthority{
         ROLE_COMMON,
         ROLE_ADMIN,
         ROLE_AGENT;
 
+        @Override
+        public String getAuthority() {
+            return this.name();
+        }
     }
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.authorities;
+    }
+
+
     public enum Status {
         Y,N,B;
     }
 
-//    public void setAccountCommon(AccountCommon accountCommon) {
-//        this.accountCommon = accountCommon;
-//    }
+    @Override
+    public String getUsername() {
+        return email;
+    }
 
+    @Override
+    public boolean isAccountNonExpired() {
+        return this.status == Status.Y || this.status == Status.N;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return this.status == Status.Y || this.status == Status.N;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return this.status == Status.Y || this.status == Status.N;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.status == Status.Y || this.status == Status.N;
+    }
+
+
+    public void resetPasswordAs(String password) {
+        this.password = password;
+    }
     public void toAdmin() {
         this.userRole = UserRole.ROLE_ADMIN;
     }

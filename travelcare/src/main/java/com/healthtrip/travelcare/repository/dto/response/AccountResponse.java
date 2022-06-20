@@ -10,11 +10,13 @@ import lombok.*;
 @Schema(name = "로그인 Response")
 public class AccountResponse {
     @Builder
-    public AccountResponse(Long id, String email, Account.Status status, Account.UserRole userRole) {
+    public AccountResponse(Long id, String email, Account.Status status, Account.UserRole userRole, String jwt, String refreshToken) {
         this.id = id;
         this.email = email;
         this.status = status;
         this.userRole = userRole;
+        this.jwt = jwt;
+        this.refreshToken = refreshToken;
     }
 
     private Long id;
@@ -25,4 +27,7 @@ public class AccountResponse {
 
     private Account.UserRole userRole;
 
+    private String jwt;
+
+    private String refreshToken;
 }

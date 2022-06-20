@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import({DataSourceConfig.class})
+@Disabled
 class AccountTest {
 
 

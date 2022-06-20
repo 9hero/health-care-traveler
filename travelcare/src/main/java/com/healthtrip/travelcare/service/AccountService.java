@@ -1,6 +1,7 @@
 package com.healthtrip.travelcare.service;
 
 import com.healthtrip.travelcare.common.Sender;
+import com.healthtrip.travelcare.config.security.JwtProvider;
 import com.healthtrip.travelcare.domain.entity.*;
 import com.healthtrip.travelcare.repository.*;
 import com.healthtrip.travelcare.repository.dto.request.AccountRequest;
@@ -10,26 +11,38 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.mail.MessagingException;
-import javax.mail.SendFailedException;
 import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
-public class AccountService {
+public class AccountService implements UserDetailsService {
 
     @Value("${current.ipAddress}")
     private String ipAddress;
 
     private final Sender sender;
+    private final JwtProvider jwtProvider;
+    private final PasswordEncoder passwordEncoder;
     private final CountryRepository countryRepository;
     private final AccountsRepository accountsRepository;
     private final AccountAgentRepository accountAgentRepository;
     private final AccountCommonRepository accountCommonRepository;
     private final AccountTimeTokenRepository accountTimeTokenRepository;
+
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Account account = accountsRepository.findByEmail(username);
+        account.addAuthorities(account.getUserRole());
+        return account;
+    }
 
     @Transactional
     public ResponseEntity<AccountResponse> login(AccountRequest.SignInDto signInDto) {
@@ -41,7 +54,8 @@ public class AccountService {
         if (emailCheck){ //True
             Account account = accountsRepository.findByEmail(email);
 
-            Boolean passCheck = signInDto.getPassword().equals(account.getPassword());
+//            Boolean passCheck = signInDto.getPassword().equals(account.getPassword());
+            Boolean passCheck = passwordEncoder.matches(signInDto.getPassword(),account.getPassword());
 
             if (passCheck){
                 // jwt로 대체 예정
@@ -101,14 +115,14 @@ public class AccountService {
         }else {
             Account account = Account.builder()
                     .email(agentSignUp.getEmail())
-                    .password(agentSignUp.getPassword())
+                    .password(passwordEncoder.encode(agentSignUp.getPassword()))
                     .userRole(Account.UserRole.ROLE_AGENT)
                     .status(Account.Status.Y)
                     .build();
             AccountAgent accountAgent = AccountAgent.toEntityBasic(agentSignUp);
             accountAgent.setRelation(account);
             accountAgentRepository.save(accountAgent);
-            sendAccountConfirmMail(agentSignUp.getEmail());
+//            sendAccountConfirmMail(agentSignUp.getEmail());
             return ResponseEntity.ok("가입 완료");
         }
     }
@@ -213,4 +227,21 @@ public class AccountService {
 
     }
 
+    @Transactional
+    public AccountResponse getAccountInfoWithTokens(Account account) {
+        String token = jwtProvider.issueAccessToken(account);
+        var refreshTokenInfo = jwtProvider.issueRefreshToken(account);
+        String refreshToken = refreshTokenInfo.get("refreshToken");
+        String refreshTokenExpirationAt = refreshTokenInfo.get("refreshTokenExpirationAt");
+
+        AccountResponse accountResponse = AccountResponse.builder()
+                .id(account.getId())
+                .email(account.getEmail())
+                .status(account.getStatus())
+                .userRole(account.getUserRole())
+                .jwt(token)
+                .refreshToken(refreshToken)
+                .build();
+        return accountResponse;
+    }
 }
