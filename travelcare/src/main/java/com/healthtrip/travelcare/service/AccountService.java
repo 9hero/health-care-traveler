@@ -6,6 +6,7 @@ import com.healthtrip.travelcare.domain.entity.*;
 import com.healthtrip.travelcare.repository.*;
 import com.healthtrip.travelcare.repository.dto.request.AccountRequest;
 import com.healthtrip.travelcare.repository.dto.request.MailRequest;
+import com.healthtrip.travelcare.repository.dto.request.RefreshTokenRequest;
 import com.healthtrip.travelcare.repository.dto.response.AccountResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -99,7 +100,7 @@ public class AccountService implements UserDetailsService {
 
             Account account = Account.builder()
                     .email(email)
-                    .password(commonSignUp.getPassword())
+                    .password(passwordEncoder.encode(commonSignUp.getPassword()))
                     .userRole(Account.UserRole.ROLE_COMMON)
                     .status(Account.Status.N)
                     .build();
@@ -123,12 +124,12 @@ public class AccountService implements UserDetailsService {
                     .email(agentSignUp.getEmail())
                     .password(passwordEncoder.encode(agentSignUp.getPassword()))
                     .userRole(Account.UserRole.ROLE_AGENT)
-                    .status(Account.Status.Y)
+                    .status(Account.Status.N)
                     .build();
             AccountAgent accountAgent = AccountAgent.toEntityBasic(agentSignUp);
             accountAgent.setRelation(account);
             accountAgentRepository.save(accountAgent);
-//            sendAccountConfirmMail(agentSignUp.getEmail());
+            sendAccountConfirmMail(agentSignUp.getEmail());
             return ResponseEntity.ok("가입 완료");
         }
     }
@@ -237,9 +238,16 @@ public class AccountService implements UserDetailsService {
     public AccountResponse getAccountInfoWithTokens(Account account) {
         String token = jwtProvider.issueAccessToken(account);
         var refreshTokenInfo = jwtProvider.issueRefreshToken(account);
+        // 객체 저장
+
         String refreshToken = refreshTokenInfo.get("refreshToken");
         String refreshTokenExpirationAt = refreshTokenInfo.get("refreshTokenExpirationAt");
-
+        RefreshToken refreshTokenEntity = RefreshToken.builder()
+                .userId(account.getId())
+                .refreshToken(refreshToken)
+                .expiration(refreshTokenExpirationAt)
+                .build();
+        refreshTokenEntity.save();
         AccountResponse accountResponse = AccountResponse.builder()
                 .id(account.getId())
                 .email(account.getEmail())
@@ -249,5 +257,23 @@ public class AccountService implements UserDetailsService {
                 .refreshToken(refreshToken)
                 .build();
         return accountResponse;
+    }
+
+    private final RefreshTokenRepository refreshTokenRepository;
+
+    @Transactional
+    public ResponseEntity newAccessToken(RefreshTokenRequest request) {
+        RefreshToken refreshToken = refreshTokenRepository.findById(request.getId())
+                .orElseThrow(()->new RuntimeException("해당 refresh 토큰 없음"));
+
+        boolean valid = jwtProvider.validateJwtToken(request.getRefreshToken());
+        boolean equals = refreshToken.getRefreshToken().equals(request.getRefreshToken());
+        if(valid && equals){
+
+        }
+        // 두개다 true면 새 access 토큰 주기
+
+
+        return null;
     }
 }

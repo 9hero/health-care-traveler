@@ -3,6 +3,7 @@ package com.healthtrip.travelcare.config.security;
 import com.healthtrip.travelcare.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -21,7 +22,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/v3/api-docs/**",
-                "/swagger-ui/**"
+                "/swagger-ui/**",
+                "/favicon.ico"
         );
     }
 
@@ -32,11 +34,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable().httpBasic().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .authorizeRequests()
-                .anyRequest().permitAll()
+                .authorizeRequests().antMatchers("/api/account/**","/favicon.ico").permitAll()
+                .antMatchers(HttpMethod.POST,"/api/notice-board").hasRole("AGENT")
+                .anyRequest().authenticated()
                 .and()
                 .cors().disable()
                 .addFilterBefore(jwtCheckFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class);
     }
+
 }

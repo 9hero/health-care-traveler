@@ -1,6 +1,7 @@
 package com.healthtrip.travelcare.controller;
 
 import com.healthtrip.travelcare.repository.dto.request.AccountRequest;
+import com.healthtrip.travelcare.repository.dto.request.RefreshTokenRequest;
 import com.healthtrip.travelcare.repository.dto.response.AccountResponse;
 import com.healthtrip.travelcare.service.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -49,6 +50,12 @@ public class AccountController {
     @PostMapping("/login")
     public ResponseEntity<AccountResponse> signIn(@RequestBody AccountRequest.SignInDto signInDto){
         return accountService.login(signInDto);
+    }
+
+    @Operation(summary = "jwt 토큰 만료시 재발급 요청")
+    @GetMapping("/refresh-token")
+    public ResponseEntity getToken(@RequestBody RefreshTokenRequest request) {
+        return accountService.newAccessToken(request);
     }
 
     @Operation(summary = "(비활성: 프론트페이지 필요)비밀번호를 잊었어요 재설정 요청! 흐름: 요청 ->사용자 메일-> 비밀번호 재설정(/reset-password)")
