@@ -17,7 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final AccountService accountService;
-
+    private final JwtProvider jwtProvider;
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/v3/api-docs/**",
@@ -28,6 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         JwtLoginFilter loginFilter = new JwtLoginFilter(authenticationManager(),accountService);
+        JwtCheckFilter jwtCheckFilter = new JwtCheckFilter(jwtProvider,accountService);
         http.csrf().disable().httpBasic().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
@@ -35,7 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().permitAll()
                 .and()
                 .cors().disable()
-//                .addFilterBefore(null, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtCheckFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

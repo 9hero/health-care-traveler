@@ -6,6 +6,7 @@ import com.healthtrip.travelcare.service.NoticeBoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class NoticeBoardController {
         this.noticeBoardService = noticeBoardService;
     }
 
+    @PreAuthorize("")
     @Operation(summary = "메인 페이지에 들어갈 공지사항 리스트")
     @GetMapping("")//List<NoticeBoardResponse.mainPageNoticeBoard>
     public ResponseEntity<List<NoticeBoardResponse.mainPageNoticeBoard>> AllPosts(){

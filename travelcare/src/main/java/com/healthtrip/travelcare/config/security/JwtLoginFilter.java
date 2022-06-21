@@ -58,7 +58,7 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
         Account account = (Account) authResult.getPrincipal();
 
         AccountResponse accountResponse = accountService.getAccountInfoWithTokens(account);
-
+        response.setHeader(HttpHeaders.AUTHORIZATION,"Bearer " + accountResponse.getJwt());
         response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         response.getOutputStream().write(objectMapper.writeValueAsBytes(accountResponse));
         //
