@@ -36,13 +36,9 @@ public class AccountController {
         return accountService.createAgent(agentSignUp);
     }
 
-    @Value("${current.ipAddress}")
-    private String IPADDRESS;
-    // 이메일체크
     @Operation(summary = "이메일 체크")
     @PostMapping("/email-check")
     public boolean emailCheck(@RequestParam String email) {
-        System.out.println("다시프로필테스트"+IPADDRESS);
         return accountService.emailCheck(email);
     }
 

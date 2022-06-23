@@ -11,10 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 @Component
@@ -30,9 +30,9 @@ public class JwtProvider {
     protected void init() {
         key = Keys.hmacShaKeyFor(Base64.getEncoder().encode(secretKey.getBytes()));
     }
-    private final long accessExpireTime = 10 * 60 * 1000L;
+    private final long accessExpireTime = 10 * 60 * 1000L;  // 10 min
 
-    private final long refreshExpireTime = 60 * 60 * 1000L;
+    private final long refreshExpireTime = 60 * 60 * 1000L; // 1 hour
 
     public String issueAccessToken(Account account){
         Date expiration = new Date();
@@ -59,8 +59,8 @@ public class JwtProvider {
         Date expiration = new Date();
         expiration.setTime(expiration.getTime() + refreshExpireTime);
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
-        String refreshTokenExpirationAt = simpleDateFormat.format(expiration);
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+//        String refreshTokenExpirationAt = simpleDateFormat.format(expiration);
         String jwt = Jwts
                 .builder()
                 .setHeader(Map.of(
@@ -68,25 +68,25 @@ public class JwtProvider {
                         "alg", "HS256"
                 ))
                 .setClaims(Map.of(
-                        "userId",account.getId(),
-                        "email",account.getEmail()
+                        "userId",account.getId()
                 ))
                 .setSubject(account.getEmail())
                 .setExpiration(expiration)
                 .signWith(key,SignatureAlgorithm.HS256)
                 .compact();
-        Map<String, String> result = new HashMap<>();
-        var a = RefreshToken.builder()
-                        .refreshToken(jwt)
-                .expiration(expiration) // 날짜 정하기
-                                .build();
-        result.put("refreshToken",jwt);
-        result.put("refreshTokenExpirationAt", refreshTokenExpirationAt);
-        return a;
+        RefreshToken refreshToken = RefreshToken.builder()
+                .userId(account.getId())
+                .refreshToken(jwt)
+                .expirationDate(expiration)
+                // DB 관리용 만료일 왜 쓰는지는 모름 지금 추가하는 이유는 db에서 직접 삭제하기 위함
+                .expirationLDT(LocalDateTime.ofInstant(expiration.toInstant(), ZoneId.systemDefault()))
+                        .build();
+
+        return refreshToken;
     }
-    public String getUserEmail(String token) {
-        return (String)Jwts.parserBuilder().setSigningKey(key).build()
-                .parseClaimsJws(token).getBody().get("email");
+    public Claims getClaims(String token) {
+        return Jwts.parserBuilder().setSigningKey(key).build()
+                .parseClaimsJws(token).getBody();
     }
     public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");

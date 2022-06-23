@@ -8,9 +8,11 @@ import com.healthtrip.travelcare.repository.dto.request.AccountRequest;
 import com.healthtrip.travelcare.repository.dto.request.MailRequest;
 import com.healthtrip.travelcare.repository.dto.request.RefreshTokenRequest;
 import com.healthtrip.travelcare.repository.dto.response.AccountResponse;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -149,6 +151,8 @@ public class AccountService implements UserDetailsService {
         boolean check = tokenCheck(email, authToken);
         if (check){
         accountsRepository.findByEmail(email).accountConfirm();
+        // db data 절약
+        accountTimeTokenRepository.deleteByEmail(email);
         return true;
         }else {
             return false;
@@ -233,46 +237,52 @@ public class AccountService implements UserDetailsService {
         }
 
     }
-
+    private final RefreshTokenRepository refreshTokenRepository;
     @Transactional
     public AccountResponse getAccountInfoWithTokens(Account account) {
         String token = jwtProvider.issueAccessToken(account);
-        var refreshTokenInfo = jwtProvider.issueRefreshToken(account);
+        RefreshToken refreshTokenEntity = jwtProvider.issueRefreshToken(account);
         // 객체 저장
-
-        String refreshToken = refreshTokenInfo.get("refreshToken");
-        String refreshTokenExpirationAt = refreshTokenInfo.get("refreshTokenExpirationAt");
-        RefreshToken refreshTokenEntity = RefreshToken.builder()
-                .userId(account.getId())
-                .refreshToken(refreshToken)
-                .expiration(refreshTokenExpirationAt)
-                .build();
-        refreshTokenEntity.save();
+        refreshTokenRepository.save(refreshTokenEntity);
+        // refresh 토큰 만료 기간이 필요하다면 issueRefreshToken에서 refreshTokenExpirationAt 추가
         AccountResponse accountResponse = AccountResponse.builder()
                 .id(account.getId())
                 .email(account.getEmail())
                 .status(account.getStatus())
                 .userRole(account.getUserRole())
                 .jwt(token)
-                .refreshToken(refreshToken)
+                .refreshToken(refreshTokenEntity.getRefreshToken())
                 .build();
         return accountResponse;
     }
 
-    private final RefreshTokenRepository refreshTokenRepository;
-
     @Transactional
-    public ResponseEntity newAccessToken(RefreshTokenRequest request) {
-        RefreshToken refreshToken = refreshTokenRepository.findById(request.getId())
-                .orElseThrow(()->new RuntimeException("해당 refresh 토큰 없음"));
+    public ResponseEntity<?> newAccessToken(RefreshTokenRequest request) {
+        String token = request.getRefreshToken();
+        // 1. validate
+        boolean valid = jwtProvider.validateJwtToken(token);
+        if(valid){
+            // 2. get claim
+            Claims claims = jwtProvider.getClaims(token);
+            Long userId = (Long) claims.get("userId");
+            String email = (String) claims.get("email");
 
-        boolean valid = jwtProvider.validateJwtToken(request.getRefreshToken());
-        boolean equals = refreshToken.getRefreshToken().equals(request.getRefreshToken());
-        if(valid && equals){
+            // 3. find with claim
+            RefreshToken refreshToken = refreshTokenRepository.findByUserId(userId);
+            // 4. compare data
+            boolean tokenEquals = request.getRefreshToken().equals(refreshToken.getRefreshToken());
+        // 5. 성공-> 새토큰, 실패->401
+            if (tokenEquals){
+                String newToken = jwtProvider.issueAccessToken(Account.builder().id(userId).email(email).build());
+                return ResponseEntity
+                        .status(401)
+                        .header(HttpHeaders.AUTHORIZATION,newToken)
+                        .body("Access confirm.");
+            }else {
+                return ResponseEntity.status(401).body("NOT YOUR TOKEN");
+            }
 
         }
-        // 두개다 true면 새 access 토큰 주기
-
 
         return null;
     }

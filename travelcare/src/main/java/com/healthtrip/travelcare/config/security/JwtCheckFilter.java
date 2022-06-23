@@ -32,7 +32,7 @@ public class JwtCheckFilter extends OncePerRequestFilter {
             // 유효한 토큰인지 확인합니다.
             if (token != null && jwtProvider.validateJwtToken(token)){
                 // 토큰이 유효하면 토큰으로부터 유저 정보를 받아옵니다.
-                String username = jwtProvider.getUserEmail(token);
+                String username =(String) jwtProvider.getClaims(token).get("email");
                 UserDetails userDetails = accountService.loadUserByUsername(username); // grobalhandler 받기 https://github.com/murraco/spring-boot-jwt/blob/master/src/main/java/murraco/security/JwtTokenFilter.java
                 Authentication authentication = new UsernamePasswordAuthenticationToken(
                         username,"",userDetails.getAuthorities()
