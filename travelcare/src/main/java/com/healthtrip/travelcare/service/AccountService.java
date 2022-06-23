@@ -251,6 +251,7 @@ public class AccountService implements UserDetailsService {
                 .status(account.getStatus())
                 .userRole(account.getUserRole())
                 .jwt(token)
+                .refreshTokenId(refreshTokenEntity.getId())
                 .refreshToken(refreshTokenEntity.getRefreshToken())
                 .build();
         return accountResponse;
@@ -264,16 +265,15 @@ public class AccountService implements UserDetailsService {
         if(valid){
             // 2. get claim
             Claims claims = jwtProvider.getClaims(token);
-            Long userId = (Long) claims.get("userId");
-            String email = (String) claims.get("email");
-
+            String email = claims.getSubject();
+            Integer userId = (Integer) claims.get("userId");
             // 3. find with claim
-            RefreshToken refreshToken = refreshTokenRepository.findByUserId(userId);
+            RefreshToken refreshToken = refreshTokenRepository.findByIdAndAccountId(request.getTokenId(),userId.longValue());
             // 4. compare data
             boolean tokenEquals = request.getRefreshToken().equals(refreshToken.getRefreshToken());
         // 5. 성공-> 새토큰, 실패->401
             if (tokenEquals){
-                String newToken = jwtProvider.issueAccessToken(Account.builder().id(userId).email(email).build());
+                String newToken = jwtProvider.issueAccessToken(Account.builder().id(userId.longValue()).email(email).build());
                 return ResponseEntity
                         .status(401)
                         .header(HttpHeaders.AUTHORIZATION,newToken)

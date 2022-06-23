@@ -3,8 +3,10 @@ package com.healthtrip.travelcare.config.security;
 import com.healthtrip.travelcare.common.Exception.CustomException;
 import com.healthtrip.travelcare.domain.entity.Account;
 import com.healthtrip.travelcare.domain.entity.RefreshToken;
+import com.healthtrip.travelcare.repository.RefreshTokenRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -18,7 +20,7 @@ import java.time.ZoneId;
 import java.util.*;
 
 @Component
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class JwtProvider {
 
@@ -30,6 +32,9 @@ public class JwtProvider {
     protected void init() {
         key = Keys.hmacShaKeyFor(Base64.getEncoder().encode(secretKey.getBytes()));
     }
+
+    private final RefreshTokenRepository refreshTokenRepository;
+
     private final long accessExpireTime = 10 * 60 * 1000L;  // 10 min
 
     private final long refreshExpireTime = 60 * 60 * 1000L; // 1 hour
@@ -70,14 +75,15 @@ public class JwtProvider {
                 .setClaims(Map.of(
                         "userId",account.getId()
                 ))
+
                 .setSubject(account.getEmail())
                 .setExpiration(expiration)
                 .signWith(key,SignatureAlgorithm.HS256)
                 .compact();
         RefreshToken refreshToken = RefreshToken.builder()
-                .userId(account.getId())
+                .account(account)
                 .refreshToken(jwt)
-                .expirationDate(expiration)
+                .expirationTransient(expiration)
                 // DB 관리용 만료일 왜 쓰는지는 모름 지금 추가하는 이유는 db에서 직접 삭제하기 위함
                 .expirationLDT(LocalDateTime.ofInstant(expiration.toInstant(), ZoneId.systemDefault()))
                         .build();

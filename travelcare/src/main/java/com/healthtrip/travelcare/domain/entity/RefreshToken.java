@@ -1,10 +1,9 @@
 package com.healthtrip.travelcare.domain.entity;
 
-import com.healthtrip.travelcare.repository.RefreshTokenRepository;
-import com.healthtrip.travelcare.repository.dto.request.RefreshTokenRequest;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
@@ -13,25 +12,34 @@ import java.util.Date;
 
 @Entity
 @Getter
+@ToString(callSuper = true)
+@NoArgsConstructor
 public class RefreshToken extends BaseTimeEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long userId;
+
+    @ToString.Exclude
+    @OneToOne(fetch = FetchType.LAZY,optional = false)
+    @JoinColumn(name = "user_id")
+    private Account account;
+
     private String refreshToken;
+
+    @Column(name = "expiration_date")
     private LocalDateTime expirationLDT;
 
     @Transient
-    private Date expirationDate;
+    private Date expirationTransient;
 
     @Autowired
     @Builder
-    public RefreshToken(Long id, Long userId, String refreshToken, LocalDateTime expirationLDT, Date expirationDate) {
+    public RefreshToken(Long id, Account account, String refreshToken, LocalDateTime expirationLDT, Date expirationTransient) {
         this.id = id;
-        this.userId = userId;
+        this.account = account;
         this.refreshToken = refreshToken;
         this.expirationLDT = expirationLDT;
-        this.expirationDate = expirationDate;
+        this.expirationTransient = expirationTransient;
     }
 }
