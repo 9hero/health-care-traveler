@@ -50,7 +50,6 @@ public class JwtProvider {
                         "typ", "JWT",
                         "alg", "HS256"
                 ))
-                .setSubject(account.getEmail())
                 .setClaims(Map.of(
                         "userId",account.getId(),
                         "email",account.getEmail()
@@ -75,7 +74,6 @@ public class JwtProvider {
                 .setClaims(Map.of(
                         "userId",account.getId()
                 ))
-
                 .setSubject(account.getEmail())
                 .setExpiration(expiration)
                 .signWith(key,SignatureAlgorithm.HS256)

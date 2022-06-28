@@ -269,6 +269,9 @@ public class AccountService implements UserDetailsService {
             Integer userId = (Integer) claims.get("userId");
             // 3. find with claim
             RefreshToken refreshToken = refreshTokenRepository.findByIdAndAccountId(request.getTokenId(),userId.longValue());
+            if(refreshToken == null){
+                return ResponseEntity.status(401).body("PLS LOGIN AGAIN");
+            }
             // 4. compare data
             boolean tokenEquals = request.getRefreshToken().equals(refreshToken.getRefreshToken());
         // 5. 성공-> 새토큰, 실패->401

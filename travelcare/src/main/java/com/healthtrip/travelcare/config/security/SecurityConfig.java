@@ -35,7 +35,33 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests().antMatchers("/api/account/**","/favicon.ico").permitAll()
-                .antMatchers(HttpMethod.POST,"/api/notice-board").hasRole("AGENT")
+                .antMatchers("/api/address/**").authenticated()
+
+                //reservation date
+                .antMatchers("/api/reservation-date").hasRole("ADMIN")
+
+                // notice board
+                .antMatchers(HttpMethod.GET,"/api/notice-board").permitAll()
+                .antMatchers(HttpMethod.POST,"/api/notice-board").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT,"/api/notice-board").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE,"/api/notice-board").hasRole("ADMIN")
+
+                // reservation
+                .antMatchers("/api/reservation/**").authenticated()
+
+                // trip pack file
+                .antMatchers("/api/trip-package-file/images").hasRole("ADMIN")
+
+                // trip package
+                .antMatchers(HttpMethod.POST,"/api/trip-package/add").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET,"/api/trip-package/**").permitAll()
+
+                // custom reservation
+                .antMatchers("/api/custom/**").authenticated()
+                .antMatchers(HttpMethod.POST,"/api/custom").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PATCH,"/api/custom").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE,"/api/custom").hasRole("ADMIN")
+
                 .anyRequest().authenticated()
                 .and()
                 .cors().disable()

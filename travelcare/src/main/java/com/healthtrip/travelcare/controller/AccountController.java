@@ -12,6 +12,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -49,7 +51,7 @@ public class AccountController {
     }
 
     @Operation(summary = "jwt 토큰 만료시 재발급 요청")
-    @GetMapping("/refresh-token")
+    @PostMapping("/refresh-token")
     public ResponseEntity getToken(@RequestBody RefreshTokenRequest request) {
         return accountService.newAccessToken(request);
     }
@@ -76,6 +78,11 @@ public class AccountController {
     @PostMapping
     public boolean reConfirmation(@RequestParam String email) {
         return accountService.reConfirm(email);
+    }
+
+    @GetMapping("/auth")
+    public Authentication getAuthTest() {
+        return SecurityContextHolder.getContext().getAuthentication();
     }
 }
 

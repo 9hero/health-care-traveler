@@ -113,7 +113,7 @@ public class TripPackageService {
                     imageDtoList.add(
                             TripPackageFileResponse.FileInfo.builder()
                                     .id(tripPackageFile.getId())
-                                    .name(tripPackageFile.getFileName())
+                                    .name(tripPackageFile.getOriginalName())
                                     .url(tripPackageFile.getUrl())
                                     .build()
                     );
