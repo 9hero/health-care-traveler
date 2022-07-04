@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -35,6 +37,7 @@ public class AccountService implements UserDetailsService {
     private final Sender sender;
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
+
     private final CountryRepository countryRepository;
     private final AccountsRepository accountsRepository;
     private final AccountAgentRepository accountAgentRepository;
@@ -54,36 +57,24 @@ public class AccountService implements UserDetailsService {
     }
 
     @Transactional
-    public ResponseEntity<AccountResponse> login(AccountRequest.SignInDto signInDto) {
+    public ResponseEntity<AccountResponse> login(AccountRequest.SignInDto signInDto,AuthenticationManager authenticationManager) {
 
-        String email = signInDto.getEmail();
+        try {
+            var authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            signInDto.getEmail(),signInDto.getPassword()
+                    )
+            );
 
-        // email 있는지 없는지 체크
-        Boolean emailCheck = accountsRepository.existsByEmail(email);
-        if (emailCheck){ //True
-            Account account = accountsRepository.findByEmail(email);
+            Account account = (Account) authentication.getPrincipal();
+            AccountResponse accountResponse = this.getAccountInfoWithTokens(account);
+            var b = new HttpHeaders();
 
-//            Boolean passCheck = signInDto.getPassword().equals(account.getPassword());
-            Boolean passCheck = passwordEncoder.matches(signInDto.getPassword(),account.getPassword());
-
-            if (passCheck){
-                // jwt로 대체 예정
-                AccountResponse accountResponse = AccountResponse.builder()
-                        .id(account.getId())
-                        .email(account.getEmail())
-                        .status(account.getStatus())
-                        .userRole(account.getUserRole()).build();
-
-                return ResponseEntity.status(200).body(accountResponse);
-            }else{
-                // 비밀번호오류
-                return ResponseEntity.status(401).body(null);
-            }
-        }else{
-            // 아이디 오류
+            return ResponseEntity.ok().body(accountResponse);
+        } catch (RuntimeException e) {
+            log.info("msg: {} cause: {}",e.getMessage(),e.getCause());
             return ResponseEntity.status(401).body(null);
         }
-        //return
     }
 
     @Transactional
@@ -148,7 +139,7 @@ public class AccountService implements UserDetailsService {
     }
     @Transactional
     public boolean confirmAccount(String email, String authToken) {
-        boolean check = tokenCheck(email, authToken);
+        boolean check = timeTokenCheck(email, authToken);
         if (check){
         accountsRepository.findByEmail(email).accountConfirm();
         // db data 절약
@@ -171,7 +162,7 @@ public class AccountService implements UserDetailsService {
     @Transactional
     public boolean passwordReset(AccountRequest.PasswordReset dto) {
         // 메일 받으면
-        if(tokenCheck(dto.getEmail(), dto.getAuthToken())){
+        if(timeTokenCheck(dto.getEmail(), dto.getAuthToken())){
             //
             var account =accountsRepository.findByEmail(dto.getEmail());
             // 비밀번호 암호화로직(현재 암호화 없음)
@@ -186,7 +177,7 @@ public class AccountService implements UserDetailsService {
 
     }
     @Transactional
-    public boolean tokenCheck(String email, String authToken) {
+    public boolean timeTokenCheck(String email, String authToken) {
         try {
             var accountTimeToken = accountTimeTokenRepository.findByEmailAndAuthToken(email, authToken)
                     .orElseThrow(() -> new Exception("토큰 못찾음"));

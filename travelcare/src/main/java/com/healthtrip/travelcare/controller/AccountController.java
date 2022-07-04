@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -43,11 +44,12 @@ public class AccountController {
     public boolean emailCheck(@RequestParam String email) {
         return accountService.emailCheck(email);
     }
+    private final AuthenticationManager authenticationManager;
 
     @Operation(summary = "로그인")
     @PostMapping("/login")
     public ResponseEntity<AccountResponse> signIn(@RequestBody AccountRequest.SignInDto signInDto){
-        return accountService.login(signInDto);
+        return accountService.login(signInDto,authenticationManager);
     }
 
     @Operation(summary = "jwt 토큰 만료시 재발급 요청")
