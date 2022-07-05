@@ -1,5 +1,6 @@
 package com.healthtrip.travelcare.service;
 
+import com.healthtrip.travelcare.domain.entity.Account;
 import com.healthtrip.travelcare.domain.entity.ReservationInfo;
 import com.healthtrip.travelcare.repository.*;
 import com.healthtrip.travelcare.repository.dto.response.ReservationInfoResponse;
@@ -8,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,6 +62,7 @@ class ReservationInfoServiceTest {
 
     @Test
     @Transactional
+    @Disabled
     void selectMyInfo() {
         //        필요정보 : 예약자, 예약 인원, 패키지명, 가격, 출발일, 도착일, 예약상태
         // 내 예약정보 전부 가져오기
@@ -93,4 +97,5 @@ class ReservationInfoServiceTest {
             responseBody.forEach(System.out::println);
         }
     }
+
 }

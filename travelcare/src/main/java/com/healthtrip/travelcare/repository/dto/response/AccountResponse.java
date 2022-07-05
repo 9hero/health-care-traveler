@@ -32,7 +32,7 @@ public class AccountResponse {
 
     private String jwt;
 
-    @Schema(name = "재생성 토큰 index id",description = "refresh token 식별번호 중요: use for validation")
+    @Schema(description = "refresh token 식별번호 jwt 만료시/api/account/refresh-token에 같이 보내주세요")
     private Long refreshTokenId;
 
     private String refreshToken;

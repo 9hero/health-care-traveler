@@ -23,4 +23,8 @@ public interface ReservationInfoRepository extends JpaRepository<ReservationInfo
     Map<String, Object> findMyReservation(Long userId);
 
     List<ReservationInfo> getByAccountId(Long uid);
+
+    @Query(value = "select ri from ReservationInfo ri where ri.id=:id and ri.account.id =:uid")
+    ReservationInfo getByIdAndAccountId(Long id,Long uid); // 사용시 account 까지 join시킴
+
 }

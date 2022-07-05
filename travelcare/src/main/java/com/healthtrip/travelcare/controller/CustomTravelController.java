@@ -31,27 +31,19 @@ public class CustomTravelController {
     // 현재는 글에서 하나의 답변을 주는식임 새로운 방법필요
     // 1. 기존 게시판에서 status 추가해서 답변전,답변후,새로운답변 상태를 추가 그래서 알림으로 제공 알림제공시:
     // 문자나 이메일로 1:1 관리
-    @Operation(summary = "커스텀 답변 및 수정")
+    @Operation(summary = "(관리자)커스텀 답변 및 수정")
     @PatchMapping("")
     public ResponseEntity answer(@RequestBody CustomTravelRequest.Answer request) {
         return customTravelService.answer(request);
     }
 
 
-    @Operation(summary = "예약 id로 등록된 커스텀 여행을 모두 조회",description = "제목과 커스텀 예약id를 보내줍니다. 사용법: 예약목록에서 각 예약 마다 커스텀여행불러오기 버튼")
-    @GetMapping("")
-    // 1. 유저 id로 조회 홈페이지에서 조회
-    // 2. 예약 id로 조회 마이페이지에서 조회 이거랑
-    // 3. 커스텀 여행 id로 조회 마이페이지에서 조회 이거로 결정
-    public ResponseEntity<List<CustomTravelResponse.Info>> getCustomReserve(@RequestParam Long reservationId) {
-        return customTravelService.temp(reservationId);
+    @Operation(summary = "내 예약번호에 속한 커스텀 여행 요청들을 조회",description = "타인의 reservationId를 요청 하거나 커스텀 요청이 없을 시 <br/>Response: 200 OK, responseBody:null ")
+    @GetMapping("/me/{reservationId}")
+    public ResponseEntity<List<CustomTravelResponse.Info>> myCustomRequests(@PathVariable Long reservationId) {
+        return customTravelService.myCustomRequests(reservationId);
     }
-        // 이거 위아래 하나로 합치삼 한 예약 id에 대해서 배열로 [커스텀여행 문의사항 상세조회] 가져오기
-    @Operation(summary = "해당 커스텀 여행 문의 상세사항 조회", description = "커스텀 여행 id,제목,답변, 패키지 예약 id,(필요시: 등록일,수정일) ")
-    @GetMapping("/{customTravelId}")
-    public ResponseEntity<CustomTravelResponse.Info> getCustomTravelDetails(@PathVariable Long customTravelId) {
-        return customTravelService.getCustomTravelDetails(customTravelId);
-    }
+
 
     @Operation(summary = "고객이 커스텀 여행 제목,질문사항 수정")
     @PutMapping("")
@@ -63,5 +55,21 @@ public class CustomTravelController {
     @DeleteMapping("/{customTravelId}")
     public ResponseEntity deleteCustom(@PathVariable Long customTravelId) {
         return null;
+    }
+
+
+
+    @Operation(summary = "(관리자)예약 id로 등록된 커스텀 여행을 모두 조회",description = "제목과 커스텀 예약id를 보내줍니다. 사용법: 예약목록에서 각 예약 마다 커스텀여행불러오기 버튼")
+    @GetMapping("")
+    // 1. 유저 id로 조회 홈페이지에서 조회
+    // 2. 예약 id로 조회 마이페이지에서 조회 이거랑
+    // 3. 커스텀 여행 id로 조회 마이페이지에서 조회 이거로 결정
+    public ResponseEntity<List<CustomTravelResponse.Info>> getCustomReserve(@RequestParam Long reservationId) {
+        return customTravelService.getReservationById(reservationId);
+    }
+    @Operation(summary = "(관리자)해당 커스텀 여행 문의 상세사항 조회", description = "커스텀 여행 id,제목,답변, 패키지 예약 id,(필요시: 등록일,수정일) ")
+    @GetMapping("/{customTravelId}")
+    public ResponseEntity<CustomTravelResponse.Info> getCustomTravelDetails(@PathVariable Long customTravelId) {
+        return customTravelService.getCustomTravelDetails(customTravelId);
     }
 }

@@ -41,7 +41,7 @@ public class JwtCheckFilter extends OncePerRequestFilter {
                 Account userDetails = (Account) accountService.loadUserByUsername(username);
 //                if(Long.valueOf(request.getHeader("Origin_UID")).equals(userDetails.getId())){
                     Authentication authentication = new UsernamePasswordAuthenticationToken(
-                            username,"",userDetails.getAuthorities()
+                            userDetails.getId(),"",userDetails.getAuthorities()
                     );
                     // SecurityContext 에 Authentication 객체를 저장합니다.
                     SecurityContextHolder.getContext().setAuthentication(authentication);

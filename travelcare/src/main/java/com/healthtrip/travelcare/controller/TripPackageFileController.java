@@ -20,7 +20,7 @@ public class TripPackageFileController {
     private final TripPackageFileService tripPackageFileService;
 
     // 패키지에서 이미지 가져오기
-    @Operation(summary ="패키지 id로 패키지에 포함된 이미지 파일들을 불러옴" )
+    @Operation(summary ="패키지 번호로 패키지에 포함된 이미지 파일들을 불러옴" )
     @GetMapping("/images")
     public ResponseEntity<List<TripPackageFileResponse.FileInfo>> getImages(@RequestParam Long tripPackageId) {
         var imageDtoList = tripPackageFileService.getData(tripPackageId);
@@ -30,13 +30,13 @@ public class TripPackageFileController {
     }
 
     // 이미지 추가 & 삭제로 패키지 이미지 수정!
-    @Operation(summary = "패키지 id로 해당 패키지 이미지 추가 *주의* 꼭 Schema 참고해주세요")
+    @Operation(summary = "패키지 번호로 해당 패키지 이미지 추가 *주의* 꼭 Schema 참고해주세요")
     @PostMapping("/images")
     public void addImage(@ModelAttribute TripPackageFileRequest request) {
         tripPackageFileService.addImage(request);
     }
 
-    @Operation(summary = "파일 id로 이미지 삭제")
+    @Operation(summary = "파일 번호로 이미지 삭제")
     @DeleteMapping("/images")
     public void deleteImage(@RequestBody List<Long> fileIds) {
         tripPackageFileService.deleteImage(fileIds);

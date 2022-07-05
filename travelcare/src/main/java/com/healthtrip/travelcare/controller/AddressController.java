@@ -20,7 +20,7 @@ public class AddressController {
 
     private final AddressService addressService;
 
-    @Operation(summary = "주소ID로 주소찾기")
+    @Operation(summary = "주소ID로 주소찾기 (임시)")
     @GetMapping("/{addressId}")
     public ResponseEntity<AddressResponse> getAddressById(@PathVariable Long addressId) {
         return addressService.getAddressById(addressId);

@@ -3,6 +3,7 @@ package com.healthtrip.travelcare.repository;
 
 import com.healthtrip.travelcare.domain.entity.AccountTimeToken;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
@@ -21,6 +22,7 @@ class AccountTimeTokenRepositoryTest {
 
     @Test
     @Transactional
+    @Disabled
     void findByEmailAndAuthTokenExpireDateAfter(){
         String email = "rngnlah@naver.com"+ Math.random();
         String uuid = UUID.randomUUID().toString();

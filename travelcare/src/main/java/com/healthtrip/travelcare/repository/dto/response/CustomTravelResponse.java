@@ -24,8 +24,8 @@ public class CustomTravelResponse {
         @Schema(description = "커스텀예약 id")
         private Long customReserveId;
 
-        @Schema(description = "패키지예약 id")
-        private Long ReservationInfoId;
+//        @Schema(description = "패키지예약 id")
+//        private Long ReservationInfoId;
 
         private String title;
         private String question;

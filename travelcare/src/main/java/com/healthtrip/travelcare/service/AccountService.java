@@ -68,7 +68,6 @@ public class AccountService implements UserDetailsService {
 
             Account account = (Account) authentication.getPrincipal();
             AccountResponse accountResponse = this.getAccountInfoWithTokens(account);
-            var b = new HttpHeaders();
 
             return ResponseEntity.ok().body(accountResponse);
         } catch (RuntimeException e) {
@@ -166,7 +165,7 @@ public class AccountService implements UserDetailsService {
             //
             var account =accountsRepository.findByEmail(dto.getEmail());
             // 비밀번호 암호화로직(현재 암호화 없음)
-            account.resetPasswordAs(dto.getPassword());
+            account.resetPasswordAs(passwordEncoder.encode(dto.getPassword()));
             // 비밀번호 재설정
             accountsRepository.save(account);
             return true;
@@ -269,7 +268,7 @@ public class AccountService implements UserDetailsService {
             if (tokenEquals){
                 String newToken = jwtProvider.issueAccessToken(Account.builder().id(userId.longValue()).email(email).build());
                 return ResponseEntity
-                        .status(401)
+                        .status(200)
                         .header(HttpHeaders.AUTHORIZATION,newToken)
                         .body("Access confirm.");
             }else {

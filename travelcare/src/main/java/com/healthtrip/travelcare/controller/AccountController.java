@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/account")
@@ -61,7 +63,7 @@ public class AccountController {
     @Operation(summary = "(비활성: 프론트페이지 필요)비밀번호를 잊었어요 재설정 요청! 흐름: 요청 ->사용자 메일-> 비밀번호 재설정(/reset-password)")
     @PostMapping("/forgot-password")
     public void passwordReset(@RequestBody String email) {
-        System.out.println("비번 초기화 요청의 이메일 "+email);
+        log.info("비번 초기화 요청의 이메일 :{}",email);
         accountService.sendPasswordResetMail(email);
     }
     @Operation(summary = "비밀번호 재설정(수정아님) Form",description = "input hidden email,authToken")
@@ -86,5 +88,6 @@ public class AccountController {
     public Authentication getAuthTest() {
         return SecurityContextHolder.getContext().getAuthentication();
     }
+
 }
 

@@ -8,5 +8,4 @@ import java.time.LocalDateTime;
 public class RefreshTokenRequest {
     private Long tokenId;
     private String refreshToken;
-    private LocalDateTime expiration;
 }

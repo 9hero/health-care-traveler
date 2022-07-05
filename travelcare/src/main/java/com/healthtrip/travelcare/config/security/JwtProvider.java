@@ -51,7 +51,6 @@ public class JwtProvider {
                         "alg", "HS256"
                 ))
                 .setClaims(Map.of(
-                        "userId",account.getId(),
                         "email",account.getEmail()
                 ))
                 .setExpiration(expiration)
@@ -104,7 +103,7 @@ public class JwtProvider {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
-            e.printStackTrace();
+            log.info("JWT VALID FAIL msg: {}  cause : {}",e.getMessage(),e.getCause());
             throw new CustomException("Expired or invalid JWT token", HttpStatus.UNAUTHORIZED);
         } catch (Exception e){
             log.info("JWT VALID FAIL msg: {}  cause : {}",e.getMessage(),e.getCause());

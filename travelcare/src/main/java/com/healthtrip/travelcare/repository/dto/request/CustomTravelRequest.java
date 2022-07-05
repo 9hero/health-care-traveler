@@ -11,8 +11,8 @@ import lombok.Data;
 @Builder
 public class CustomTravelRequest {
 
-    private String title;
     private Long reservationId;
+    private String title;
     private String question;
 
     @Data

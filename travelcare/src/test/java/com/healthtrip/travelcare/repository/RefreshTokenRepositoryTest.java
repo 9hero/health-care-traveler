@@ -25,14 +25,15 @@ class RefreshTokenRepositoryTest {
 
     @Test
     @Transactional
+    @Disabled
     void saveAndLoad() {
         System.out.println(refreshTokenRepository.findByIdAndAccountId(9L, 128L));
-        var acc = accountsRepository.getById(128L);
-        var refreshToken = RefreshToken.builder()
-                .account(acc)
-                .refreshToken("test")
-                .expirationLDT(LocalDateTime.now())
-                .build();
+//        var acc = accountsRepository.getById(128L);
+//        var refreshToken = RefreshToken.builder()
+//                .account(acc)
+//                .refreshToken("test")
+//                .expirationLDT(LocalDateTime.now())
+//                .build();
 //        var refreshToken = jwtProvider.issueRefreshToken(acc);
 //        var t = refreshTokenRepository.save(refreshToken);
 

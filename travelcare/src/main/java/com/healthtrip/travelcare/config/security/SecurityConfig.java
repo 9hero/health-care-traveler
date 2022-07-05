@@ -4,6 +4,8 @@ import com.healthtrip.travelcare.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -34,7 +36,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
-
+    @Bean
+    RoleHierarchy roleHierarchy(){
+        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+        roleHierarchy.setHierarchy("ROLE_ADMIN > ROLE_COMMON");
+        return roleHierarchy;
+    }
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         JwtLoginFilter loginFilter = new JwtLoginFilter(authenticationManager(),accountService);
@@ -54,8 +61,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PUT,"/api/notice-board").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE,"/api/notice-board").hasRole("ADMIN")
 
-                // reservation
-                .antMatchers("/api/reservation/**").authenticated()
 
                 // trip pack file
                 .antMatchers("/api/trip-package-file/images").hasRole("ADMIN")
@@ -64,17 +69,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST,"/api/trip-package/add").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET,"/api/trip-package/**").permitAll()
 
+                // reservation
+                .antMatchers("/api/reservation/**").authenticated()
                 // custom reservation
                 .antMatchers("/api/custom/**").authenticated()
-                .antMatchers(HttpMethod.POST,"/api/custom").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PATCH,"/api/custom").hasRole("ADMIN")
-                .antMatchers(HttpMethod.DELETE,"/api/custom").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE,"/api/custom/**").hasRole("ADMIN")
 
                 .anyRequest().authenticated()
                 .and()
                 .cors().disable()
                 .addFilterBefore(jwtCheckFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling().authenticationEntryPoint((request, response, authException) -> response.setStatus(401));
     }
 
 }

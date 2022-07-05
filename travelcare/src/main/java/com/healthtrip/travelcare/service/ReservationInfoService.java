@@ -1,5 +1,6 @@
 package com.healthtrip.travelcare.service;
 
+import com.healthtrip.travelcare.common.CommonUtils;
 import com.healthtrip.travelcare.domain.entity.*;
 import com.healthtrip.travelcare.repository.*;
 import com.healthtrip.travelcare.repository.dto.request.AddressRequest;
@@ -29,90 +30,10 @@ public class ReservationInfoService {
     private final ReservationPersonRepository reservationPersonRepository;
 
     @Transactional
-    public ResponseEntity reservePackage(ReservationRequest.ReserveData reserveData) {
-        // 유저 분기
-        Long uid = reserveData.getUserId();
-        boolean agentUser = reserveData.getRole().equals(Account.UserRole.ROLE_AGENT);
-
-        // 연관관계 설정을 위한 id 받아오기
-        var optional = reservationDateRepository.findById(reserveData.getDateId());
-        if(optional.isPresent()){
-            ReservationDate reservationDate = optional.get();
-            boolean limitOver = reservationDate.plusCurrentPeopleNumber(reserveData.getPersonCount());
-            if (limitOver) return ResponseEntity.ok("limit Over");
-        // 널체크 필요
-        Account account = accountsRepository.getById(uid);
-
-        // 예약 하기
-        ReservationInfo reservationInfo = ReservationInfo.builder()
-                .reservationDate(reservationDate)
-                .account(account)
-                .personCount(reserveData.getPersonCount())
-                .status(ReservationInfo.Status.Y)
-                .build();
-        var savedReservationInfo = reservationInfoRepository.save(reservationInfo);
-
-        // 주소 등록
-        Address savedAddress = null;
-        if(agentUser) {
-            var addressData = reserveData.getAddressData().get(0);
-            Address address = Address.builder()
-                    .address(addressData.getAddress1())
-                    .addressDetail(addressData.getAddress2())
-                    .district(addressData.getDistrict())
-                    .city(addressData.getCityName())
-                    .postalCode(addressData.getPostalCode())
-                    .country(countryRepository.getById(addressData.getCountryId()))
-                    .build();
-
-            savedAddress = addressRepository.save(address);
-        }else{
-            // 주소불러오기 client에서 address id 안보내줄 경우
-            savedAddress = commonRepository.getById(uid).getAddress();
-
-            // 보내줄시 ( client에서 따로 '내 주소 불러오기' API 사용해서 id 받아온후 이쪽으로 토스)
-            // saveAddress = accountsRepository.getById(reserveData.getAddressId())
-        }
-
-        //예약자 등록
-        var peopleDataList = reserveData.getReservationPersonData();
-
-        // 람다식에서 사용할 final Entity
-        Address finalSavedAddress = savedAddress;
-
-        // saveAll을 위한 entity 모음 초기화
-        List<ReservationPerson> reservationPersonList = new ArrayList<>();
-
-        // 하나씩 생성후 모음에 넣어줌
-        peopleDataList.forEach(peopleData -> {
-        var reservationPerson = ReservationPerson.builder()
-                .reservationInfo(savedReservationInfo)
-                .firstName(peopleData.getFirstName())
-                .lastName(peopleData.getLastName())
-                .gender(peopleData.getGender())
-                .birth(peopleData.getBirth())
-                .phone(peopleData.getPhone())
-                .emergencyContact(peopleData.getEmergencyContact())
-                .address(finalSavedAddress)
-                .build();
-            reservationPersonList.add(reservationPerson);
-        });
-
-        reservationPersonRepository.saveAll(reservationPersonList);
-
-        }else {
-            return ResponseEntity.badRequest().body("해당 여행일짜 없음");
-        }
-        return ResponseEntity.ok("예약 등록 완료");
-    }
-
-
-
-    @Transactional
-    public ResponseEntity<String> temp(ReservationRequest.ReserveData reserveData) {
+    public ResponseEntity<String> reserveTripPackage(ReservationRequest.ReserveData reserveData) {
 
         // 분기,데이터 꺼내기 개별로 국적 다르게 들어가서 좀 낭비가 생김
-        Long uid = reserveData.getUserId();
+        Long uid = CommonUtils.getAuthenticatedUserId();
         boolean agentUser = reserveData.getRole().equals(Account.UserRole.ROLE_AGENT);
         boolean singleType = reserveData.getAddressType().equals(ReservationRequest.AddressType.SINGLE);
         var addressList = reserveData.getAddressData();
@@ -196,10 +117,11 @@ public class ReservationInfoService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<List<ReservationInfoResponse.MyInfo>> myReservation(Long userId) {
+    public ResponseEntity<List<ReservationInfoResponse.MyInfo>> myReservation() {
 //        필요정보 : 예약번호, 예약자, 예약 인원, 패키지명, 가격, 출발일, 도착일, 예약상태
+        Long uid = CommonUtils.getAuthenticatedUserId();
         // 내 예약정보 전부 가져오기
-        List<ReservationInfo> info = reservationInfoRepository.findByAccountId(userId);
+        List<ReservationInfo> info = reservationInfoRepository.findByAccountId(uid);
         if(!info.isEmpty()){
             // 예약정보 있는경우: 응답값 초기화 및 필요한 객체들 불러오기
             List<ReservationInfoResponse.MyInfo> responseBody = new ArrayList<>();
@@ -232,14 +154,14 @@ public class ReservationInfoService {
             return ResponseEntity.ok(responseBody);
         }else{
             //내 예약 정보없음
-            return ResponseEntity.badRequest().body(null);
+            return ResponseEntity.ok().body(null);
         }
-
     }
 
     @Transactional(readOnly = true)
     public ResponseEntity<List<ReservationPersonResponse.rpInfo>> getPeopleDataByInfoId(Long reservationId) {
-        List<ReservationPerson> reservationPeople = reservationPersonRepository.findByReservationInfoId(reservationId);
+        Long uid = CommonUtils.getAuthenticatedUserId();
+        List<ReservationPerson> reservationPeople = reservationPersonRepository.findByReservationId(reservationId,uid);
         var responseBody = reservationPeople.stream().map(person ->
                 ReservationPersonResponse.rpInfo.builder()
                         .reservedPersonId(person.getId())
