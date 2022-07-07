@@ -45,7 +45,7 @@ public class ReservationInfoService {
         if (optional.isPresent()) {
             ReservationDate reservationDate = optional.get();
             boolean limitOver = reservationDate.plusCurrentPeopleNumber(personCount);
-            if (limitOver) return ResponseEntity.ok("limit Over");
+            if (limitOver) return ResponseEntity.badRequest().body("Error: Limit Over");
             // 널체크 필요 1. 키가 null, 2. 엔티티를 찾지못함
             Account account = accountsRepository.getById(uid);
 
@@ -89,7 +89,7 @@ public class ReservationInfoService {
                 reservationPersonRepository.saveAll(reservationPersonList);
             }else { // list -> one
                 // 주소입력수 예약인원입력수 비교 같아야지 ㄱ 아니면 오류
-                if (addressList.size() != personDataList.size()) return ResponseEntity.ok("입력한 주소의 갯수와 고객의 수가 같지않습니다.");
+                if (addressList.size() != personDataList.size()) return ResponseEntity.badRequest().body("Error: 입력한 주소의 갯수와 고객의 수가 같지않습니다.");
                 List<ReservationPerson> reservationPersonList = new ArrayList<>();
                 for(int i = 0; i<personDataList.size(); i++){
                     AddressRequest addressRequest=  addressList.get(i);
@@ -105,9 +105,9 @@ public class ReservationInfoService {
                 reservationPersonRepository.saveAll(reservationPersonList);
             }
         }else {
-            return ResponseEntity.badRequest().body("해당 여행일짜 없음");
+            return ResponseEntity.badRequest().body("Error: 해당 여행일짜 없음");
         }
-        return ResponseEntity.ok("예약 등록 완료");
+        return ResponseEntity.ok("OK: 예약 등록 완료");
     }
 
     @Transactional

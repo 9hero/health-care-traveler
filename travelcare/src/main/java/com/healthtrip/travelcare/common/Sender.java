@@ -40,8 +40,7 @@ public class Sender {
 
     @Value("${spring.mail.username}")
     private String naverFrom;
-    @Value("${current.ipAddress}")
-    private String ipAddress;
+
     @Async
     public void naverSender(MailRequest mailRequest) throws RuntimeException {
         MimeMessage message = javaMailSender.createMimeMessage();

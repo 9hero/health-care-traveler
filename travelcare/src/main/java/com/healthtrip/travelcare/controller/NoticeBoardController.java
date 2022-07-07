@@ -4,6 +4,7 @@ import com.healthtrip.travelcare.repository.dto.request.NoticeBoardRequest;
 import com.healthtrip.travelcare.repository.dto.response.NoticeBoardResponse;
 import com.healthtrip.travelcare.service.NoticeBoardService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,6 +30,7 @@ public class NoticeBoardController {
         return noticeBoardService.AllPosts();
     }
 
+    @ApiResponse(responseCode = "404",description = "공지사항을 찾을 수 없음")
     @Operation(summary = "공지사항 자세히 보기(제목클릭) 현재 id:1,2")
     @GetMapping("/{id}")
     public ResponseEntity<NoticeBoardResponse.NoticeBoardDetails> postDetails(@PathVariable Long id){

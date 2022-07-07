@@ -164,7 +164,7 @@ public class AccountService implements UserDetailsService {
         if(timeTokenCheck(dto.getEmail(), dto.getAuthToken())){
             //
             var account =accountsRepository.findByEmail(dto.getEmail());
-            // 비밀번호 암호화로직(현재 암호화 없음)
+            // 비밀번호 암호화로직
             account.resetPasswordAs(passwordEncoder.encode(dto.getPassword()));
             // 비밀번호 재설정
             accountsRepository.save(account);

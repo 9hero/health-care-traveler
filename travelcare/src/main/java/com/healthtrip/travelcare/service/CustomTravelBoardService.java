@@ -95,15 +95,19 @@ public class CustomTravelBoardService {
         }
     }
     @Transactional
-    public ResponseEntity clientModify(CustomTravelRequest.ClientModify request) {
+    public ResponseEntity<Boolean> clientModify(CustomTravelRequest.ClientModify request) {
         // 커스텀 여행을 가져옴
         CustomTravelBoard customTravelBoard = customTravelRepository.findByIdAndAccountId(request.getCustomTravelId(),CommonUtils.getAuthenticatedUserId());
+        if (customTravelBoard != null){
         // 이미 확정된 사항이라면 수정불가
-        boolean statusCheck = customTravelBoard.getReservationInfo().getStatus() != ReservationInfo.Status.Y;
+            boolean statusCheck = customTravelBoard.getReservationInfo().getStatus() != ReservationInfo.Status.Y;
+            if(statusCheck) {
         // 커스텀 여행 객체 변경
-        if (customTravelBoard != null && statusCheck){
-            customTravelBoard.updateClientRequest(request);
-            customTravelRepository.save(customTravelBoard);
+                customTravelBoard.updateClientRequest(request);
+                customTravelRepository.save(customTravelBoard);
+            }else {
+                return ResponseEntity.ok(false);
+            }
         }else{
             return ResponseEntity.ok(false);
         }

@@ -3,6 +3,7 @@ package com.healthtrip.travelcare.controller;
 import com.healthtrip.travelcare.repository.dto.response.AddressResponse;
 import com.healthtrip.travelcare.service.AddressService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ public class AddressController {
 
 
     private final AddressService addressService;
+
 
     @Operation(summary = "주소ID로 주소찾기 (임시)")
     @GetMapping("/{addressId}")

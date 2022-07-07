@@ -4,6 +4,11 @@ import com.healthtrip.travelcare.repository.dto.request.CustomTravelRequest;
 import com.healthtrip.travelcare.repository.dto.response.CustomTravelResponse;
 import com.healthtrip.travelcare.service.CustomTravelBoardService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/custom")
-@Tag(name = "커스텀 여행 문의 API")
+@Tag(name = "커스텀 여행 문의 API",description = "로그인 필요=Authorization:Bearer 'jwt'")
 public class CustomTravelController {
 
     private final CustomTravelBoardService customTravelService;
@@ -22,6 +27,12 @@ public class CustomTravelController {
     // ---커스텀여행--- 어쩌면 status 필요할수도
     // 현재 테이블은 한 예약에 여러개의 커스텀 여행을 등록할수있음.
     // 1:1 관계로 해야할수도
+    @ApiResponses({
+            @ApiResponse(responseCode = "Z00",description = "해당 예약 없음 or 등록실패",
+                    content = @Content(examples = @ExampleObject(value = "false"))),
+            @ApiResponse(responseCode = "200",description = "등록성공",
+                    content = @Content(examples = @ExampleObject(value = "true")))
+    })
     @Operation(summary = "커스텀 여행 등록")
     @PostMapping("")
     public ResponseEntity reserveCustom(@RequestBody CustomTravelRequest request) {
@@ -37,21 +48,30 @@ public class CustomTravelController {
         return customTravelService.answer(request);
     }
 
-
-    @Operation(summary = "내 예약번호에 속한 커스텀 여행 요청들을 조회",description = "타인의 reservationId를 요청 하거나 커스텀 요청이 없을 시 <br/>Response: 200 OK, responseBody:null ")
+    @ApiResponses({
+            @ApiResponse(responseCode = "Z00",description = "커스텀 예약 없음",
+                    content = @Content(examples = @ExampleObject(value = "null"))),
+            @ApiResponse(responseCode = "200",description = "조회성공")
+    })
+    @Operation(summary = "내 예약번호에 속한 커스텀 여행 요청들을 조회")
     @GetMapping("/me/{reservationId}")
     public ResponseEntity<List<CustomTravelResponse.Info>> myCustomRequests(@PathVariable Long reservationId) {
         return customTravelService.myCustomRequests(reservationId);
     }
 
-
+    @ApiResponses({
+            @ApiResponse(responseCode = "Z00",description = "확정된 커스텀여행 요청글 수정불가",
+                    content = @Content(examples = @ExampleObject(value = "false"))),
+            @ApiResponse(responseCode = "200",description = "수정 성공",
+                    content = @Content(examples = @ExampleObject(value = "true")))
+    })
     @Operation(summary = "고객이 커스텀 여행 제목,질문사항 수정")
     @PutMapping("")
-    public ResponseEntity modifyCustom(@RequestBody CustomTravelRequest.ClientModify request) {
+    public ResponseEntity<Boolean> modifyCustom(@RequestBody CustomTravelRequest.ClientModify request) {
         return customTravelService.clientModify(request);
     }
 
-    @Operation(summary = "(비활성)커스텀 여행 삭제")
+    @Operation(hidden = true,summary = "(비활성)커스텀 여행 삭제")
     @DeleteMapping("/{customTravelId}")
     public ResponseEntity deleteCustom(@PathVariable Long customTravelId) {
         return null;

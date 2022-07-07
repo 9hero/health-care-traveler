@@ -19,7 +19,7 @@ public class CustomTravelResponse {
     @Data
     @Builder
     @AllArgsConstructor
-    @Schema
+    @Schema(nullable = true)
     public static class Info{
         @Schema(description = "커스텀예약 id")
         private Long customReserveId;
