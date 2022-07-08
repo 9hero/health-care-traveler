@@ -7,9 +7,3 @@ spring:
         20MB
   config:
     import: optional:credential.yml,aws.yml,mail.yml,env.yml
-
-  jpa:
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
