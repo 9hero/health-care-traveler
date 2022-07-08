@@ -63,6 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
                 // trip pack file
+                .antMatchers(HttpMethod.GET,"/api/trip-package-file/images").permitAll()
                 .antMatchers("/api/trip-package-file/images").hasRole("ADMIN")
 
                 // trip package

@@ -4,7 +4,11 @@ import com.healthtrip.travelcare.repository.dto.request.NoticeBoardRequest;
 import com.healthtrip.travelcare.repository.dto.response.NoticeBoardResponse;
 import com.healthtrip.travelcare.service.NoticeBoardService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,15 +26,18 @@ public class NoticeBoardController {
     public NoticeBoardController(NoticeBoardService noticeBoardService) {
         this.noticeBoardService = noticeBoardService;
     }
-
+    @SecurityRequirement(name = "no")
     @PreAuthorize("")
     @Operation(summary = "메인 페이지에 들어갈 공지사항 리스트")
     @GetMapping("")//List<NoticeBoardResponse.mainPageNoticeBoard>
     public ResponseEntity<List<NoticeBoardResponse.mainPageNoticeBoard>> AllPosts(){
         return noticeBoardService.AllPosts();
     }
-
-    @ApiResponse(responseCode = "404",description = "공지사항을 찾을 수 없음")
+    @SecurityRequirement(name = "no")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200",description = "성공"),
+            @ApiResponse(responseCode = "404",description = "공지사항을 찾을 수 없음",content = @Content(examples = @ExampleObject))
+    })
     @Operation(summary = "공지사항 자세히 보기(제목클릭) 현재 id:1,2")
     @GetMapping("/{id}")
     public ResponseEntity<NoticeBoardResponse.NoticeBoardDetails> postDetails(@PathVariable Long id){

@@ -1,17 +1,22 @@
 package com.healthtrip.travelcare.controller;
 
+import com.healthtrip.travelcare.common.Exception.CustomException;
 import com.healthtrip.travelcare.repository.dto.request.AccountRequest;
 import com.healthtrip.travelcare.repository.dto.request.RefreshTokenRequest;
 import com.healthtrip.travelcare.repository.dto.response.AccountResponse;
 import com.healthtrip.travelcare.service.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -22,12 +27,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/account")
+@SecurityRequirement(name = "no")
 @Tag(name = "계정 API",description = "모두 허용")
 public class AccountController {
 
     private final AccountService accountService;
     @ApiResponses({
-//            @ApiResponse(responseCode = "201",headers = {@Header(name = "Location",description = "/")}),
+            @ApiResponse(responseCode = "200",description = "생성 완료"),
             @ApiResponse(responseCode = "409",description = "이메일 중복"),
             @ApiResponse(responseCode = "400",description = "입력값 오류")
     })
@@ -37,6 +43,7 @@ public class AccountController {
         return accountService.createCommon(commonSignUp);
     }
     @ApiResponses({
+            @ApiResponse(responseCode = "200",description = "생성 완료"),
     @ApiResponse(responseCode = "409",description = "이메일 중복"),
     @ApiResponse(responseCode = "400",description = "입력값 오류")
 })
@@ -54,14 +61,17 @@ public class AccountController {
     }
     private final AuthenticationManager authenticationManager;
 
-    @ApiResponse(responseCode = "401",description = "로그인 실패")
+    @ApiResponses({@ApiResponse(responseCode = "200",description = "성공"),
+            @ApiResponse(responseCode = "401",description = "로그인 실패",content = @Content(examples= @ExampleObject) )
+    })
     @Operation(summary = "로그인",description = "로그인 후 권한이 필요한 API 요청시 Authorization 헤더에 (Bearer 'jwt')")
     @PostMapping("/login")
     public ResponseEntity<AccountResponse> signIn(@RequestBody AccountRequest.SignInDto signInDto){
         return accountService.login(signInDto,authenticationManager);
     }
-
-    @ApiResponse(responseCode = "401",description = "재로그인 필요")
+    @ApiResponses({@ApiResponse(responseCode = "200",description = "성공"),
+            @ApiResponse(responseCode = "401",description = "재로그인 필요",content = @Content(examples= @ExampleObject) )
+    })
     @Operation(summary = "jwt 토큰 만료시 재발급 요청")
     @PostMapping("/refresh-token")
     public ResponseEntity getToken(@RequestBody RefreshTokenRequest request) {
@@ -99,8 +109,11 @@ public class AccountController {
     @Operation(hidden = true,summary = "테스트용 권한 확인")
     @GetMapping("/auth")
     public Authentication getAuthTest() {
-        return SecurityContextHolder.getContext().getAuthentication();
+        log.info("info 테스트!");
+        throw new CustomException("쓰로잉 테스트!", HttpStatus.OK);
+//        return SecurityContextHolder.getContext().getAuthentication();
     }
+
 
 }
 
