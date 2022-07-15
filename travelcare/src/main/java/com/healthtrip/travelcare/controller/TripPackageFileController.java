@@ -13,7 +13,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/trip-package-file")
+@RequestMapping("/api/trip-package/file")
 @Tag(name = "여행패키지파일 API",description = "이미지파일 등")
 public class TripPackageFileController {
 

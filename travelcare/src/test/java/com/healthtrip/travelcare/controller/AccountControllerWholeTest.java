@@ -21,6 +21,7 @@ import static org.mockito.Mockito.verify;
 @AutoConfigureMockMvc
 @SpringBootTest
 @Transactional
+@Disabled
 class AccountControllerWholeTest {
 
     @Autowired
@@ -60,69 +61,4 @@ class AccountControllerWholeTest {
                 .andDo(MockMvcResultHandlers.print());
 
     }
-/*
-    @Test
-    @DisplayName("정확한 로그인,비밀번호 오류,이메일 오류")
-    @Disabled(value = "db 데이터에 종속적")
-    void login() {
-        List<AccountRequestDto> requestDtoList = new ArrayList<>();
-        requestDtoList.add(request("e","p"));
-        requestDtoList.add(request("ea","p"));
-        requestDtoList.add(request("e","ps"));
-        try {
-            int current = 0;
-            for (AccountRequestDto dto : requestDtoList) {
-                String requestJson = objectMapper.writeValueAsString(dto);
-                switch (current) {
-                    case 0:
-                        mockMvc.perform(
-                                        MockMvcRequestBuilders
-                                                .post("http://localhost:8080/api/account/login")
-                                                .contentType(MediaType.APPLICATION_JSON)
-                                                .content(requestJson)
-                                )
-                                //then
-                                .andExpect(MockMvcResultMatchers.status().is(200))
-                                .andDo(MockMvcResultHandlers.print());
-                        break;
-                    case 1:
-                        mockMvc.perform(
-                                        MockMvcRequestBuilders
-                                                .post("http://localhost:8080/api/account/login")
-                                                .contentType(MediaType.APPLICATION_JSON)
-                                                .content(requestJson)
-                                )
-                                //then
-                                .andExpect(MockMvcResultMatchers.status().is(401))
-                                .andExpect(MockMvcResultMatchers.content().string("아이디 오류"))
-                                .andDo(MockMvcResultHandlers.print());
-                        break;
-                    case 2:
-                        mockMvc.perform(
-                                        MockMvcRequestBuilders
-                                                .post("http://localhost:8080/api/account/login")
-                                                .contentType(MediaType.APPLICATION_JSON)
-                                                .content(requestJson)
-                                )
-                                //then
-                                .andExpect(MockMvcResultMatchers.status().is(401))
-                                .andExpect(MockMvcResultMatchers.content().string("비밀번호 오류"))
-                                .andDo(MockMvcResultHandlers.print());
-                        break;
-                }
-                current++;
-            }
-
-
-
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
- */
-
-
 }

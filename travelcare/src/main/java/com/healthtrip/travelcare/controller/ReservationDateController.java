@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/reservation-date")
+@RequestMapping("/api/reservation/date")
 @Tag(name = "여행일 API")
 public class ReservationDateController {
 

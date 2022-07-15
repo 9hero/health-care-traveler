@@ -1,6 +1,7 @@
 package com.healthtrip.travelcare.config.security;
 
 import com.healthtrip.travelcare.service.AccountService;
+import com.navercorp.lucy.security.xss.servletfilter.XssEscapeServletFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -17,6 +18,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.csrf.CsrfFilter;
+
 @RequiredArgsConstructor
 @EnableWebSecurity(debug = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -46,6 +49,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         JwtLoginFilter loginFilter = new JwtLoginFilter(authenticationManager(),accountService);
         JwtCheckFilter jwtCheckFilter = new JwtCheckFilter(jwtProvider,accountService);
+        XssEscapeServletFilter xssEscapeServletFilter = new XssEscapeServletFilter();
+
         http.csrf().disable().httpBasic().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
@@ -56,7 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/reservation-date").hasRole("ADMIN")
 
                 // notice board
-                .antMatchers(HttpMethod.GET,"/api/notice-board").permitAll()
+                .antMatchers(HttpMethod.GET,"/api/notice-board/**").permitAll()
                 .antMatchers(HttpMethod.POST,"/api/notice-board").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT,"/api/notice-board").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE,"/api/notice-board").hasRole("ADMIN")
@@ -80,6 +85,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .cors().disable()
+                .addFilterAt(xssEscapeServletFilter, CsrfFilter.class)
                 .addFilterBefore(jwtCheckFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling().authenticationEntryPoint((request, response, authException) -> response.setStatus(401));

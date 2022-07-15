@@ -1,6 +1,6 @@
 package com.healthtrip.travelcare.domain.entity;
 
-import com.healthtrip.travelcare.config.DataSourceConfig;
+
 import com.healthtrip.travelcare.repository.CountryRepository;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
