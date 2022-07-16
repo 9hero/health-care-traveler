@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/account")
-@SecurityRequirement(name = "no")
+//@SecurityRequirement(name = "no")
 @Tag(name = "계정 API",description = "모두 허용")
 public class AccountController {
 
@@ -53,6 +53,8 @@ public class AccountController {
     @Operation(summary = "일반 아이디 생성")
     @PostMapping("/common")
     public ResponseEntity commonSignUp(@RequestBody AccountRequest.commonSignUp commonSignUp){
+        System.out.println(" 여기 라도 와야하는데");
+        log.info("common test: {}",commonSignUp);
         return accountService.createCommon(commonSignUp);
     }
     @ApiResponses({

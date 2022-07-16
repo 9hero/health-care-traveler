@@ -10,13 +10,13 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 @Configuration
 public class AppConfig {
-    @Bean
-    @Primary
-    public ObjectMapper objectMapper() {
-        return new Jackson2ObjectMapperBuilder()
-                .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-                .modules(new JavaTimeModule())
-                .timeZone("Asia/Seoul")
-                .build();
-    }
+//    @Bean
+//    @Primary
+//    public ObjectMapper objectMapper() {
+//        return new Jackson2ObjectMapperBuilder()
+//                .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+//                .modules(new JavaTimeModule())
+//                .timeZone("Asia/Seoul")
+//                .build();
+//    }
 }
