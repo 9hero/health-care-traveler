@@ -1,0 +1,2 @@
+10:18:26.069 [main] INFO  com.healthtrip.travelcare.SimpleTest - Starting SimpleTest using Java 11.0.12 on DESKTOP-1TVHJ3G with PID 4156 (started by user in C:\Users\gogmo\Desktop\work\health-care-traveler\travelcare)
+10:18:26.070 [main] INFO  com.healthtrip.travelcare.SimpleTest - No active profile set, falling back to 1 default profile: "default"

@@ -43,3 +43,4 @@ env.yml
 
 /src/test/java/com/healthtrip/travelcare/SimpleTest.java
 
+/src/test/resources/data.sql
