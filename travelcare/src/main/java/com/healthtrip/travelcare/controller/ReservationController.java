@@ -22,6 +22,7 @@ import java.util.List;
 @RequestMapping("/api/reservation")
 @RequiredArgsConstructor
 @RestController
+@CrossOrigin("*")
 @Tag(name = "예약 API",description = "예약 정보,예약 일짜: 로그인 필요=Authorization:Bearer 'jwt'")
 public class ReservationController {
 
