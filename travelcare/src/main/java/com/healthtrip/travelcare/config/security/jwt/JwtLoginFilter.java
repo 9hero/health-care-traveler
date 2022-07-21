@@ -1,4 +1,4 @@
-package com.healthtrip.travelcare.config.security;
+package com.healthtrip.travelcare.config.security.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.healthtrip.travelcare.domain.entity.Account;

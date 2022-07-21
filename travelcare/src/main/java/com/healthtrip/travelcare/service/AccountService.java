@@ -1,7 +1,7 @@
 package com.healthtrip.travelcare.service;
 
 import com.healthtrip.travelcare.common.Sender;
-import com.healthtrip.travelcare.config.security.JwtProvider;
+import com.healthtrip.travelcare.config.security.jwt.JwtProvider;
 import com.healthtrip.travelcare.domain.entity.*;
 import com.healthtrip.travelcare.repository.*;
 import com.healthtrip.travelcare.repository.dto.request.AccountRequest;
@@ -103,6 +103,7 @@ public class AccountService implements UserDetailsService {
             sendAccountConfirmMail(email);
             return ResponseEntity.ok("가입 완료");
         }
+        // 회원가입시 먼저 이메일 유효성을 체크한다면, sendAccountConfirmMail X status -> Y
     }
 
     @Transactional
@@ -128,12 +129,14 @@ public class AccountService implements UserDetailsService {
 
 
     public boolean emailCheck(String email) {
+        this.sendAccountConfirmMail(email);
         return accountsRepository.existsByEmail(email);
     }
     public void sendAccountConfirmMail(String email) {
         String url = "confirm";
         String subject = "Welcome to Travel-Heath-Care-Service (Sign Up Confirmation)";
-        String content = "Please confirm to sign up : "+ipAddress+"/api/account/"+url+"?email="+email;
+//        String content = "Please confirm to sign up : "+ipAddress+"/api/account/"+url+"?email="+email;
+        String content = "Please confirm to sign up : "+"http://localhost:3000/account/confirm"+"?email="+email;
         issueTimeToken(email,subject,content);
     }
     @Transactional
@@ -208,7 +211,7 @@ public class AccountService implements UserDetailsService {
                     .build();
             sender.naverSender(mail);
         }catch(RuntimeException e) {
-            System.out.println("발송 실패"+e.getMessage());
+            log.info("발송 실패 msg: {}",e.getMessage());
         }
     }
 

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -23,8 +24,8 @@ public class XssTest {
     private Long id;
 
     private String xss;
-
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate localDate;
-
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime localDateTime;
 }

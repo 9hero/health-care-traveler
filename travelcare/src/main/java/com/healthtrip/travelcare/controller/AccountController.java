@@ -32,14 +32,16 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "계정 API",description = "모두 허용")
 public class AccountController {
 
+    @Operation(hidden = true)
     @PostMapping("/xssBody")
     public XssTest xssTest(@RequestBody XssTest xssTest) {
         log.info("xss: {}",xssTest);
         log.info("xss localDate: {}",xssTest.getLocalDate());
         return xssTest;
     }
+    @Operation(hidden = true)
     @PostMapping("/xssForm")
-    public XssTest xssForm(@ModelAttribute XssTest xssTest) {
+    public XssTest xssForm(XssTest xssTest) {
         log.info("xss: {}",xssTest);
         return xssTest;
     }
@@ -74,6 +76,7 @@ public class AccountController {
     public boolean emailCheck(@RequestParam String email) {
         return accountService.emailCheck(email);
     }
+
     private final AuthenticationManager authenticationManager;
 
     @ApiResponses({@ApiResponse(responseCode = "200",description = "성공"),

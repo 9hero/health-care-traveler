@@ -1,14 +1,11 @@
 package com.healthtrip.travelcare.repository;
 
-import com.healthtrip.travelcare.config.security.JwtProvider;
-import com.healthtrip.travelcare.domain.entity.RefreshToken;
+import com.healthtrip.travelcare.config.security.jwt.JwtProvider;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
 
 @SpringBootTest
 @Disabled

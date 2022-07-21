@@ -1,4 +1,4 @@
-package com.healthtrip.travelcare.config.security;
+package com.healthtrip.travelcare.config.security.jwt;
 
 import com.healthtrip.travelcare.common.Exception.CustomException;
 import com.healthtrip.travelcare.domain.entity.Account;
@@ -35,7 +35,7 @@ public class JwtProvider {
 
     private final RefreshTokenRepository refreshTokenRepository;
 
-    private final long accessExpireTime = 10 * 60 * 1000L;  // 10 min
+    private final long accessExpireTime = 30 * 60 * 1000L;  // 10 min
 
     private final long refreshExpireTime = 60 * 60 * 1000L; // 1 hour
 
