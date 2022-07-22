@@ -1,6 +1,6 @@
 package com.healthtrip.travelcare.repository;
 
-import com.healthtrip.travelcare.domain.entity.TripPackage;
+import com.healthtrip.travelcare.domain.entity.travel.trip_package.TripPackage;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

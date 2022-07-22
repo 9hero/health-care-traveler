@@ -1,23 +1,20 @@
 package com.healthtrip.travelcare.domain.entity;
 
+import com.healthtrip.travelcare.domain.entity.account.Account;
+import com.healthtrip.travelcare.domain.entity.account.AccountCommon;
+import com.healthtrip.travelcare.domain.entity.location.Address;
 import com.healthtrip.travelcare.repository.AccountCommonRepository;
 import com.healthtrip.travelcare.repository.AccountsRepository;
 import com.healthtrip.travelcare.repository.AddressRepository;
 import com.healthtrip.travelcare.repository.CountryRepository;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
-import java.util.Random;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class AccountCommonTest {

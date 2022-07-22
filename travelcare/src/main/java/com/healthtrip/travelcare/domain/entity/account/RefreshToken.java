@@ -1,5 +1,7 @@
-package com.healthtrip.travelcare.domain.entity;
+package com.healthtrip.travelcare.domain.entity.account;
 
+import com.healthtrip.travelcare.domain.entity.BaseTimeEntity;
+import com.healthtrip.travelcare.domain.entity.account.Account;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +16,7 @@ import java.util.Date;
 @Getter
 @ToString(callSuper = true)
 @NoArgsConstructor
-public class RefreshToken extends BaseTimeEntity{
+public class RefreshToken extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,7 +1,7 @@
 package com.healthtrip.travelcare.service;
 
-import com.healthtrip.travelcare.domain.entity.Account;
-import com.healthtrip.travelcare.domain.entity.TripPackage;
+import com.healthtrip.travelcare.domain.entity.account.Account;
+import com.healthtrip.travelcare.domain.entity.travel.trip_package.TripPackage;
 import com.healthtrip.travelcare.repository.AccountsRepository;
 import com.healthtrip.travelcare.repository.ReservationDateRepository;
 import com.healthtrip.travelcare.repository.TripPackageRepository;
@@ -15,8 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.EntityManager;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

@@ -1,5 +1,6 @@
-package com.healthtrip.travelcare.domain.entity;
+package com.healthtrip.travelcare.domain.entity.location;
 
+import com.healthtrip.travelcare.domain.entity.BaseTimeEntity;
 import com.healthtrip.travelcare.repository.dto.request.AddressRequest;
 import lombok.*;
 
@@ -10,7 +11,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Address extends BaseTimeEntity{
+public class Address extends BaseTimeEntity {
 
     @Builder
     public Address(Long id, String address, String addressDetail, String district, String city, Country country, String postalCode) {

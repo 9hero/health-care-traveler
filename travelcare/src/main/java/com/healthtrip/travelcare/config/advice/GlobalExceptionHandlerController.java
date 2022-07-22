@@ -1,6 +1,8 @@
 package com.healthtrip.travelcare.config.advice;
 
 import com.healthtrip.travelcare.common.Exception.CustomException;
+import com.siot.IamportRestClient.exception.IamportResponseException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
@@ -15,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Map;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandlerController {
 
@@ -44,4 +47,20 @@ public class GlobalExceptionHandlerController {
     res.sendError(HttpStatus.BAD_REQUEST.value(), "Something went wrong");
   }
 
+  @ExceptionHandler(IamportResponseException.class)
+  public void handleIamportException(HttpServletResponse res,IamportResponseException e) {
+    log.error("iamport error : {} cause", e.getMessage(), e.getCause());
+
+    switch (e.getHttpStatusCode()) {
+      case 401:
+        //TODO : 401 Unauthorized
+        break;
+      case 404:
+        //TODO : imp_123412341234 에 해당되는 거래내역이 존재하지 않음
+        break;
+      case 500:
+        //TODO : 서버 응답 오류
+        break;
+    }
+  }
 }

@@ -1,7 +1,7 @@
 package com.healthtrip.travelcare.service;
 
-import com.healthtrip.travelcare.domain.entity.ReservationDate;
-import com.healthtrip.travelcare.domain.entity.TripPackage;
+import com.healthtrip.travelcare.domain.entity.travel.reservation.ReservationDate;
+import com.healthtrip.travelcare.domain.entity.travel.trip_package.TripPackage;
 import com.healthtrip.travelcare.repository.ReservationDateRepository;
 import com.healthtrip.travelcare.repository.TripPackageRepository;
 import com.healthtrip.travelcare.repository.dto.request.ReservationDateRequest;

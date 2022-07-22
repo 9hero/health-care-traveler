@@ -1,7 +1,10 @@
-package com.healthtrip.travelcare.domain.entity;
+package com.healthtrip.travelcare.domain.entity.travel.trip_package;
 
 import javax.persistence.*;
 
+import com.healthtrip.travelcare.domain.entity.BaseTimeEntity;
+import com.healthtrip.travelcare.domain.entity.account.Account;
+import com.healthtrip.travelcare.domain.entity.travel.reservation.ReservationDate;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -11,10 +14,10 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Entity
-public class TripPackage extends BaseTimeEntity{
+public class TripPackage extends BaseTimeEntity {
 
     @Builder
-    public TripPackage(Long id, Account account,String title, String description, BigDecimal price, String type, List<TripPackageFile> tripPackageFileList) {
+    public TripPackage(Long id, Account account, String title, String description, BigDecimal price, String type, List<TripPackageFile> tripPackageFileList) {
         this.id = id;
         this.account = account;
         this.title = title;

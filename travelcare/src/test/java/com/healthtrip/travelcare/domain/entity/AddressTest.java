@@ -1,12 +1,12 @@
 package com.healthtrip.travelcare.domain.entity;
 
+import com.healthtrip.travelcare.domain.entity.location.Address;
 import com.healthtrip.travelcare.repository.AddressRepository;
 import com.healthtrip.travelcare.repository.CountryRepository;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;

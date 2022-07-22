@@ -1,4 +1,4 @@
-package com.healthtrip.travelcare.domain.entity;
+package com.healthtrip.travelcare.domain.entity.account;
 
 import lombok.*;
 

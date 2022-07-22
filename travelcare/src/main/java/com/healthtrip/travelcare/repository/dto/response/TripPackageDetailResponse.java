@@ -1,7 +1,7 @@
 package com.healthtrip.travelcare.repository.dto.response;
 
 
-import com.healthtrip.travelcare.domain.entity.TripPackage;
+import com.healthtrip.travelcare.domain.entity.travel.trip_package.TripPackage;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;

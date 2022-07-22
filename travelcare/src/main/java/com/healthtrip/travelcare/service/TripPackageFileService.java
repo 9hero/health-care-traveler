@@ -1,14 +1,13 @@
 package com.healthtrip.travelcare.service;
 
 import com.healthtrip.travelcare.common.CommonUtils;
-import com.healthtrip.travelcare.domain.entity.TripPackage;
-import com.healthtrip.travelcare.domain.entity.TripPackageFile;
+import com.healthtrip.travelcare.domain.entity.travel.trip_package.TripPackage;
+import com.healthtrip.travelcare.domain.entity.travel.trip_package.TripPackageFile;
 import com.healthtrip.travelcare.repository.TripPackageFileRepository;
 import com.healthtrip.travelcare.repository.TripPackageRepository;
 import com.healthtrip.travelcare.repository.dto.request.TripPackageFileRequest;
 import com.healthtrip.travelcare.repository.dto.response.TripPackageFileResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;

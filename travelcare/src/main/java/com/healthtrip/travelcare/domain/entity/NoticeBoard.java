@@ -1,5 +1,6 @@
 package com.healthtrip.travelcare.domain.entity;
 
+import com.healthtrip.travelcare.domain.entity.account.Account;
 import lombok.*;
 
 import javax.persistence.*;

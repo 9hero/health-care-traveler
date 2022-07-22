@@ -1,18 +1,15 @@
 package com.healthtrip.travelcare.repository;
 
-import com.healthtrip.travelcare.domain.entity.TripPackage;
-import com.healthtrip.travelcare.domain.entity.TripPackageFile;
+import com.healthtrip.travelcare.domain.entity.travel.trip_package.TripPackage;
+import com.healthtrip.travelcare.domain.entity.travel.trip_package.TripPackageFile;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Disabled

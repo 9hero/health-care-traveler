@@ -1,6 +1,6 @@
 package com.healthtrip.travelcare.repository;
 
-import com.healthtrip.travelcare.domain.entity.ReservationPerson;
+import com.healthtrip.travelcare.domain.entity.travel.reservation.ReservationPerson;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

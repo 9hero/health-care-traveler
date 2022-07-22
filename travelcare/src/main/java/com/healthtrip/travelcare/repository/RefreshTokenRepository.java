@@ -1,7 +1,7 @@
 package com.healthtrip.travelcare.repository;
 
 
-import com.healthtrip.travelcare.domain.entity.RefreshToken;
+import com.healthtrip.travelcare.domain.entity.account.RefreshToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

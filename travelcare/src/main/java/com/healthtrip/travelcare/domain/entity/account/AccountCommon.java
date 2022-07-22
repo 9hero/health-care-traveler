@@ -1,5 +1,7 @@
-package com.healthtrip.travelcare.domain.entity;
+package com.healthtrip.travelcare.domain.entity.account;
 
+import com.healthtrip.travelcare.domain.entity.location.Address;
+import com.healthtrip.travelcare.domain.entity.BaseTimeEntity;
 import com.healthtrip.travelcare.repository.dto.request.PersonData;
 import lombok.*;
 
@@ -12,7 +14,7 @@ import java.time.LocalDate;
 @Builder
 @Entity
 @ToString(callSuper = true,exclude = {"account","address"})
-public class AccountCommon extends BaseTimeEntity{
+public class AccountCommon extends BaseTimeEntity {
 
     @Id
     @Column(name = "user_id")

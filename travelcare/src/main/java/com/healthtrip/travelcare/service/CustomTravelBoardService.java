@@ -1,8 +1,8 @@
 package com.healthtrip.travelcare.service;
 
 import com.healthtrip.travelcare.common.CommonUtils;
-import com.healthtrip.travelcare.domain.entity.CustomTravelBoard;
-import com.healthtrip.travelcare.domain.entity.ReservationInfo;
+import com.healthtrip.travelcare.domain.entity.travel.reservation.CustomTravelBoard;
+import com.healthtrip.travelcare.domain.entity.travel.reservation.ReservationInfo;
 import com.healthtrip.travelcare.repository.CustomTravelBoardRepository;
 import com.healthtrip.travelcare.repository.ReservationInfoRepository;
 import com.healthtrip.travelcare.repository.dto.request.CustomTravelRequest;
@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;

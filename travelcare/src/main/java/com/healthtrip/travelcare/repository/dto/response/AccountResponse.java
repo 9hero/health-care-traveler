@@ -1,6 +1,6 @@
 package com.healthtrip.travelcare.repository.dto.response;
 
-import com.healthtrip.travelcare.domain.entity.Account;
+import com.healthtrip.travelcare.domain.entity.account.Account;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 

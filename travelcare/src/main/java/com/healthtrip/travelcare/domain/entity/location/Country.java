@@ -1,5 +1,6 @@
-package com.healthtrip.travelcare.domain.entity;
+package com.healthtrip.travelcare.domain.entity.location;
 
+import com.healthtrip.travelcare.domain.entity.BaseTimeEntity;
 import lombok.*;
 
 import javax.persistence.Entity;
@@ -12,7 +13,7 @@ import javax.persistence.Id;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Country extends BaseTimeEntity{
+public class Country extends BaseTimeEntity {
 
     @Builder
     public Country(Long id, String name) {

@@ -1,12 +1,11 @@
 package com.healthtrip.travelcare.repository;
 
 
-import com.healthtrip.travelcare.domain.entity.AccountTimeToken;
+import com.healthtrip.travelcare.domain.entity.account.AccountTimeToken;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 

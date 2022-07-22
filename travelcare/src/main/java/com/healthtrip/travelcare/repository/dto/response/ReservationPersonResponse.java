@@ -1,6 +1,5 @@
 package com.healthtrip.travelcare.repository.dto.response;
 
-import com.healthtrip.travelcare.domain.entity.ReservationPerson;
 import com.healthtrip.travelcare.repository.dto.request.PersonData;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

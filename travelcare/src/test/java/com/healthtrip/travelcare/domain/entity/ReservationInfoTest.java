@@ -1,5 +1,6 @@
 package com.healthtrip.travelcare.domain.entity;
 
+import com.healthtrip.travelcare.domain.entity.travel.reservation.ReservationInfo;
 import com.healthtrip.travelcare.repository.AccountsRepository;
 import com.healthtrip.travelcare.repository.ReservationDateRepository;
 import com.healthtrip.travelcare.repository.ReservationInfoRepository;
@@ -10,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Disabled

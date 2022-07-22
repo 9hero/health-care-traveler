@@ -1,8 +1,9 @@
-package com.healthtrip.travelcare.domain.entity;
+package com.healthtrip.travelcare.domain.entity.travel.reservation;
 
 import javax.persistence.*;
 
-import com.healthtrip.travelcare.repository.dto.response.CustomTravelResponse;
+import com.healthtrip.travelcare.domain.entity.account.Account;
+import com.healthtrip.travelcare.domain.entity.BaseTimeEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
@@ -14,7 +15,7 @@ import java.util.List;
 @Entity
 @DynamicUpdate
 @ToString(callSuper = true)
-public class ReservationInfo extends BaseTimeEntity{
+public class ReservationInfo extends BaseTimeEntity {
     @Builder
     public ReservationInfo(Long id, Account account, ReservationDate reservationDate, short personCount, List<ReservationPerson> reservationPerson, Status status) {
         this.id = id;

@@ -1,5 +1,6 @@
-package com.healthtrip.travelcare.domain.entity;
+package com.healthtrip.travelcare.domain.entity.account;
 
+import com.healthtrip.travelcare.domain.entity.BaseTimeEntity;
 import com.healthtrip.travelcare.repository.dto.request.AccountRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +12,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @Entity
-public class AccountAgent extends BaseTimeEntity{
+public class AccountAgent extends BaseTimeEntity {
 
     @Id
     @Column(name = "user_id")

@@ -1,19 +1,16 @@
 package com.healthtrip.travelcare.config.security.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.healthtrip.travelcare.domain.entity.Account;
-import com.healthtrip.travelcare.repository.dto.request.AccountRequest;
+import com.healthtrip.travelcare.domain.entity.account.Account;
 import com.healthtrip.travelcare.repository.dto.response.AccountResponse;
 import com.healthtrip.travelcare.service.AccountService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;

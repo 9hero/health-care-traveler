@@ -1,7 +1,6 @@
 package com.healthtrip.travelcare.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.healthtrip.travelcare.domain.entity.Account;
 import com.healthtrip.travelcare.repository.dto.request.AccountRequest;
 import com.healthtrip.travelcare.service.AccountService;
 import org.junit.jupiter.api.Disabled;

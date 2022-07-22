@@ -2,7 +2,8 @@ package com.healthtrip.travelcare.service;
 
 import com.healthtrip.travelcare.common.Sender;
 import com.healthtrip.travelcare.config.security.jwt.JwtProvider;
-import com.healthtrip.travelcare.domain.entity.*;
+import com.healthtrip.travelcare.domain.entity.account.*;
+import com.healthtrip.travelcare.domain.entity.location.Address;
 import com.healthtrip.travelcare.repository.*;
 import com.healthtrip.travelcare.repository.dto.request.AccountRequest;
 import com.healthtrip.travelcare.repository.dto.request.MailRequest;

@@ -1,7 +1,6 @@
 package com.healthtrip.travelcare.repository.dto.request;
 
-import com.healthtrip.travelcare.domain.entity.Account;
-import com.healthtrip.travelcare.domain.entity.TripPackage;
+import com.healthtrip.travelcare.domain.entity.travel.trip_package.TripPackage;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;

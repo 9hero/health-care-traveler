@@ -1,7 +1,12 @@
 package com.healthtrip.travelcare.service;
 
 import com.healthtrip.travelcare.common.CommonUtils;
-import com.healthtrip.travelcare.domain.entity.*;
+import com.healthtrip.travelcare.domain.entity.account.Account;
+import com.healthtrip.travelcare.domain.entity.location.Address;
+import com.healthtrip.travelcare.domain.entity.location.Country;
+import com.healthtrip.travelcare.domain.entity.travel.reservation.ReservationDate;
+import com.healthtrip.travelcare.domain.entity.travel.reservation.ReservationInfo;
+import com.healthtrip.travelcare.domain.entity.travel.reservation.ReservationPerson;
 import com.healthtrip.travelcare.repository.*;
 import com.healthtrip.travelcare.repository.dto.request.AddressRequest;
 import com.healthtrip.travelcare.repository.dto.request.ReservationRequest;

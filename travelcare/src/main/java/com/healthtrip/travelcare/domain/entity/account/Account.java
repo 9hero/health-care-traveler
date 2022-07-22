@@ -1,5 +1,8 @@
-package com.healthtrip.travelcare.domain.entity;
+package com.healthtrip.travelcare.domain.entity.account;
 
+import com.healthtrip.travelcare.domain.entity.BaseTimeEntity;
+import com.healthtrip.travelcare.domain.entity.NoticeBoard;
+import com.healthtrip.travelcare.domain.entity.travel.reservation.ReservationInfo;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;

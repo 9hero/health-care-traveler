@@ -1,5 +1,7 @@
-package com.healthtrip.travelcare.domain.entity;
+package com.healthtrip.travelcare.domain.entity.travel.reservation;
 
+import com.healthtrip.travelcare.domain.entity.BaseTimeEntity;
+import com.healthtrip.travelcare.domain.entity.travel.trip_package.TripPackage;
 import com.healthtrip.travelcare.repository.dto.request.ReservationDateRequest;
 import lombok.*;
 
@@ -10,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @Entity
-public class ReservationDate extends BaseTimeEntity{
+public class ReservationDate extends BaseTimeEntity {
 
 
     @Builder

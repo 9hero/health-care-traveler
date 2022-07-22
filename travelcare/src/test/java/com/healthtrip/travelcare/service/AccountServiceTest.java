@@ -1,6 +1,6 @@
 package com.healthtrip.travelcare.service;
 
-import com.healthtrip.travelcare.domain.entity.Account;
+import com.healthtrip.travelcare.domain.entity.account.Account;
 import com.healthtrip.travelcare.repository.AccountsRepository;
 import com.healthtrip.travelcare.repository.dto.request.AccountRequest;
 import org.junit.jupiter.api.Assertions;

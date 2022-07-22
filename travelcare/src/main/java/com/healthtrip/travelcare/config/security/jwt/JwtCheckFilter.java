@@ -1,7 +1,7 @@
 package com.healthtrip.travelcare.config.security.jwt;
 
 import com.healthtrip.travelcare.common.Exception.CustomException;
-import com.healthtrip.travelcare.domain.entity.Account;
+import com.healthtrip.travelcare.domain.entity.account.Account;
 import com.healthtrip.travelcare.service.AccountService;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;

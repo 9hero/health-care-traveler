@@ -1,9 +1,9 @@
-package com.healthtrip.travelcare.domain.entity;
+package com.healthtrip.travelcare.domain.entity.travel.reservation;
 
+import com.healthtrip.travelcare.domain.entity.BaseTimeEntity;
 import com.healthtrip.travelcare.repository.dto.request.CustomTravelRequest;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 
@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Entity
 @DynamicInsert
 @ToString(callSuper = true)
-public class CustomTravelBoard extends BaseTimeEntity{
+public class CustomTravelBoard extends BaseTimeEntity {
 
     @Builder
     public CustomTravelBoard(Long id, String title, String question, String answer, ReservationInfo reservationInfo) {

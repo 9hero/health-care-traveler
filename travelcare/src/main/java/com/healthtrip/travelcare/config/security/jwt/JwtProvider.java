@@ -1,8 +1,8 @@
 package com.healthtrip.travelcare.config.security.jwt;
 
 import com.healthtrip.travelcare.common.Exception.CustomException;
-import com.healthtrip.travelcare.domain.entity.Account;
-import com.healthtrip.travelcare.domain.entity.RefreshToken;
+import com.healthtrip.travelcare.domain.entity.account.Account;
+import com.healthtrip.travelcare.domain.entity.account.RefreshToken;
 import com.healthtrip.travelcare.repository.RefreshTokenRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;

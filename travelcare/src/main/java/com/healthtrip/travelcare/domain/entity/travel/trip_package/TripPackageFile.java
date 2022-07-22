@@ -1,5 +1,6 @@
-package com.healthtrip.travelcare.domain.entity;
+package com.healthtrip.travelcare.domain.entity.travel.trip_package;
 
+import com.healthtrip.travelcare.domain.entity.BaseTimeEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -7,7 +8,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Entity
-public class TripPackageFile extends BaseTimeEntity{
+public class TripPackageFile extends BaseTimeEntity {
 
     @Builder
     public TripPackageFile(Long id, TripPackage tripPackage, String url, String fileName, String originalName, long fileSize) {
