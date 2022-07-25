@@ -7,7 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Map;
 
-public interface ReservationInfoRepository extends JpaRepository<ReservationInfo,Long> {
+public interface ReservationInfoRepository extends JpaRepository<ReservationInfo,String> {
+    boolean existsById(String id);
 
     List<ReservationInfo> findByAccountId(Long userId);
 
@@ -24,6 +25,6 @@ public interface ReservationInfoRepository extends JpaRepository<ReservationInfo
     List<ReservationInfo> getByAccountId(Long uid);
 
     @Query(value = "select ri from ReservationInfo ri where ri.id=:id and ri.account.id =:uid")
-    ReservationInfo getByIdAndAccountId(Long id,Long uid); // 사용시 account 까지 join시킴
+    ReservationInfo getByIdAndAccountId(String id,Long uid); // 사용시 account 까지 join시킴
 
 }

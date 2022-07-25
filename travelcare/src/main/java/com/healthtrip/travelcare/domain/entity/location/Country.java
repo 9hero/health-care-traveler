@@ -3,11 +3,7 @@ package com.healthtrip.travelcare.domain.entity.location;
 import com.healthtrip.travelcare.domain.entity.BaseTimeEntity;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
+import javax.persistence.*;
 
 
 @Getter
@@ -25,5 +21,6 @@ public class Country extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String name;
 }

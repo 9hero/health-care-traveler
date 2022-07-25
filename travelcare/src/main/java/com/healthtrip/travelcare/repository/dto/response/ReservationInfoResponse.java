@@ -20,7 +20,7 @@ public class ReservationInfoResponse {
     public static class MyInfo {
 //        private List<ReservationPersonResponse.rpInfo> reservationPeople;
         @Schema(description = "예약고유번호")
-        private Long reservationInfoId;
+        private String reservationInfoId;
 
         private String personName;
         private String packageTitle;

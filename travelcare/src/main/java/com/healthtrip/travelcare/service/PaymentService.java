@@ -1,5 +1,6 @@
 package com.healthtrip.travelcare.service;
 
+import com.healthtrip.travelcare.repository.ReservationInfoRepository;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.response.IamportResponse;
@@ -14,8 +15,8 @@ import java.math.BigDecimal;
 @Service
 public class PaymentService {
 
-
     private final IamportClient iamportClient;
+    private final ReservationInfoRepository reservationInfoRepository;
     public String verify(String imp_uid, String merchant_uid) throws IamportResponseException, IOException {
         IamportResponse<Payment> result = iamportClient.paymentByImpUid(imp_uid);
 

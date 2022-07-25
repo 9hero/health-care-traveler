@@ -49,7 +49,7 @@ class ReservationInfoServiceTest {
     @Rollback
     @Disabled
     void cancelReservationCascade() {
-        reservationInfoService.cancelReservation(22L);
+        reservationInfoService.cancelReservation("22");
         entityManager.flush();
         entityManager.clear();
     }

@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,15 +44,17 @@ public class ReservationInfoService {
         boolean singleType = reserveData.getAddressType().equals(ReservationRequest.AddressType.SINGLE);
         var addressList = reserveData.getAddressData();
         var personDataList = reserveData.getReservationPersonData();
-        short personCount = reserveData.getPersonCount();
+        var personCount = personDataList.size() != 0 ?personDataList.size(): return null;//reserveData.getPersonCount();
 
         // 연관관계 설정을 위한 id 받아오기
         var optional = reservationDateRepository.findById(reserveData.getDateId());
         if (optional.isPresent()) {
             ReservationDate reservationDate = optional.get();
+
+            // 인원체크
             boolean limitOver = reservationDate.plusCurrentPeopleNumber(personCount);
             if (limitOver) return ResponseEntity.badRequest().body("Error: Limit Over");
-            // 널체크 필요 1. 키가 null, 2. 엔티티를 찾지못함
+
             Account account = accountsRepository.getById(uid);
 
             // 예약 하기
@@ -60,6 +63,9 @@ public class ReservationInfoService {
                     .account(account)
                     .personCount(personCount)
                     .status(ReservationInfo.Status.Y)
+                    .csStatus(ReservationInfo.CsStatus.K)
+                    .paymentStatus(ReservationInfo.PaymentStatus.N)
+                    .amount(reservationDate.getTripPackage().getPrice().multiply((BigDecimal) personCount))
                     .build();
             var savedReservationInfo = reservationInfoRepository.save(reservationInfo);
 
@@ -116,7 +122,7 @@ public class ReservationInfoService {
     }
 
     @Transactional
-    public ResponseEntity cancelReservation(Long reservationId) {
+    public ResponseEntity cancelReservation(String reservationId) {
         reservationInfoRepository.deleteById(reservationId);
         return ResponseEntity.ok("별 다른 로직 없이 삭제만 했어요");
     }

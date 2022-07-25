@@ -12,6 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+
 @SpringBootTest
 @Disabled
 class ReservationInfoTest {
@@ -39,17 +41,21 @@ class ReservationInfoTest {
 
     @Test
     @Transactional
-    @Rollback
+    @Rollback(value = false)
     void saveAndFind(){
         ReservationInfo reservationInfo = ReservationInfo
                 .builder()
-                .account(accountsRepository.findAll().get(0))
-                .reservationDate(reservationDateRepository.findAll().get(0))
+                .id("123")
+                .account(accountsRepository.getById(128L))
+                .reservationDate(reservationDateRepository.getById(30L))
                 .personCount((short)5)
                 .status(ReservationInfo.Status.Y)
+                .paymentStatus(ReservationInfo.PaymentStatus.N)
+                .csStatus(ReservationInfo.CsStatus.K)
+                .amount(BigDecimal.valueOf(555L))
                 .build();
-        repository.save(reservationInfo);
+        var id = repository.save(reservationInfo).getId();
         repository.flush();
-        repository.findAll().forEach(revInfo-> System.out.println(revInfo.getReservationDate()));
+        System.out.println(repository.findById(id).get());
     }
 }

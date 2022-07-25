@@ -76,7 +76,7 @@ public class ReservationController {
 
     @Operation(summary = "(임시)예약취소",description = "예약취소기록 남기기(현재 임시:처리 로직없이 삭제만 함),해당하는 예약id를 입력해주세요 현재 삭제할 시 예약자와 함께 삭제됩니다.")
     @DeleteMapping("/info/{reservationId}")
-    public ResponseEntity cancelReservation(@PathVariable Long reservationId) {
+    public ResponseEntity cancelReservation(@PathVariable String reservationId) {
         return reservationInfoService.cancelReservation(reservationId);
     }
 

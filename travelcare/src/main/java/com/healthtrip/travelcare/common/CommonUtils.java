@@ -6,10 +6,20 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 @Configuration
 public class CommonUtils {
     private static final String FILE_EXTENSION_SEPARATOR = ".";
     private static final String TIME_SEPARATOR = "_";
+    public static String dateWithTypeIdGenerate(String type) {
+        return LocalDate.now().format(DateTimeFormatter.ofPattern("yyMMdd"))+type
+                +((int)(Math.random()*10))
+                +((int)(Math.random()*10))
+                +((int)(Math.random()*10))
+                +((int)(Math.random()*10));
+    }
 
     public static String buildFileName(String originalFileName,String directory) {
         int fileExtensionIndex = originalFileName.lastIndexOf(FILE_EXTENSION_SEPARATOR);
