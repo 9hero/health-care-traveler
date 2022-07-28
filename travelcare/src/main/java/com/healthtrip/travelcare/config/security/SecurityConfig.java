@@ -52,7 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        JwtLoginFilter loginFilter = new JwtLoginFilter(authenticationManager(),accountService);
+//        JwtLoginFilter loginFilter = new JwtLoginFilter(authenticationManager(),accountService);
         JwtCheckFilter jwtCheckFilter = new JwtCheckFilter(jwtProvider,accountService);
         XssEscapeServletFilter xssEscapeServletFilter = new XssEscapeServletFilter();
 
@@ -99,7 +99,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 }).and()
                 .addFilterAt(xssEscapeServletFilter, CsrfFilter.class)
                 .addFilterBefore(jwtCheckFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class)
+//                .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling().authenticationEntryPoint((request, response, authException) -> response.setStatus(401));
     }
 

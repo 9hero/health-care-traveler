@@ -38,7 +38,7 @@ class AccountControllerWholeTest {
     @Disabled
     void accounts() throws Exception {
         //given
-        AccountRequest.commonSignUp accountRequestDto = AccountRequest.commonSignUp.builder()
+        AccountRequest.CommonSignUp accountRequestDto = AccountRequest.CommonSignUp.builder()
                 .email("testEmail") // 사용가능한 이메일
 //                .email("e") // 사용 불가능한 이메일
                 .password("testword")

@@ -4,6 +4,8 @@ import com.healthtrip.travelcare.domain.entity.account.Account;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 
 @Getter
 @NoArgsConstructor
@@ -20,8 +22,6 @@ public class AccountResponse {
         this.refreshToken = refreshToken;
     }
 
-
-
     private Long id;
 
     private String email;
@@ -36,4 +36,13 @@ public class AccountResponse {
     private Long refreshTokenId;
 
     private String refreshToken;
+
+    @Builder
+    @Data
+    public static class EmailCheck {
+        private Long id;
+        private boolean emailExist;
+        private LocalDateTime expiration;
+    }
+
 }

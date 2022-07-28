@@ -38,24 +38,34 @@ public class ReservationInfoService {
     @Transactional
     public ResponseEntity<String> reserveTripPackage(ReservationRequest.ReserveData reserveData) {
 
-        // 분기,데이터 꺼내기 개별로 국적 다르게 들어가서 좀 낭비가 생김
+        // DTO -> local 변수
         Long uid = CommonUtils.getAuthenticatedUserId();
-        boolean agentUser = reserveData.getRole().equals(Account.UserRole.ROLE_AGENT);
-        boolean singleType = reserveData.getAddressType().equals(ReservationRequest.AddressType.SINGLE);
         var addressList = reserveData.getAddressData();
         var personDataList = reserveData.getReservationPersonData();
-        var personCount = personDataList.size() != 0 ?personDataList.size(): return null;//reserveData.getPersonCount();
+        short personCount = (short) personDataList.size(); // 대표자 주소일 경우 주소데이터 1임
 
-        // 연관관계 설정을 위한 id 받아오기
+        // 분기 데이터
+        boolean agentUser = reserveData.getRole().equals(Account.UserRole.ROLE_AGENT);
+        boolean singleType = reserveData.getAddressType().equals(ReservationRequest.AddressType.SINGLE);
+
+        // 예약인원 Exception 후에 validation 으로 검증할 예정
+        // 일반 유저가 인적사항 데이터가 없고 forEach 일 경우 그리고 Agent가 데이터를 누락시킨 경우
+        if ( (!agentUser && personCount == 0 && !singleType) || (agentUser && personCount ==0) ) {
+            return ResponseEntity.badRequest().body("Error: Can not reserve tour");
+        }
+
+        // 연관관계 설정을 위한 id 받아오기 trn-1
         var optional = reservationDateRepository.findById(reserveData.getDateId());
         if (optional.isPresent()) {
             ReservationDate reservationDate = optional.get();
+            Account account = accountsRepository.getById(uid);
+
+            // 예약 금액 계산 trn-2
+            BigDecimal amount = BigDecimal.valueOf(personDataList.size()).multiply(reservationDate.getTripPackage().getPrice());
 
             // 인원체크
             boolean limitOver = reservationDate.plusCurrentPeopleNumber(personCount);
             if (limitOver) return ResponseEntity.badRequest().body("Error: Limit Over");
-
-            Account account = accountsRepository.getById(uid);
 
             // 예약 하기
             ReservationInfo reservationInfo = ReservationInfo.builder()
@@ -65,29 +75,31 @@ public class ReservationInfoService {
                     .status(ReservationInfo.Status.Y)
                     .csStatus(ReservationInfo.CsStatus.K)
                     .paymentStatus(ReservationInfo.PaymentStatus.N)
-                    .amount(reservationDate.getTripPackage().getPrice().multiply((BigDecimal) personCount))
+                    .amount(amount)
                     .build();
             var savedReservationInfo = reservationInfoRepository.save(reservationInfo);
 
             if (singleType) {
+
                 // ----Address start-----
-            Address singleAddress = null;
+                Address singleAddress = null;
+
                 // 주소 객체 생성 common agent 분기
                 if(agentUser){
-                    // 입력값 등록 -> 대표자 주소값
+                    // 입력값 등록 -> 대표자 주소값(0번지)
                     AddressRequest representative = addressList.get(0);
                     singleAddress = Address.toEntityBasic(representative);
                     Country country = countryRepository.getById(representative.getCountryId());
                     singleAddress.setCountry(country);
                 }else {
-                    // 계정의 주소 값으로 등록
+                    // 일반유저의 경우, 대표자 주소는 계정의 주소 값으로 등록
                     singleAddress = commonRepository.getById(uid).getAddress();
                 }
-
+                // trn-3
                 Address savedAddress = addressRepository.save(singleAddress);
                 // ----Address done-----
 
-                // dto to entity
+                // 인적사항 Dto -> Entity로 변환 -> persist
                 var reservationPersonList = personDataList
                         .stream().map(personData->{
                              var personEntity = ReservationPerson.reservationPersonBasicEntity(personData);
@@ -95,15 +107,16 @@ public class ReservationInfoService {
                              personEntity.relationSet(savedReservationInfo, savedAddress);
                              return personEntity;
                         }).collect(Collectors.toList());
-
-                // done
+                // trn-4 saveAll sql 생성문 확인바람
                 reservationPersonRepository.saveAll(reservationPersonList);
-            }else { // list -> one
-                // 주소입력수 예약인원입력수 비교 같아야지 ㄱ 아니면 오류
+
+            }else { // 주소 각 입력일 경우,
+                // 주소입력수 예약인원입력수 같지 않으면 오류
                 if (addressList.size() != personDataList.size()) return ResponseEntity.badRequest().body("Error: 입력한 주소의 갯수와 고객의 수가 같지않습니다.");
+                // 주소입력수 만큼 Entity 생성
                 List<ReservationPerson> reservationPersonList = new ArrayList<>();
                 for(int i = 0; i<personDataList.size(); i++){
-                    AddressRequest addressRequest=  addressList.get(i);
+                    AddressRequest addressRequest = addressList.get(i);
                     Country country = countryRepository.getById(addressRequest.getCountryId());
                     Address address = Address.toEntityBasic(addressRequest);
                     address.setCountry(country);

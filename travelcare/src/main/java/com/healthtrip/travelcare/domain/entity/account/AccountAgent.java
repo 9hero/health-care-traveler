@@ -27,7 +27,7 @@ public class AccountAgent extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private Account account;
 
-    public static AccountAgent toEntityBasic(AccountRequest.agentSignUp agentSignUp) {
+    public static AccountAgent toEntityBasic(AccountRequest.AgentSignUp agentSignUp) {
         return AccountAgent.builder()
                 .name(agentSignUp.getName())
                 .companyNumber(agentSignUp.getCompanyNumber())

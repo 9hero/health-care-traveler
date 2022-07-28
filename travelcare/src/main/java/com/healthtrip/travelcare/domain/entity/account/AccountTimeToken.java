@@ -42,7 +42,7 @@ public class AccountTimeToken {
     public static AccountTimeToken makeToken(String email) {
         return AccountTimeToken.builder()
                 .email(email)
-                .authToken(UUID.randomUUID().toString())
+                .authToken(UUID.randomUUID().toString().substring(0,5))
                 .expired(false)
                 .build();
     }

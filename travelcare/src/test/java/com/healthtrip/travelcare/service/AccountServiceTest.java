@@ -26,7 +26,7 @@ class AccountServiceTest {
     public void create() {
         String email = "testEmails";
         //given
-        var accountRequestDto = AccountRequest.commonSignUp.builder()
+        var accountRequestDto = AccountRequest.CommonSignUp.builder()
 //                .id(3L)
                 .email(email)
                 .password("testWords")

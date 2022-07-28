@@ -42,9 +42,8 @@ class AccountControllerTest {
     @DisplayName("계정 생성 컨트롤러<->서비스 단위테스트")
     @Disabled("로컬호스트")
     void accounts() throws Exception {
-
         //given
-        var accountRequestDto = AccountRequest.commonSignUp.builder()
+        var accountRequestDto = AccountRequest.CommonSignUp.builder()
                         .email("testEmail")
                                 .password("testword")
 //                                        .status(Account.Status.N)

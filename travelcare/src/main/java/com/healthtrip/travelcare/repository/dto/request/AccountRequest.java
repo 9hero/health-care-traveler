@@ -14,9 +14,10 @@ public class AccountRequest {
 
     @Data
     @AllArgsConstructor
+    @NoArgsConstructor
     @Builder
     @Schema(name = "일반유저 회원가입 Request")
-    public static class commonSignUp{
+    public static class CommonSignUp {
         private String email;
         private String password;
         private AddressRequest addressData;
@@ -25,16 +26,16 @@ public class AccountRequest {
     @Data
     @AllArgsConstructor
     @Builder
+    @NoArgsConstructor
     @Schema(name = "기관유저 회원가입 Request")
-    public static class agentSignUp{
+    public static class AgentSignUp {
         private String email;
         private String password;
         private String name;
         private String companyNumber;
     }
     @Data
-    @AllArgsConstructor
-    @Builder
+    @NoArgsConstructor
     @Schema(name = "로그인 Request")
     public static class SignInDto {
         private String email;
@@ -43,9 +44,10 @@ public class AccountRequest {
 
     @Data
     @AllArgsConstructor
-    @Builder
+    @NoArgsConstructor
     @Schema(name = "잃어버린 패스워드 재설정")
     public static class PasswordReset {
+        private Long tokenId;
         private String email;
         private String authToken;
         private String password;

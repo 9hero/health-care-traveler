@@ -7,21 +7,17 @@ import com.healthtrip.travelcare.repository.dto.request.RefreshTokenRequest;
 import com.healthtrip.travelcare.repository.dto.response.AccountResponse;
 import com.healthtrip.travelcare.service.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -54,9 +50,7 @@ public class AccountController {
     })
     @Operation(summary = "일반 아이디 생성")
     @PostMapping("/common")
-    public ResponseEntity commonSignUp(@RequestBody AccountRequest.commonSignUp commonSignUp){
-        System.out.println(" 여기 라도 와야하는데");
-        log.info("common test: {}",commonSignUp);
+    public ResponseEntity commonSignUp(@RequestBody AccountRequest.CommonSignUp commonSignUp){
         return accountService.createCommon(commonSignUp);
     }
     @ApiResponses({
@@ -66,16 +60,10 @@ public class AccountController {
 })
     @Operation(summary = "기관 아이디 생성")
     @PostMapping("/agent")
-    public ResponseEntity agentSignUp(@RequestBody AccountRequest.agentSignUp agentSignUp){
+    public ResponseEntity agentSignUp(@RequestBody AccountRequest.AgentSignUp agentSignUp){
         return accountService.createAgent(agentSignUp);
     }
 
-    @ApiResponse(responseCode = "200",description = "성공 실패 = True False")
-    @Operation(summary = "이메일 체크")
-    @PostMapping("/email-check")
-    public boolean emailCheck(@RequestParam String email) {
-        return accountService.emailCheck(email);
-    }
 
     private final AuthenticationManager authenticationManager;
 
@@ -96,32 +84,20 @@ public class AccountController {
         return accountService.newAccessToken(request);
     }
 
-    @Operation(summary = "(프론트페이지 필요)비밀번호를 잊었어요 재설정 요청! 흐름: 요청 ->사용자 메일-> 비밀번호 재설정(/reset-password)")
-    @PostMapping("/forgot-password")
-    public void passwordReset(@RequestBody String email) {
-        log.info("비번 초기화 요청의 이메일 :{}",email);
-        accountService.sendPasswordResetMail(email);
-    }
-    @ApiResponse(responseCode = "200",description = "성공 실패 = True False")
-    @Operation(summary = "비밀번호 재설정 Mail -> Form -> This Api",description = "input hidden email,authToken")
-    @PostMapping("/reset-password")
-    public boolean resetPassword(@ModelAttribute AccountRequest.PasswordReset dto){
-        return accountService.passwordReset(dto);
-    }
 
+    // 이메일 중복 체크 및 인증코드 이메일 전송
     @ApiResponse(responseCode = "200",description = "성공 실패 = True False")
-    @Operation(summary = "이메일을 통해 회원가입 확인")
+    @Operation(summary = "이메일 체크 & 이메일 인증코드 전송")
+    @PostMapping("/email-check")
+    public AccountResponse.EmailCheck emailCheck(@RequestParam String email) {
+        return accountService.emailCheck(email);
+    }
+    @ApiResponse(responseCode = "200",description = "성공 실패 = True False")
+    @Operation(summary = "이메일 인증코드 확인")
     @GetMapping("/confirm") // 프론트 붙으면 패치로로
-    public boolean confirmAccount(@RequestParam String email,@RequestParam String authToken){
-        return accountService.confirmAccount(email, authToken);
+    public boolean confirmAccount(@RequestParam Long id,@RequestParam String authToken){
+        return accountService.confirmAccount(id, authToken);
         // 생각 해볼 예외: 만료기간 지남, 잘못된 토큰 or 이메일
-    }
-
-    @ApiResponse(responseCode = "200",description = "성공 실패 = True False")
-    @Operation(summary = "이메일 인증 재신청(만료기간이 지났을 경우)")
-    @PostMapping
-    public boolean reConfirmation(@RequestParam String email) {
-        return accountService.reConfirm(email);
     }
 
     @Operation(hidden = true,summary = "테스트용 권한 확인")
@@ -131,7 +107,18 @@ public class AccountController {
         throw new CustomException("쓰로잉 테스트!", HttpStatus.OK);
 //        return SecurityContextHolder.getContext().getAuthentication();
     }
-
+    @Operation(summary = "비밀번호를 잊었어요 재설정 요청!",description = "흐름: 요청 ->사용자 메일-> 인증코드입력 -> 비밀번호 재설정(/reset-password)")
+    @PostMapping("/forgot-password")
+    public AccountResponse.EmailCheck passwordReset(@RequestParam String email) {
+        log.info("비번 초기화 요청의 이메일 :{}",email);
+        return accountService.sendPasswordResetMail(email);
+    }
+    @ApiResponse(responseCode = "200",description = "성공 실패 = True False")
+    @Operation(summary = "비밀번호 재설정 Mail -> Form -> This Api")
+    @PostMapping("/reset-password")
+    public boolean resetPassword(AccountRequest.PasswordReset dto){
+        return accountService.passwordReset(dto);
+    }
 
 }
 

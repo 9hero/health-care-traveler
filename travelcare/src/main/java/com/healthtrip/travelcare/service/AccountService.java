@@ -1,5 +1,6 @@
 package com.healthtrip.travelcare.service;
 
+import com.healthtrip.travelcare.common.Exception.CustomException;
 import com.healthtrip.travelcare.common.Sender;
 import com.healthtrip.travelcare.config.security.jwt.JwtProvider;
 import com.healthtrip.travelcare.domain.entity.account.*;
@@ -9,6 +10,7 @@ import com.healthtrip.travelcare.repository.dto.request.AccountRequest;
 import com.healthtrip.travelcare.repository.dto.request.MailRequest;
 import com.healthtrip.travelcare.repository.dto.request.RefreshTokenRequest;
 import com.healthtrip.travelcare.repository.dto.response.AccountResponse;
+import com.healthtrip.travelcare.repository.vo.AccountTimeTokenVO;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -78,7 +80,7 @@ public class AccountService implements UserDetailsService {
     }
 
     @Transactional
-    public ResponseEntity createCommon(AccountRequest.commonSignUp commonSignUp) {
+    public ResponseEntity createCommon(AccountRequest.CommonSignUp commonSignUp) {
         String email = commonSignUp.getEmail();
         boolean emailPresent = accountsRepository.existsByEmail(email);
         if(emailPresent) {
@@ -95,20 +97,20 @@ public class AccountService implements UserDetailsService {
                     .email(email)
                     .password(passwordEncoder.encode(commonSignUp.getPassword()))
                     .userRole(Account.UserRole.ROLE_COMMON)
-                    .status(Account.Status.N)
+                    .status(Account.Status.Y)
                     .build();
             AccountCommon newAccount = AccountCommon.toEntityBasic(personData);
             newAccount.setRelation(address,account);
             accountCommonRepository.save(newAccount);
-            // 토큰 만들어서 메일 보내기
-            sendAccountConfirmMail(email);
+            // front read only : 가입시 토큰 재확인
+
             return ResponseEntity.ok("가입 완료");
         }
         // 회원가입시 먼저 이메일 유효성을 체크한다면, sendAccountConfirmMail X status -> Y
     }
 
     @Transactional
-    public ResponseEntity createAgent(AccountRequest.agentSignUp agentSignUp) {
+    public ResponseEntity createAgent(AccountRequest.AgentSignUp agentSignUp) {
         boolean emailPresent = accountsRepository.existsByEmail(agentSignUp.getEmail());
         if(emailPresent) {
             //아이디 존재
@@ -118,55 +120,103 @@ public class AccountService implements UserDetailsService {
                     .email(agentSignUp.getEmail())
                     .password(passwordEncoder.encode(agentSignUp.getPassword()))
                     .userRole(Account.UserRole.ROLE_AGENT)
-                    .status(Account.Status.N)
+                    .status(Account.Status.Y)
                     .build();
             AccountAgent accountAgent = AccountAgent.toEntityBasic(agentSignUp);
             accountAgent.setRelation(account);
             accountAgentRepository.save(accountAgent);
-            sendAccountConfirmMail(agentSignUp.getEmail());
             return ResponseEntity.ok("가입 완료");
         }
     }
 
 
-    public boolean emailCheck(String email) {
-        this.sendAccountConfirmMail(email);
-        return accountsRepository.existsByEmail(email);
+    public AccountResponse.EmailCheck emailCheck(String email) {
+        // 이메일 중복체크 중복시 true
+        boolean emailExist = accountsRepository.existsByEmail(email);
+
+        if (emailExist){
+            // 중복시 response true 보내기
+            return AccountResponse.EmailCheck.builder()
+                    .id(-1L)
+                    .emailExist(true)
+                    .build();
+        }else {
+            // 중복이 아니면 유효코드를 메일로 보내고
+            // 유효코드를 찾을 수 있는 ID 값을 Response
+            String subject = "Welcome to Travel-Heath-Care-Service (Sign Up Confirmation)";
+            String content = "Please enter this code on sign-up page : ";
+            return this.sendAccountConfirmMail(email,subject,content);
+        }
+
     }
-    public void sendAccountConfirmMail(String email) {
-        String url = "confirm";
-        String subject = "Welcome to Travel-Heath-Care-Service (Sign Up Confirmation)";
-//        String content = "Please confirm to sign up : "+ipAddress+"/api/account/"+url+"?email="+email;
-        String content = "Please confirm to sign up : "+"http://localhost:3000/account/confirm"+"?email="+email;
-        issueTimeToken(email,subject,content);
+    public AccountResponse.EmailCheck sendAccountConfirmMail(String email,String subject,String content) {
+        // issueToken and get value object
+        AccountTimeTokenVO accountTimeTokenVO = issueTimeToken(email);
+        String contentWithToken = content + accountTimeTokenVO.getAuthCode();
+
+        // send mail
+        try {
+            var mail = MailRequest.builder()
+                    .to(email)
+                    .subject(subject)
+                    .content(contentWithToken)
+                    .build();
+            sender.naverSender(mail);
+        }catch(RuntimeException e) {
+            log.info("발송 실패 msg: {}",e.getMessage());
+        }
+
+        // return id,expiration,emailExist
+        return AccountResponse.EmailCheck.builder()
+                .id(accountTimeTokenVO.getId())
+                .expiration(accountTimeTokenVO.getExpirationDate())
+                .emailExist(false)
+                .build();
+    }
+    @Transactional// rollback for
+    private AccountTimeTokenVO issueTimeToken(String email) {
+        var token = AccountTimeToken.makeToken(email);
+        var savedToken = accountTimeTokenRepository.save(token);
+        return new AccountTimeTokenVO(savedToken.getId(), savedToken.getAuthToken(), savedToken.getExpirationDate());
     }
     @Transactional
-    public boolean confirmAccount(String email, String authToken) {
-        boolean check = timeTokenCheck(email, authToken);
-        if (check){
-        accountsRepository.findByEmail(email).accountConfirm();
-        // db data 절약
-        accountTimeTokenRepository.deleteByEmail(email);
-        return true;
+    public boolean confirmAccount(Long tokenId, String authToken) {
+        return timeTokenCheck(tokenId, authToken);
+    }
+    @Transactional
+    public boolean timeTokenCheck(Long tokenId, String authToken) {
+        var accountTimeToken = accountTimeTokenRepository.findById(tokenId)
+                .orElseThrow(() -> new CustomException("토큰 못찾음",HttpStatus.BAD_REQUEST));
+        // 만료일 비교 없으면 엑셉션
+        boolean isTimePassed = LocalDateTime.now().isAfter(accountTimeToken.getExpirationDate());
+        boolean authCodeEquals = accountTimeToken.getAuthToken().equals(authToken);
+        if (!isTimePassed && authCodeEquals){
+            // 현재 시각이 만료일을 지나지 않았고 인증 코드가 맞다면 true
+            return true;
         }else {
             return false;
         }
     }
 
     // 패스워드 변경 요청 *중요 필수 변경 - 협의해서*
-    public void sendPasswordResetMail(String email) {
-        String url = "reset-password";
-        String subject = "Travel-Heath-Care-Service reset password";
-        String content = "Please click the link to reset your password : "+ipAddress+"/api/account/"+url+"?email="+email;
-
+    public AccountResponse.EmailCheck sendPasswordResetMail(String email) {
+        String subject = "<Travel-Heath-Care-Service> Reset password request";
+        String content = "Please enter this code on reset-password-page : ";
+        if (accountsRepository.existsByEmail(email)){
+            var response = sendAccountConfirmMail(email,subject,content);
+            response.setEmailExist(true);
+            return response;
+        }else {
+            return AccountResponse.EmailCheck.builder()
+                    .emailExist(false)
+                    .build();
+        }
         // 리셋 메일 생성 후 보내기
-        issueTimeToken(email,subject,content); // 프론트에서 받아줘야함
     }
     @Transactional
     public boolean passwordReset(AccountRequest.PasswordReset dto) {
         // 메일 받으면
-        if(timeTokenCheck(dto.getEmail(), dto.getAuthToken())){
-            //
+        if(timeTokenCheck(dto.getTokenId(), dto.getAuthToken())){
             var account =accountsRepository.findByEmail(dto.getEmail());
             // 비밀번호 암호화로직
             account.resetPasswordAs(passwordEncoder.encode(dto.getPassword()));
@@ -175,58 +225,6 @@ public class AccountService implements UserDetailsService {
             return true;
         }else {
             // 토큰 인증 실패
-            return false;
-        }
-
-    }
-    @Transactional
-    public boolean timeTokenCheck(String email, String authToken) {
-        try {
-            var accountTimeToken = accountTimeTokenRepository.findByEmailAndAuthToken(email, authToken)
-                    .orElseThrow(() -> new Exception("토큰 못찾음"));
-            // 만료일 비교 없으면 엑셉션
-            if (LocalDateTime.now().isAfter(accountTimeToken.getExpirationDate())){
-                // 현재 시각이 만료일을 지났음
-                accountTimeTokenRepository.deleteByEmail(email);
-                throw new Exception("만료일 지남");
-            }
-            return true;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            // 예외 걸린경우 1. 프론트에서 처리 2. 여기서 재발급
-            // return 값 어캐줄까
-            return false;
-        }
-    }
-    @Transactional// rollback for
-    private void issueTimeToken(String email,String subject,String content) {
-        var token = AccountTimeToken.makeToken(email);
-        var savedToken = accountTimeTokenRepository.save(token);
-        String contentWithToken = content+"&authToken="+savedToken.getAuthToken()+ "  \n Or if you have not sent this request, ignore this mail.";
-        try {
-            var mail = MailRequest.builder()
-                    .to(email)
-                    .subject(subject)
-                    // 프론트 만들어지면 프론트 페이지로 바꾸고 거기서 useEffect로 보내기, 결과 받아서 예외처리
-                    .content(contentWithToken)
-                    .build();
-            sender.naverSender(mail);
-        }catch(RuntimeException e) {
-            log.info("발송 실패 msg: {}",e.getMessage());
-        }
-    }
-
-    @Transactional
-    public boolean reConfirm(String email) {
-        try {
-            if(accountsRepository.findByEmail(email).getStatus() == Account.Status.N) {
-                sendAccountConfirmMail(email);
-            return true;
-            }else {// 아이디 이미 인증된거임 or B인데 재인증 요청 보냄
-                return false;
-            }
-        } catch (NullPointerException e) {
-            System.out.println("이메일 찾을수 없음"+e.getMessage());
             return false;
         }
 
