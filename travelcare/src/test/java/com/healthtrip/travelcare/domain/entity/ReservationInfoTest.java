@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 
 @SpringBootTest
-@Disabled
+//@Disabled
 class ReservationInfoTest {
 
     @Autowired
@@ -41,7 +41,7 @@ class ReservationInfoTest {
 
     @Test
     @Transactional
-    @Rollback(value = false)
+    @Rollback(value = true)
     void saveAndFind(){
         ReservationInfo reservationInfo = ReservationInfo
                 .builder()

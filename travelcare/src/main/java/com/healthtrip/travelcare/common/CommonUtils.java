@@ -20,6 +20,10 @@ public class CommonUtils {
                 +((int)(Math.random()*10))
                 +((int)(Math.random()*10));
     }
+    public static String TESTdateWithTypeIdGenerate(String type) {
+        return LocalDate.now().format(DateTimeFormatter.ofPattern("yyMMdd"))+type
+                +((int)(Math.random()*10));
+    }
 
     public static String buildFileName(String originalFileName,String directory) {
         int fileExtensionIndex = originalFileName.lastIndexOf(FILE_EXTENSION_SEPARATOR);

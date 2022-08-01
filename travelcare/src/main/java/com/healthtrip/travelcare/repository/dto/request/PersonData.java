@@ -3,9 +3,11 @@ package com.healthtrip.travelcare.repository.dto.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+@NoArgsConstructor
 @Getter
 @AllArgsConstructor
 @Schema(name = "인적 사항 Request ")

@@ -2,7 +2,9 @@ package com.healthtrip.travelcare.repository;
 
 import com.healthtrip.travelcare.domain.entity.travel.PackageTourPayment;
 import com.healthtrip.travelcare.domain.entity.travel.reservation.ReservationInfo;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -24,7 +26,7 @@ class PackageTourPaymentRepositoryTest {
     @Autowired
     ReservationInfoRepository reservationInfoRepository;
 
-    @Test
+    @RepeatedTest(10)
     @Transactional
     @Rollback(value = true)
     void saveAndFind() {
@@ -32,14 +34,14 @@ class PackageTourPaymentRepositoryTest {
 
         var b = packageTourPayment();
         b.setReservationInfo(a);
-        for (  int i = 0; i<3;i++){
+        for (  int i = 0; i<4;i++){
             boolean conflict = packageTourPaymentRepository.existsById(b.generateTourPaymentId());
             if (!conflict) {
                 packageTourPaymentRepository.save(b);
                 break;
             }else {
-                //중복 발생시 추가 처리 없으면 다시 save하러감
-                return;
+                System.out.println("중복"+i);
+                if(i == 3)return;
             }
         }
         packageTourPaymentRepository.flush();

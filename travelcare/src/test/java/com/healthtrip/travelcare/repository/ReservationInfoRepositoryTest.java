@@ -5,6 +5,7 @@ import com.healthtrip.travelcare.domain.entity.travel.reservation.ReservationInf
 import com.healthtrip.travelcare.repository.dto.response.CustomTravelResponse;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,14 +38,14 @@ ReservationDateRepository reservationDateRepository;
                 .build();
     }
     @DisplayName("주문코드 중복테스트")
-    @Test()
+    @RepeatedTest(10)
     @Transactional
     @Rollback(value = true)
     void uniqueConflict() {
         var b = entity();
 
-        for (int i = 0; i<3;i++){
-            boolean conflict = reservationInfoRepository.existsById(b.idGenerate("RV"));
+        for (int i = 0; i<4;i++){
+            boolean conflict = reservationInfoRepository.existsById(b.TESTidGenerate("RV"));
             if (!conflict) {
                 reservationInfoRepository.save(b);
                 break;

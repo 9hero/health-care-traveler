@@ -24,7 +24,7 @@ class RefreshTokenRepositoryTest {
     @Transactional
     @Disabled
     void saveAndLoad() {
-        System.out.println(refreshTokenRepository.findByIdAndAccountId(9L, 128L));
+        System.out.println(refreshTokenRepository.findByIdAndAccountId(77L, 128L));
 //        var acc = accountsRepository.getById(128L);
 //        var refreshToken = RefreshToken.builder()
 //                .account(acc)

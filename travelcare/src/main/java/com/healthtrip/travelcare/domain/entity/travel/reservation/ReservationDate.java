@@ -4,6 +4,7 @@ import com.healthtrip.travelcare.domain.entity.BaseTimeEntity;
 import com.healthtrip.travelcare.domain.entity.travel.trip_package.TripPackage;
 import com.healthtrip.travelcare.repository.dto.request.ReservationDateRequest;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @Entity
+@DynamicUpdate
 public class ReservationDate extends BaseTimeEntity {
 
 

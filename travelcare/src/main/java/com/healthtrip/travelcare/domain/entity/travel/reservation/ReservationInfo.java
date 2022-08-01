@@ -121,4 +121,9 @@ public class ReservationInfo extends BaseTimeEntity implements Serializable, Per
         this.id = id;
         return this.id;
     }
+    public String TESTidGenerate(String type) {
+        String id = CommonUtils.TESTdateWithTypeIdGenerate("RV");
+        this.id = id;
+        return this.id;
+    }
 }

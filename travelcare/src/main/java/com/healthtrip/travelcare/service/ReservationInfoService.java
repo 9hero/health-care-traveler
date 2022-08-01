@@ -13,15 +13,18 @@ import com.healthtrip.travelcare.repository.dto.request.ReservationRequest;
 import com.healthtrip.travelcare.repository.dto.response.ReservationInfoResponse;
 import com.healthtrip.travelcare.repository.dto.response.ReservationPersonResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class ReservationInfoService {
@@ -44,24 +47,25 @@ public class ReservationInfoService {
         var personDataList = reserveData.getReservationPersonData();
         short personCount = (short) personDataList.size(); // 대표자 주소일 경우 주소데이터 1임
 
-        // 분기 데이터
+        // 분기값
         boolean agentUser = reserveData.getRole().equals(Account.UserRole.ROLE_AGENT);
         boolean singleType = reserveData.getAddressType().equals(ReservationRequest.AddressType.SINGLE);
 
-        // 예약인원 Exception 후에 validation 으로 검증할 예정
+        // 예약인원 Exception: 나중에 validation 으로 검증할 예정
         // 일반 유저가 인적사항 데이터가 없고 forEach 일 경우 그리고 Agent가 데이터를 누락시킨 경우
         if ( (!agentUser && personCount == 0 && !singleType) || (agentUser && personCount ==0) ) {
             return ResponseEntity.badRequest().body("Error: Can not reserve tour");
         }
 
-        // 연관관계 설정을 위한 id 받아오기 trn-1
+        // 연관관계 설정을 위한 id 받아오기 t-1
         var optional = reservationDateRepository.findById(reserveData.getDateId());
         if (optional.isPresent()) {
             ReservationDate reservationDate = optional.get();
             Account account = accountsRepository.getById(uid);
 
-            // 예약 금액 계산 trn-2
-            BigDecimal amount = BigDecimal.valueOf(personDataList.size()).multiply(reservationDate.getTripPackage().getPrice());
+            // 예약 금액 계산 amount = (예약인원*투어가격) t-2
+            BigDecimal amount = BigDecimal.valueOf(personDataList.size())
+                    .multiply(reservationDate.getTripPackage().getPrice());
 
             // 인원체크
             boolean limitOver = reservationDate.plusCurrentPeopleNumber(personCount);
@@ -69,15 +73,18 @@ public class ReservationInfoService {
 
             // 예약 하기
             ReservationInfo reservationInfo = ReservationInfo.builder()
-                    .reservationDate(reservationDate)
+//                    .id()
                     .account(account)
+                    .reservationDate(reservationDate)
                     .personCount(personCount)
                     .status(ReservationInfo.Status.Y)
                     .csStatus(ReservationInfo.CsStatus.K)
                     .paymentStatus(ReservationInfo.PaymentStatus.N)
                     .amount(amount)
                     .build();
-            var savedReservationInfo = reservationInfoRepository.save(reservationInfo);
+            // 주문번호 생성 후 저장 중복번호일 경우 4번까지만 시도함 실패시
+            ReservationInfo savedReservationInfo = saveReservationInfo(reservationInfo);
+            if (savedReservationInfo == null)return ResponseEntity.ok("Error: 예약실패. 관리자에게 문의하세요.");
 
             if (singleType) {
 
@@ -92,10 +99,10 @@ public class ReservationInfoService {
                     Country country = countryRepository.getById(representative.getCountryId());
                     singleAddress.setCountry(country);
                 }else {
-                    // 일반유저의 경우, 대표자 주소는 계정의 주소 값으로 등록
+                    // 일반유저의 경우, 대표자 주소는 계정의 주소 값으로 등록 t-3
                     singleAddress = commonRepository.getById(uid).getAddress();
                 }
-                // trn-3
+                // t-3
                 Address savedAddress = addressRepository.save(singleAddress);
                 // ----Address done-----
 
@@ -107,7 +114,8 @@ public class ReservationInfoService {
                              personEntity.relationSet(savedReservationInfo, savedAddress);
                              return personEntity;
                         }).collect(Collectors.toList());
-                // trn-4 saveAll sql 생성문 확인바람
+                // t-4 saveAll sql 생성문 확인바람(n+1)
+                System.out.println(">>> is n+1? ");
                 reservationPersonRepository.saveAll(reservationPersonList);
 
             }else { // 주소 각 입력일 경우,
@@ -134,6 +142,26 @@ public class ReservationInfoService {
         return ResponseEntity.ok("OK: 예약 등록 완료");
     }
 
+    public void tourReservation() {
+        // dto to local variable
+        // save ReservationInfo & Address & Person
+    }
+
+    private ReservationInfo saveReservationInfo(ReservationInfo reservationInfo) {
+        for (int i = 0; i<4;i++){
+            boolean conflict = reservationInfoRepository.existsById(reservationInfo.idGenerate("RV"));
+            if (!conflict) {
+                return reservationInfoRepository.save(reservationInfo);
+            }else {
+                if(i == 3){
+                    log.info("예약번호 4연속 중복, 오늘자 :{}", LocalDateTime.now());
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
+
     @Transactional
     public ResponseEntity cancelReservation(String reservationId) {
         reservationInfoRepository.deleteById(reservationId);
@@ -143,6 +171,7 @@ public class ReservationInfoService {
     @Transactional(readOnly = true)
     public ResponseEntity<List<ReservationInfoResponse.MyInfo>> myReservation() {
 //        필요정보 : 예약번호, 예약자, 예약 인원, 패키지명, 가격, 출발일, 도착일, 예약상태
+//        필요 Entity: paged info,Date,TripPackage,ReservationPerson
         Long uid = CommonUtils.getAuthenticatedUserId();
         // 내 예약정보 전부 가져오기
         List<ReservationInfo> info = reservationInfoRepository.findByAccountId(uid);
@@ -152,8 +181,8 @@ public class ReservationInfoService {
             info.forEach(reservationInfo -> {
                 ReservationInfoResponse.MyInfo myInfo = new ReservationInfoResponse.MyInfo();
                 var reservationDate = reservationInfo.getReservationDate();
-                var tripPackage = reservationDate.getTripPackage();
                 var reservedPerson = reservationInfo.getReservationPerson();
+                var tripPackage = reservationDate.getTripPackage();
                 var representPerson = reservedPerson.get(0);
 
                 // 예약 번호

@@ -1,13 +1,17 @@
 package com.healthtrip.travelcare.config.advice;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.healthtrip.travelcare.common.Exception.CustomException;
 import com.siot.IamportRestClient.exception.IamportResponseException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -19,7 +23,10 @@ import java.util.Map;
 
 @Slf4j
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandlerController {
+
+  private final ObjectMapper objectMapper;
 
   @Bean
   public ErrorAttributes errorAttributes() {
@@ -42,10 +49,13 @@ public class GlobalExceptionHandlerController {
     res.sendError(HttpStatus.FORBIDDEN.value(), "Access denied");
   }
 
-  @ExceptionHandler(Exception.class)
-  public void handleException(HttpServletResponse res) throws IOException {
-    res.sendError(HttpStatus.BAD_REQUEST.value(), "Something went wrong");
-  }
+//  @ExceptionHandler(Exception.class)
+//  public void handleException(HttpServletResponse res,Exception e) throws IOException {
+//    res.setStatus(500);
+//    res.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+//    res.getOutputStream().write(objectMapper.writeValueAsBytes(Map.of("error msg",e.getMessage())));
+////    res.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+//  }
 
   @ExceptionHandler(IamportResponseException.class)
   public void handleIamportException(HttpServletResponse res,IamportResponseException e) {

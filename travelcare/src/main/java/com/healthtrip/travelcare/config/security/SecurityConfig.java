@@ -25,7 +25,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import java.util.List;
 
 @RequiredArgsConstructor
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity(debug = false)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final AccountService accountService;
