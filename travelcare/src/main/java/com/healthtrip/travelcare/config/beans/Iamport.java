@@ -4,13 +4,14 @@ import com.siot.IamportRestClient.IamportClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
-@Configuration
+@Component
 public class Iamport {
 
-    @Value("iamport.apiKey")
+    @Value("${iamport.apiKey}")
     private String key;
-    @Value("iamport.apiSecret")
+    @Value("${iamport.apiSecret}")
     private String secret;
     @Bean
     public IamportClient iamportClient() {

@@ -21,7 +21,7 @@ public class PaymentController {
 
     private final PaymentService paymentService;
 
-    @GetMapping("/Verification")
+    @GetMapping("/verification")
     public String verification(
             @RequestParam(required = false) String imp_uid
             , @RequestParam(required = false) String merchant_uid

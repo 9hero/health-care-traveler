@@ -8,9 +8,7 @@ import org.springframework.data.domain.Persistable;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Setter
 @Entity
@@ -34,7 +32,7 @@ public class PackageTourPayment extends BaseTimeEntity implements Persistable<St
     private String id;
     @ToString.Exclude
     @OneToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "tour_merchant_id")
+    @JoinColumn(name = "tour_reservation_id")
     private ReservationInfo reservationInfo;
     @Column(name = "paid_amount")
     private BigDecimal amount;
@@ -42,12 +40,13 @@ public class PackageTourPayment extends BaseTimeEntity implements Persistable<St
     private String payType;
 
     private LocalDateTime paymentDate;
+
 //    private String buyerName;
 //    private String status;
 //    private String receiptUrl;
 
-    public String generateTourPaymentId() {
-        String id = CommonUtils.dateWithTypeIdGenerate("TP");
+    public String idGenerate(String type) {
+        String id = CommonUtils.dateWithTypeIdGenerate(type);
         this.id = id;
         return this.id;
     }
@@ -56,4 +55,6 @@ public class PackageTourPayment extends BaseTimeEntity implements Persistable<St
     public boolean isNew(){
         return this.getCreatedAt() == null;
     }
+
+
 }

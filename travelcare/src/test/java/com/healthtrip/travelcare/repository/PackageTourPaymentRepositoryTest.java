@@ -1,21 +1,14 @@
 package com.healthtrip.travelcare.repository;
 
 import com.healthtrip.travelcare.domain.entity.travel.PackageTourPayment;
-import com.healthtrip.travelcare.domain.entity.travel.reservation.ReservationInfo;
 import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class PackageTourPaymentRepositoryTest {
@@ -35,7 +28,7 @@ class PackageTourPaymentRepositoryTest {
         var b = packageTourPayment();
         b.setReservationInfo(a);
         for (  int i = 0; i<4;i++){
-            boolean conflict = packageTourPaymentRepository.existsById(b.generateTourPaymentId());
+            boolean conflict = packageTourPaymentRepository.existsById(b.idGenerate("TP"));
             if (!conflict) {
                 packageTourPaymentRepository.save(b);
                 break;

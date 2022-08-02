@@ -5,7 +5,6 @@ import javax.persistence.*;
 import com.healthtrip.travelcare.common.CommonUtils;
 import com.healthtrip.travelcare.domain.entity.account.Account;
 import com.healthtrip.travelcare.domain.entity.BaseTimeEntity;
-import com.healthtrip.travelcare.domain.entity.travel.PackageTourPayment;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
@@ -87,6 +86,14 @@ public class ReservationInfo extends BaseTimeEntity implements Serializable, Per
     @Override
     public boolean isNew() {
         return this.getCreatedAt() == null;
+    }
+
+    public void paid() {
+        this.paymentStatus = PaymentStatus.Y;
+    }
+
+    public void cancel() {
+        this.csStatus = CsStatus.C;
     }
 
     // 예약상태
