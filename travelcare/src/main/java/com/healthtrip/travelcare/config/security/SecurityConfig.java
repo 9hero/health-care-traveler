@@ -61,32 +61,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/api/account/**","/favicon.ico").permitAll()
+                .antMatchers("/api/admin/**").hasRole("ADMIN")
+
+                // address
                 .antMatchers("/api/address/**").authenticated()
 
                 //reservation date
-                .antMatchers("/api/reservation-date").hasRole("ADMIN")
 
                 // notice board
                 .antMatchers(HttpMethod.GET,"/api/notice-board/**").permitAll()
-                .antMatchers(HttpMethod.POST,"/api/notice-board").hasRole("ADMIN")
-                .antMatchers(HttpMethod.PUT,"/api/notice-board").hasRole("ADMIN")
-                .antMatchers(HttpMethod.DELETE,"/api/notice-board").hasRole("ADMIN")
-
 
                 // trip pack file
-                .antMatchers(HttpMethod.GET,"/api/trip-package-file/images").permitAll()
-                .antMatchers("/api/trip-package-file/images").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET,"/api/tour/package/file/images").permitAll()
+
 
                 // trip package
-                .antMatchers(HttpMethod.POST,"/api/trip-package/add").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET,"/api/trip-package/**").permitAll()
 
                 // reservation
-                .antMatchers("/api/reservation/**").authenticated()
+                .antMatchers("/api/tour/reservation/**").authenticated()
                 // custom reservation
-                .antMatchers("/api/custom/**").authenticated()
-                .antMatchers(HttpMethod.PATCH,"/api/custom").hasRole("ADMIN")
-                .antMatchers(HttpMethod.DELETE,"/api/custom/**").hasRole("ADMIN")
+                .antMatchers("/api/tour/custom/**").authenticated()
 
                 .anyRequest().authenticated()
                 .and()

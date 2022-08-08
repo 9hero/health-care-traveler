@@ -35,7 +35,6 @@ public class PaymentService {
             var reservationInfo = infoOptional.get();
             // 성공
             if (result.getResponse().getAmount().compareTo(reservationInfo.getAmount()) == 0) {
-                System.out.println("검증통과");
                 // 결제내역 DB 저장
                 PackageTourPayment entity = PackageTourPayment.builder()
                         .payType(payment.getPayMethod())

@@ -13,10 +13,11 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/trip-package/file")
+@RequestMapping("/api")
 @Tag(name = "여행패키지파일 API",description = "이미지파일 등")
 public class TourPackageFileController {
-
+    private final String domain = "/tour/package/file";
+    private final String adminApi = "/admin"+domain;
     private final TourPackageFileService tourPackageFileService;
 
     // 패키지에서 이미지 가져오기
@@ -30,14 +31,14 @@ public class TourPackageFileController {
     }
 
     // 이미지 추가 & 삭제로 패키지 이미지 수정!
-    @Operation(summary = "패키지 번호로 해당 패키지 이미지 추가 *주의* 꼭 Schema 참고해주세요")
-    @PostMapping("/images")
-    public void addImage(@ModelAttribute TripPackageFileRequest request) {
+    @Operation(summary = "패키지 번호로 해당 패키지 이미지 추가")
+    @PostMapping(adminApi+"/images")
+    public void addImage(TripPackageFileRequest request) {
         tourPackageFileService.addImage(request);
     }
 
     @Operation(summary = "파일 번호로 이미지 삭제")
-    @DeleteMapping("/images")
+    @DeleteMapping(adminApi+"/images")
     public void deleteImage(@RequestBody List<Long> fileIds) {
         tourPackageFileService.deleteImage(fileIds);
     }

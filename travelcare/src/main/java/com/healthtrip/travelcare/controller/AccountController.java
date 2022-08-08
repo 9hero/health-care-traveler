@@ -100,13 +100,6 @@ public class AccountController {
         // 생각 해볼 예외: 만료기간 지남, 잘못된 토큰 or 이메일
     }
 
-    @Operation(hidden = true,summary = "테스트용 권한 확인")
-    @GetMapping("/auth")
-    public Authentication getAuthTest() {
-        log.info("info 테스트!");
-        throw new CustomException("쓰로잉 테스트!", HttpStatus.OK);
-//        return SecurityContextHolder.getContext().getAuthentication();
-    }
     @Operation(summary = "비밀번호를 잊었어요 재설정 요청!",description = "흐름: 요청 ->사용자 메일-> 인증코드입력 -> 비밀번호 재설정(/reset-password)")
     @PostMapping("/forgot-password")
     public AccountResponse.EmailCheck passwordReset(@RequestParam String email) {
@@ -120,5 +113,12 @@ public class AccountController {
         return accountService.passwordReset(dto);
     }
 
+
+    //   <  Admin's method for managing accounts  >
+    // 1. 유저 조회
+    // 1-1 일반유저, 기관유저
+
+    // 2. 유저 수정,삭제
+    // 3. 유저 상태변경(차단 등)
 }
 

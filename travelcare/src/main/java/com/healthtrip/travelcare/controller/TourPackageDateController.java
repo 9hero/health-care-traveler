@@ -10,9 +10,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/reservation/date")
+@RequestMapping("/api")
 @Tag(name = "여행일 API")
 public class TourPackageDateController {
+
+    private final String domain = "/tour/package/date";
+    private final String adminApi = "/admin"+domain;
+
 
     private final ReservationDateService reservationDateService;
 
@@ -24,13 +28,13 @@ public class TourPackageDateController {
     }
      */
     @Operation(summary = "패키지의 여행일자를 작성하여 추가합니다. (tripPackageId)")
-    @PostMapping("")
+    @PostMapping(adminApi)
     public ResponseEntity addTripDates(@RequestBody ReservationDateRequest.AddTrip request) {
         return ResponseEntity.ok(reservationDateService.addTripDate(request));
     }
 
     @Operation(summary = "최대인원, 현재인원, 출발시각,도착시각을 수정합니다.(덮어씌우기) ReservationDateId")
-    @PutMapping("")
+    @PutMapping(adminApi)
     public ResponseEntity modifyTripDates(@RequestBody ReservationDateRequest.Modify request) {
         return ResponseEntity.ok(reservationDateService.modifyTripDates(request));
     }
