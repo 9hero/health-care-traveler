@@ -1,7 +1,7 @@
 package com.healthtrip.travelcare.repository;
 
 
-import com.healthtrip.travelcare.domain.entity.account.AccountTimeToken;
+import com.healthtrip.travelcare.entity.account.AccountTimeToken;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;

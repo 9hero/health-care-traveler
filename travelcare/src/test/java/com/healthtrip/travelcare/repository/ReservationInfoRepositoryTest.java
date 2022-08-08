@@ -1,7 +1,6 @@
 package com.healthtrip.travelcare.repository;
 
-import com.healthtrip.travelcare.common.CommonUtils;
-import com.healthtrip.travelcare.domain.entity.travel.reservation.ReservationInfo;
+import com.healthtrip.travelcare.entity.tour.reservation.TourReservation;
 import com.healthtrip.travelcare.repository.dto.response.CustomTravelResponse;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -18,22 +17,22 @@ import java.util.stream.Collectors;
 @SpringBootTest
 class ReservationInfoRepositoryTest {
 @Autowired
-ReservationDateRepository reservationDateRepository;
+TourPackageDateRepository tourPackageDateRepository;
     @Autowired
-    ReservationInfoRepository reservationInfoRepository;
+    TourReservationRepository tourReservationRepository;
     @Autowired
     AccountsRepository accountsRepository;
 
-    ReservationInfo entity() {
-        return ReservationInfo.builder()
+    TourReservation entity() {
+        return TourReservation.builder()
 //                .id(CommonUtils.dateWithTypeIdGenerate("RV"))
                 .account(accountsRepository.getById(128L))
-                .reservationDate(reservationDateRepository.getById(30L))
+                .tourPackageDate(tourPackageDateRepository.getById(30L))
                 .personCount((short) 1)
 //                .reservationPerson()
-                .status(ReservationInfo.Status.Y)
-                .paymentStatus(ReservationInfo.PaymentStatus.N)
-                .csStatus(ReservationInfo.CsStatus.K)
+                .status(TourReservation.Status.Y)
+                .paymentStatus(TourReservation.PaymentStatus.N)
+                .csStatus(TourReservation.CsStatus.K)
                 .amount(BigDecimal.valueOf(567L))
                 .build();
     }
@@ -45,17 +44,17 @@ ReservationDateRepository reservationDateRepository;
         var b = entity();
 
         for (int i = 0; i<4;i++){
-            boolean conflict = reservationInfoRepository.existsById(b.TESTidGenerate("RV"));
+            boolean conflict = tourReservationRepository.existsById(b.TESTidGenerate("RV"));
             if (!conflict) {
-                reservationInfoRepository.save(b);
+                tourReservationRepository.save(b);
                 break;
             }else {
                 System.out.println("중복"+i);
                 if(i == 3)return;
             }
         }
-                reservationInfoRepository.flush();
-        System.out.println(reservationInfoRepository.findById(b.getId()).get());
+                tourReservationRepository.flush();
+        System.out.println(tourReservationRepository.findById(b.getId()).get());
     }
 
     @Test
@@ -63,12 +62,12 @@ ReservationDateRepository reservationDateRepository;
     @Disabled
     void findByUserId() {
         //        예약자, 패키지명, 예약상태, 출발일, 도착일
-        reservationInfoRepository.findByAccountId(70L).forEach(
+        tourReservationRepository.findByAccountId(70L).forEach(
                 reservationInfo -> {
-                    var date = reservationInfo.getReservationDate();
+                    var date = reservationInfo.getTourPackageDate();
 
-                    var tripPackage = date.getTripPackage();
-                    System.out.println(reservationInfo.getReservationPerson());
+                    var tripPackage = date.getTourPackage();
+                    System.out.println(reservationInfo.getTourReservationPeople());
                     System.out.println(tripPackage.getTitle());
                     System.out.println(reservationInfo.getStatus());
                     System.out.println(date.getDepartAt() +" ~ "+date.getArriveAt());
@@ -83,7 +82,7 @@ ReservationDateRepository reservationDateRepository;
 //                reservationInfoRepository.findByAccountId(128L).get(0).getAccount().getId()
 //        reservationInfoRepository.getByIdAndAccountId(59L,128L).getCustomTravelBoard()
 //        );
-        reservationInfoRepository.getByIdAndAccountId("59",128L).getCustomTravelBoard().stream().map(
+        tourReservationRepository.getByIdAndAccountId("59",128L).getCustomTravelBoard().stream().map(
                 customTravelBoard -> CustomTravelResponse.Info.builder()
                         .customReserveId(customTravelBoard.getId())
                         .title(customTravelBoard.getTitle())

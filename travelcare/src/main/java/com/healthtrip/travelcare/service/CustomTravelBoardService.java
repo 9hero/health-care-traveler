@@ -1,10 +1,10 @@
 package com.healthtrip.travelcare.service;
 
 import com.healthtrip.travelcare.common.CommonUtils;
-import com.healthtrip.travelcare.domain.entity.travel.reservation.CustomTravelBoard;
-import com.healthtrip.travelcare.domain.entity.travel.reservation.ReservationInfo;
+import com.healthtrip.travelcare.entity.tour.reservation.CustomTravelBoard;
+import com.healthtrip.travelcare.entity.tour.reservation.TourReservation;
 import com.healthtrip.travelcare.repository.CustomTravelBoardRepository;
-import com.healthtrip.travelcare.repository.ReservationInfoRepository;
+import com.healthtrip.travelcare.repository.TourReservationRepository;
 import com.healthtrip.travelcare.repository.dto.request.CustomTravelRequest;
 import com.healthtrip.travelcare.repository.dto.response.CustomTravelResponse;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class CustomTravelBoardService {
 
     private final CustomTravelBoardRepository customTravelRepository;
-    private final ReservationInfoRepository reservationInfoRepository;
+    private final TourReservationRepository tourReservationRepository;
 
     @Transactional
     public ResponseEntity<Boolean> reserveCustom(CustomTravelRequest request) {
@@ -30,14 +30,14 @@ public class CustomTravelBoardService {
         // 커스텀 여행 등록을 위해 연결된 패키지 예약을 가져옴
 //        var reservationInfo = reservationInfoRepository.getById(request.getReservationId());
         // reservationInfo 사용 주의 custom 불러올시 Lazy로 다시한번 db요청함 필요하면 EntityGraph 이용
-        var reservationInfo= reservationInfoRepository.getByIdAndAccountId(request.getReservationId(), CommonUtils.getAuthenticatedUserId());
+        var reservationInfo= tourReservationRepository.getByIdAndAccountId(request.getReservationId(), CommonUtils.getAuthenticatedUserId());
         if (reservationInfo == null){
             return ResponseEntity.ok(false);
         }
         // 커스텀 여행 객체 생성
         CustomTravelBoard customTravelBoard = CustomTravelBoard.builder()
                 .title(request.getTitle())
-                .reservationInfo(reservationInfo)
+                .tourReservation(reservationInfo)
                 .question(request.getQuestion())
                 .build();
         // db에 저장
@@ -63,7 +63,7 @@ public class CustomTravelBoardService {
             var savedCustom = customTravelRepository.save(customTravelBoard);
 
             // 답변 등록 후 패키지 상태 업데이트= 대기중 -> 승인 or 거절
-            savedCustom.getReservationInfo().customStatusUpdate(request.getAnswerStatus());
+            savedCustom.getTourReservation().customStatusUpdate(request.getAnswerStatus());
             return ResponseEntity.ok("답변완료");
         }else {
             return ResponseEntity.notFound().build();
@@ -73,7 +73,7 @@ public class CustomTravelBoardService {
     @Transactional(readOnly = true)
     public ResponseEntity<List<CustomTravelResponse.Info>> myCustomRequests(Long reservationId) {
         // 예약 번호와 유저 번호로 하나의 예약정보 가져오기
-        List<CustomTravelBoard> customTravelBoardList = customTravelRepository.findByReservationInfoIdAndUserId(reservationId, CommonUtils.getAuthenticatedUserId());
+        List<CustomTravelBoard> customTravelBoardList = customTravelRepository.findByTourReservationIdAndUserId(reservationId, CommonUtils.getAuthenticatedUserId());
         if(customTravelBoardList.size() != 0){
             //있다면 예약정보-> 커스텀요청 목록-> DTO변환 -> List로 변경
             List<CustomTravelResponse.Info> responseBody = customTravelBoardList.stream().map(customTravelBoard ->
@@ -99,7 +99,7 @@ public class CustomTravelBoardService {
         CustomTravelBoard customTravelBoard = customTravelRepository.findByIdAndAccountId(request.getCustomTravelId(),CommonUtils.getAuthenticatedUserId());
         if (customTravelBoard != null){
         // 이미 확정된 사항이라면 수정불가
-            boolean statusCheck = customTravelBoard.getReservationInfo().getStatus() != ReservationInfo.Status.Y;
+            boolean statusCheck = customTravelBoard.getTourReservation().getStatus() != TourReservation.Status.Y;
             if(statusCheck) {
         // 커스텀 여행 객체 변경
                 customTravelBoard.updateClientRequest(request);
@@ -116,7 +116,7 @@ public class CustomTravelBoardService {
     @Transactional(readOnly = true)
     public ResponseEntity<List<CustomTravelResponse.Info>> getReservationById(Long reservationId) {
         // 커스텀 예약 목록 조회
-        List<CustomTravelBoard> myCustomReservations= customTravelRepository.findByReservationInfoId(reservationId);
+        List<CustomTravelBoard> myCustomReservations= customTravelRepository.findByTourReservationId(reservationId);
         // 응답객체 생성
         List<CustomTravelResponse.Info> responseBody =
                 myCustomReservations.stream().map(customTravelBoard ->

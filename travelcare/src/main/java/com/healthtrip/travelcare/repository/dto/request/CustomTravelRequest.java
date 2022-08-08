@@ -1,6 +1,6 @@
 package com.healthtrip.travelcare.repository.dto.request;
 
-import com.healthtrip.travelcare.domain.entity.travel.reservation.ReservationInfo;
+import com.healthtrip.travelcare.entity.tour.reservation.TourReservation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,7 +24,7 @@ public class CustomTravelRequest {
         @Schema(description = "답변")
         private String answer;
         @Schema(description = "예약 상태 업데이트= 예약 가능:Y, 답변전:B(before), 불가능함:N")
-        private ReservationInfo.Status answerStatus;
+        private TourReservation.Status answerStatus;
         // Y,N, 답변완료:Y, 답변전:Before, 불가능함:N
     }
 

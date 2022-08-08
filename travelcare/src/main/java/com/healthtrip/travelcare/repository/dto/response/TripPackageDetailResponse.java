@@ -1,7 +1,7 @@
 package com.healthtrip.travelcare.repository.dto.response;
 
 
-import com.healthtrip.travelcare.domain.entity.travel.trip_package.TripPackage;
+import com.healthtrip.travelcare.entity.tour.tour_package.TourPackage;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -27,13 +27,13 @@ public class TripPackageDetailResponse {
 
     private List<ReservationDateResponse> reservationDateList;
 
-    public TripPackageDetailResponse entityToResponseBasic(TripPackage tripPackage) {
+    public TripPackageDetailResponse entityToResponseBasic(TourPackage tourPackage) {
         return
         TripPackageDetailResponse.builder()
-                .id(tripPackage.getId())
-                .description(tripPackage.getDescription())
-                .price(tripPackage.getPrice())
-                .type(tripPackage.getType())
+                .id(tourPackage.getId())
+                .description(tourPackage.getDescription())
+                .price(tourPackage.getPrice())
+                .type(tourPackage.getType())
                 .build();
     }
 }

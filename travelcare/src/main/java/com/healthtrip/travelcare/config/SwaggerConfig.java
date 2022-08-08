@@ -22,6 +22,13 @@ public class SwaggerConfig {
                 .build();
     }
     @Bean
+    public GroupedOpenApi privateApi() {
+        return GroupedOpenApi.builder()
+                .group("admin-api")
+                .pathsToMatch("/api/admin/**")
+                .build();
+    }
+    @Bean
     public OpenAPI openAPI() {
         SecurityScheme jwtAuth = new SecurityScheme()
                 .type(SecurityScheme.Type.HTTP)
@@ -30,7 +37,7 @@ public class SwaggerConfig {
         return new OpenAPI()
                 .info(new Info().title("TravelCare API")
                         .description("TravelCare API 명세서입니다.")
-                        .version("v0.0.3"))
+                        .version("v0.0.5"))
                 .components(new Components().addSecuritySchemes("jwtAuth", jwtAuth))
                 .addSecurityItem(securityRequirement);
     }

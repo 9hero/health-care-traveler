@@ -1,6 +1,6 @@
 package com.healthtrip.travelcare.repository;
 
-import com.healthtrip.travelcare.domain.entity.travel.PackageTourPayment;
+import com.healthtrip.travelcare.entity.tour.PackageTourPayment;
 import org.junit.jupiter.api.RepeatedTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,16 +17,16 @@ class PackageTourPaymentRepositoryTest {
     PackageTourPaymentRepository packageTourPaymentRepository;
 
     @Autowired
-    ReservationInfoRepository reservationInfoRepository;
+    TourReservationRepository tourReservationRepository;
 
     @RepeatedTest(10)
     @Transactional
     @Rollback(value = true)
     void saveAndFind() {
-        var a = reservationInfoRepository.getById("220724RV8077");
+        var a = tourReservationRepository.getById("220724RV8077");
 
         var b = packageTourPayment();
-        b.setReservationInfo(a);
+        b.setTourReservation(a);
         for (  int i = 0; i<4;i++){
             boolean conflict = packageTourPaymentRepository.existsById(b.idGenerate("TP"));
             if (!conflict) {

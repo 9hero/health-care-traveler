@@ -1,12 +1,12 @@
 package com.healthtrip.travelcare.service;
 
 import com.healthtrip.travelcare.common.CommonUtils;
-import com.healthtrip.travelcare.domain.entity.account.Account;
-import com.healthtrip.travelcare.domain.entity.location.Address;
-import com.healthtrip.travelcare.domain.entity.location.Country;
-import com.healthtrip.travelcare.domain.entity.travel.reservation.ReservationDate;
-import com.healthtrip.travelcare.domain.entity.travel.reservation.ReservationInfo;
-import com.healthtrip.travelcare.domain.entity.travel.reservation.ReservationPerson;
+import com.healthtrip.travelcare.entity.account.Account;
+import com.healthtrip.travelcare.entity.location.Address;
+import com.healthtrip.travelcare.entity.location.Country;
+import com.healthtrip.travelcare.entity.tour.reservation.TourPackageDate;
+import com.healthtrip.travelcare.entity.tour.reservation.TourReservation;
+import com.healthtrip.travelcare.entity.tour.reservation.TourReservationPerson;
 import com.healthtrip.travelcare.repository.*;
 import com.healthtrip.travelcare.repository.dto.request.AddressRequest;
 import com.healthtrip.travelcare.repository.dto.request.ReservationRequest;
@@ -32,11 +32,11 @@ public class ReservationInfoService {
     // 코드 줄이려면 ddd or 다른 서비스와 통합 후 불러오기
     private final AccountsRepository accountsRepository;
     private final AccountCommonRepository commonRepository;
-    private final ReservationInfoRepository reservationInfoRepository;
-    private final ReservationDateRepository reservationDateRepository;
+    private final TourReservationRepository tourReservationRepository;
+    private final TourPackageDateRepository tourPackageDateRepository;
     private final CountryRepository countryRepository;
     private final AddressRepository addressRepository;
-    private final ReservationPersonRepository reservationPersonRepository;
+    private final TourReservationPersonRepository tourReservationPersonRepository;
 
     @Transactional
     public ResponseEntity<String> reserveTripPackage(ReservationRequest.ReserveData reserveData) {
@@ -58,33 +58,33 @@ public class ReservationInfoService {
         }
 
         // 연관관계 설정을 위한 id 받아오기 t-1
-        var optional = reservationDateRepository.findById(reserveData.getDateId());
+        var optional = tourPackageDateRepository.findById(reserveData.getDateId());
         if (optional.isPresent()) {
-            ReservationDate reservationDate = optional.get();
+            TourPackageDate tourPackageDate = optional.get();
             Account account = accountsRepository.getById(uid);
 
             // 예약 금액 계산 amount = (예약인원*투어가격) t-2
             BigDecimal amount = BigDecimal.valueOf(personDataList.size())
-                    .multiply(reservationDate.getTripPackage().getPrice());
+                    .multiply(tourPackageDate.getTourPackage().getPrice());
 
             // 인원체크
-            boolean limitOver = reservationDate.plusCurrentPeopleNumber(personCount);
+            boolean limitOver = tourPackageDate.plusCurrentPeopleNumber(personCount);
             if (limitOver) return ResponseEntity.badRequest().body("Error: Limit Over");
 
             // 예약 하기
-            ReservationInfo reservationInfo = ReservationInfo.builder()
+            TourReservation tourReservation = TourReservation.builder()
 //                    .id()
                     .account(account)
-                    .reservationDate(reservationDate)
+                    .tourPackageDate(tourPackageDate)
                     .personCount(personCount)
-                    .status(ReservationInfo.Status.Y)
-                    .csStatus(ReservationInfo.CsStatus.K)
-                    .paymentStatus(ReservationInfo.PaymentStatus.N)
+                    .status(TourReservation.Status.Y)
+                    .csStatus(TourReservation.CsStatus.K)
+                    .paymentStatus(TourReservation.PaymentStatus.N)
                     .amount(amount)
                     .build();
             // 주문번호 생성 후 저장 중복번호일 경우 4번까지만 시도함 실패시
-            ReservationInfo savedReservationInfo = saveReservationInfo(reservationInfo);
-            if (savedReservationInfo == null)return ResponseEntity.ok("Error: 예약실패. 관리자에게 문의하세요.");
+            TourReservation savedTourReservation = saveReservationInfo(tourReservation);
+            if (savedTourReservation == null)return ResponseEntity.ok("Error: 예약실패. 관리자에게 문의하세요.");
 
             if (singleType) {
 
@@ -109,32 +109,32 @@ public class ReservationInfoService {
                 // 인적사항 Dto -> Entity로 변환 -> persist
                 var reservationPersonList = personDataList
                         .stream().map(personData->{
-                             var personEntity = ReservationPerson.reservationPersonBasicEntity(personData);
+                             var personEntity = TourReservationPerson.reservationPersonBasicEntity(personData);
                              // address,info 연관관계설정
-                             personEntity.relationSet(savedReservationInfo, savedAddress);
+                             personEntity.relationSet(savedTourReservation, savedAddress);
                              return personEntity;
                         }).collect(Collectors.toList());
                 // t-4 saveAll sql 생성문 확인바람(n+1)
                 System.out.println(">>> is n+1? ");
-                reservationPersonRepository.saveAll(reservationPersonList);
+                tourReservationPersonRepository.saveAll(reservationPersonList);
 
             }else { // 주소 각 입력일 경우,
                 // 주소입력수 예약인원입력수 같지 않으면 오류
                 if (addressList.size() != personDataList.size()) return ResponseEntity.badRequest().body("Error: 입력한 주소의 갯수와 고객의 수가 같지않습니다.");
                 // 주소입력수 만큼 Entity 생성
-                List<ReservationPerson> reservationPersonList = new ArrayList<>();
+                List<TourReservationPerson> tourReservationPersonList = new ArrayList<>();
                 for(int i = 0; i<personDataList.size(); i++){
                     AddressRequest addressRequest = addressList.get(i);
                     Country country = countryRepository.getById(addressRequest.getCountryId());
                     Address address = Address.toEntityBasic(addressRequest);
                     address.setCountry(country);
-                    ReservationPerson reservationPerson = ReservationPerson.reservationPersonBasicEntity(personDataList.get(i));
-                    reservationPerson.relationSet(savedReservationInfo,address);
+                    TourReservationPerson tourReservationPerson = TourReservationPerson.reservationPersonBasicEntity(personDataList.get(i));
+                    tourReservationPerson.relationSet(savedTourReservation,address);
                     // add
-                    reservationPersonList.add(reservationPerson);
+                    tourReservationPersonList.add(tourReservationPerson);
                 }
                 // saveAll
-                reservationPersonRepository.saveAll(reservationPersonList);
+                tourReservationPersonRepository.saveAll(tourReservationPersonList);
             }
         }else {
             return ResponseEntity.badRequest().body("Error: 해당 여행일짜 없음");
@@ -147,11 +147,11 @@ public class ReservationInfoService {
         // save ReservationInfo & Address & Person
     }
 
-    private ReservationInfo saveReservationInfo(ReservationInfo reservationInfo) {
+    private TourReservation saveReservationInfo(TourReservation tourReservation) {
         for (int i = 0; i<4;i++){
-            boolean conflict = reservationInfoRepository.existsById(reservationInfo.idGenerate("RV"));
+            boolean conflict = tourReservationRepository.existsById(tourReservation.idGenerate());
             if (!conflict) {
-                return reservationInfoRepository.save(reservationInfo);
+                return tourReservationRepository.save(tourReservation);
             }else {
                 if(i == 3){
                     log.info("예약번호 4연속 중복, 오늘자 :{}", LocalDateTime.now());
@@ -164,7 +164,7 @@ public class ReservationInfoService {
 
     @Transactional
     public ResponseEntity cancelReservation(String reservationId) {
-        reservationInfoRepository.deleteById(reservationId);
+        tourReservationRepository.deleteById(reservationId);
         return ResponseEntity.ok("별 다른 로직 없이 삭제만 했어요");
     }
 
@@ -174,15 +174,15 @@ public class ReservationInfoService {
 //        필요 Entity: paged info,Date,TripPackage,ReservationPerson
         Long uid = CommonUtils.getAuthenticatedUserId();
         // 내 예약정보 전부 가져오기
-        List<ReservationInfo> info = reservationInfoRepository.findByAccountId(uid);
+        List<TourReservation> info = tourReservationRepository.findByAccountId(uid);
         if(!info.isEmpty()){
             // 예약정보 있는경우: 응답값 초기화 및 필요한 객체들 불러오기
             List<ReservationInfoResponse.MyInfo> responseBody = new ArrayList<>();
             info.forEach(reservationInfo -> {
                 ReservationInfoResponse.MyInfo myInfo = new ReservationInfoResponse.MyInfo();
-                var reservationDate = reservationInfo.getReservationDate();
-                var reservedPerson = reservationInfo.getReservationPerson();
-                var tripPackage = reservationDate.getTripPackage();
+                var reservationDate = reservationInfo.getTourPackageDate();
+                var reservedPerson = reservationInfo.getTourReservationPeople();
+                var tripPackage = reservationDate.getTourPackage();
                 var representPerson = reservedPerson.get(0);
 
                 // 예약 번호
@@ -214,7 +214,7 @@ public class ReservationInfoService {
     @Transactional(readOnly = true)
     public ResponseEntity<List<ReservationPersonResponse.rpInfo>> getPeopleDataByInfoId(Long reservationId) {
         Long uid = CommonUtils.getAuthenticatedUserId();
-        List<ReservationPerson> reservationPeople = reservationPersonRepository.findByReservationId(reservationId,uid);
+        List<TourReservationPerson> reservationPeople = tourReservationPersonRepository.findByTourReservationId(reservationId,uid);
         var responseBody = reservationPeople.stream().map(person ->
                 ReservationPersonResponse.rpInfo.builder()
                         .reservedPersonId(person.getId())

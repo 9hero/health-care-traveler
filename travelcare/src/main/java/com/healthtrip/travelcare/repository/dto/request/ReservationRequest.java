@@ -1,15 +1,13 @@
 package com.healthtrip.travelcare.repository.dto.request;
 
 
-import com.healthtrip.travelcare.domain.entity.account.Account;
+import com.healthtrip.travelcare.entity.account.Account;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.validation.annotation.Validated;
 
-import javax.validation.Valid;
 import java.util.List;
 
 public class ReservationRequest {

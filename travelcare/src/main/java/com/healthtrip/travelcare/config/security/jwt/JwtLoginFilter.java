@@ -1,7 +1,7 @@
 package com.healthtrip.travelcare.config.security.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.healthtrip.travelcare.domain.entity.account.Account;
+import com.healthtrip.travelcare.entity.account.Account;
 import com.healthtrip.travelcare.repository.dto.response.AccountResponse;
 import com.healthtrip.travelcare.service.AccountService;
 import lombok.extern.slf4j.Slf4j;

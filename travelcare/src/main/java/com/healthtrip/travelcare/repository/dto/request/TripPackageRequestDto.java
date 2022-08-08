@@ -1,6 +1,6 @@
 package com.healthtrip.travelcare.repository.dto.request;
 
-import com.healthtrip.travelcare.domain.entity.travel.trip_package.TripPackage;
+import com.healthtrip.travelcare.entity.tour.tour_package.TourPackage;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,8 +28,8 @@ public class TripPackageRequestDto {
     @Schema(description = "이미지 파일을 보내주세요 여러개도 가능합니다.")
     private List<MultipartFile> multipartFiles;
 
-    public TripPackage toEntity(TripPackageRequestDto dto) {
-        return TripPackage.builder()
+    public TourPackage toEntity(TripPackageRequestDto dto) {
+        return TourPackage.builder()
                 .description(dto.getDescription())
                 .title(dto.getTitle())
                 .price(dto.getPrice())

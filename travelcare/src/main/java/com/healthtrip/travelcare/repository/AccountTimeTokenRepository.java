@@ -1,6 +1,6 @@
 package com.healthtrip.travelcare.repository;
 
-import com.healthtrip.travelcare.domain.entity.account.AccountTimeToken;
+import com.healthtrip.travelcare.entity.account.AccountTimeToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;

@@ -1,6 +1,6 @@
 package com.healthtrip.travelcare.service;
 
-import com.healthtrip.travelcare.domain.entity.NoticeBoard;
+import com.healthtrip.travelcare.entity.NoticeBoard;
 import com.healthtrip.travelcare.repository.AccountsRepository;
 import com.healthtrip.travelcare.repository.NoticeBoardRepository;
 import com.healthtrip.travelcare.repository.dto.request.NoticeBoardRequest;
