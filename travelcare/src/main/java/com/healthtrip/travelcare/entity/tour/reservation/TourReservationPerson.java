@@ -45,7 +45,7 @@ public class TourReservationPerson extends BaseTimeEntity {
     private String emergencyContact;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
+    @JoinColumn(name = "reservation_info_id")
     @ToString.Exclude
     private TourReservation tourReservation;
 

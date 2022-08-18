@@ -173,7 +173,7 @@ public class ReservationInfoService {
 //        필요정보 : 예약번호, 예약자, 예약 인원, 패키지명, 가격, 출발일, 도착일, 예약상태
 //        필요 Entity: paged info,Date,TripPackage,ReservationPerson
         Long uid = CommonUtils.getAuthenticatedUserId();
-        // 내 예약정보 전부 가져오기
+        // 내 예약정보 전부 가져오기  현재 N+4 한방쿼리 or EntityGraph or FetchJoin -> paging 처리도 필수
         List<TourReservation> info = tourReservationRepository.findByAccountId(uid);
         if(!info.isEmpty()){
             // 예약정보 있는경우: 응답값 초기화 및 필요한 객체들 불러오기
@@ -183,7 +183,7 @@ public class ReservationInfoService {
                 var reservationDate = reservationInfo.getTourPackageDate();
                 var reservedPerson = reservationInfo.getTourReservationPeople();
                 var tripPackage = reservationDate.getTourPackage();
-                var representPerson = reservedPerson.get(0);
+                var representPerson = reservedPerson.get(0); // N+1
 
                 // 예약 번호
                 myInfo.setReservationInfoId(reservationInfo.getId());
@@ -212,7 +212,7 @@ public class ReservationInfoService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<List<ReservationPersonResponse.rpInfo>> getPeopleDataByInfoId(Long reservationId) {
+    public ResponseEntity<List<ReservationPersonResponse.rpInfo>> getPeopleDataByInfoId(String reservationId) {
         Long uid = CommonUtils.getAuthenticatedUserId();
         List<TourReservationPerson> reservationPeople = tourReservationPersonRepository.findByTourReservationId(reservationId,uid);
         var responseBody = reservationPeople.stream().map(person ->

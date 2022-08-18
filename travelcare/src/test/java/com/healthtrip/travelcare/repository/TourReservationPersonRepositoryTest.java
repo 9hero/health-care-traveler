@@ -16,6 +16,6 @@ class TourReservationPersonRepositoryTest {
 //    @Transactional
     void findByReservationInfoId() {
 //        reservationPersonRepository.findByReservationInfoId(32L).forEach(System.out::println);
-        tourReservationPersonRepository.findByTourReservationId(22L,70L).forEach(System.out::println);
+        tourReservationPersonRepository.findByTourReservationId("220817RV7115",128L).forEach(System.out::println);
     }
 }

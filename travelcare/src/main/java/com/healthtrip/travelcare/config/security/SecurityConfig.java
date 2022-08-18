@@ -74,9 +74,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // trip pack file
                 .antMatchers(HttpMethod.GET,"/api/tour/package/file/images").permitAll()
 
+                // tour payment
+//                .antMatchers(HttpMethod.POST)
 
                 // trip package
-                .antMatchers(HttpMethod.GET,"/api/trip-package/**").permitAll()
+                .antMatchers(HttpMethod.GET,"/api/tour/package/**").permitAll()
 
                 // reservation
                 .antMatchers("/api/tour/reservation/**").authenticated()

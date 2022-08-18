@@ -15,10 +15,9 @@ import java.util.*;
 
 @Getter
 @NoArgsConstructor
-@DynamicInsert
-@DynamicUpdate
 @Entity
 @ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true,exclude = {"noticeBoard","tourReservationList"})
 public class Account extends BaseTimeEntity implements UserDetails {
 
     @Builder
@@ -55,6 +54,7 @@ public class Account extends BaseTimeEntity implements UserDetails {
     private Status status;
 
     // --------ROLES-----------
+    @Setter
     @Enumerated(value = EnumType.STRING)
     private UserRole userRole;
 

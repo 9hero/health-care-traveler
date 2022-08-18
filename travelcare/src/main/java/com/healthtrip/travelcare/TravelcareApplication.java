@@ -12,7 +12,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
 @EnableAsync
-@EnableJpaAuditing
 public class TravelcareApplication {
 
 	public static void main(String[] args) {

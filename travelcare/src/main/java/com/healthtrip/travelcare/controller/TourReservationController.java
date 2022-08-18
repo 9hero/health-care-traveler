@@ -50,14 +50,14 @@ public class TourReservationController {
     //여기서 모든 내 예약정보 끌어옴
     @ApiResponse(responseCode = "200",description = "예약 정보 없을 시 null")
     @Operation(summary = "나의 예약목록",description = " 예약번호, 예약자, 패키지명, 예약상태, 출발일, 도착일을 가져옵니다. 필요한 정보가 있을 시 말해주세요.")
-    @GetMapping(domain+"/info/me")// ㅇ
+    @GetMapping(domain+"/me")// ㅇ
     public ResponseEntity<List<ReservationInfoResponse.MyInfo>> myReservation(){
         return reservationInfoService.myReservation();
     }
 
     @Operation(summary = "예약인원정보 보기 (예약 번호 필요)",description = "예약 번호는 /api/reservation/info/me 에서 받아올 수 있습니다.")
-    @GetMapping(domain+"/info/{reservationId}")
-    public ResponseEntity<List<ReservationPersonResponse.rpInfo>> reservationDetails(@PathVariable Long reservationId){
+    @GetMapping(domain+"/{reservationId}")
+    public ResponseEntity<List<ReservationPersonResponse.rpInfo>> reservationDetails(@PathVariable String reservationId){
         return reservationInfoService.getPeopleDataByInfoId(reservationId);
     }
 
@@ -72,20 +72,20 @@ public class TourReservationController {
     @Operation(summary = "예약하기",
     description = "AddressType: Single <br/>ROLE_COMMON: 본인 계정의 주소로 저장하기 때문에 주소 데이터는 필요없음 , ROLE_AGENT: 입력한 하나의 주소값이 모든 예약자의 주소로 저장됨" +
             "<br/> AddressType: ForEach = 주소 데이터 개별 입력")
-    @PostMapping(domain+"/info")
+    @PostMapping(domain)
     public ResponseEntity reservePackage(@RequestBody ReservationRequest.ReserveData reserveData) {
         return reservationInfoService.reserveTripPackage(reserveData);
     }
 
     @Operation(summary = "(임시)예약취소",description = "예약취소기록 남기기(현재 임시:처리 로직없이 삭제만 함),해당하는 예약id를 입력해주세요 현재 삭제할 시 예약자와 함께 삭제됩니다.")
-    @DeleteMapping(domain+"/info/{reservationId}")
+    @DeleteMapping(domain+"/{reservationId}")
     public ResponseEntity cancelReservation(@PathVariable String reservationId) {
         return reservationInfoService.cancelReservation(reservationId);
     }
 
     // 내 예약수정 == 예약자 정보 변경
     @Operation(hidden = true,summary = "(비활성)예약 수정하기: 수정항목이 필요해요(예약 인원 변경 등)",description = "해당하는 예약번호를 입력해주세요")
-    @PutMapping(domain+"/info/{reservationId}")
+    @PutMapping(domain+"/{reservationId}")
     public ResponseEntity modifyReservation() {
         return null;
     }

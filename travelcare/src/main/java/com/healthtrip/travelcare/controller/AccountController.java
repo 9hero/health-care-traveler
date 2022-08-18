@@ -54,7 +54,7 @@ public class AccountController {
         return accountService.createCommon(commonSignUp);
     }
     @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "생성 완료"),
+            @ApiResponse(responseCode = "200",description = "가입 완료"),
     @ApiResponse(responseCode = "409",description = "이메일 중복"),
     @ApiResponse(responseCode = "400",description = "입력값 오류")
 })
