@@ -36,8 +36,8 @@ public class TourPackageController {
     }
 
     @Operation(summary = "패키지를 등록합니다.",description = "이미지 뭉치와 패키지 등록정보를 보내주세요")
-    @PostMapping(adminApi+"/add") // 테스트 전
-    public ResponseEntity addTripPack(@ModelAttribute TripPackageRequestDto tripPackageRequestDto){
+    @PostMapping(adminApi) // 테스트 전
+    public ResponseEntity addTripPack(TripPackageRequestDto tripPackageRequestDto){
          // 후에 JWT로 변경 예정, user와 단방향 설정됨 trippack -> account
         try {
         return tpService.addTripPack(tripPackageRequestDto);

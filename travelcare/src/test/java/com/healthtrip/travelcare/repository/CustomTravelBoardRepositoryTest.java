@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @SpringBootTest
-@Disabled
+@Disabled("불필요 기능")
 class CustomTravelBoardRepositoryTest {
 
     @Autowired

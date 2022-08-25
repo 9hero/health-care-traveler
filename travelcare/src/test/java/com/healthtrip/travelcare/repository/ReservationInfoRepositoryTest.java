@@ -76,7 +76,7 @@ TourPackageDateRepository tourPackageDateRepository;
     }
     @Test
     @Transactional
-    @Disabled
+//    @Disabled
     void findByUserIdNative() {
 //        System.out.println(
 //                reservationInfoRepository.findByAccountId(128L).get(0).getAccount().getId()
@@ -95,5 +95,6 @@ TourPackageDateRepository tourPackageDateRepository;
 //        System.out.println(map.entrySet());
 
     }
+
 
 }

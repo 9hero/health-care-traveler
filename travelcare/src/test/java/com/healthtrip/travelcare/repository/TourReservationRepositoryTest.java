@@ -1,10 +1,12 @@
 package com.healthtrip.travelcare.repository;
 
+import com.healthtrip.travelcare.annotation.DataJpaUnitTest;
 import com.healthtrip.travelcare.entity.account.Account;
 import com.healthtrip.travelcare.entity.tour.reservation.TourPackageDate;
 import com.healthtrip.travelcare.entity.tour.reservation.TourReservation;
 import com.healthtrip.travelcare.entity.tour.tour_package.TourPackage;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,48 +23,56 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
+@DataJpaUnitTest
 class TourReservationRepositoryTest {
 
     @Autowired
-    private TourReservationRepository tourReservationRepository;
+    TourReservationRepository tourReservationRepository;
 
     @Autowired
-    static AccountsRepository accountsRepository;
+    AccountsRepository accountsRepository;
     @Autowired
-    static TourPackageRepository tourPackageRepository;
+    TourPackageRepository tourPackageRepository;
     @Autowired
-    static TourPackageDateRepository tourPackageDateRepository;
+    TourPackageDateRepository tourPackageDateRepository;
 
-    @BeforeAll
-    @Transactional
-    static void setRelationalEntity() {
-        var account = accountsRepository.save(Account.builder()
+    Account account;
+    TourPackage tourPackage;
+    TourPackageDate tourPackageDate;
+    @BeforeEach
+    void setRelationalEntity() {
+        account =Account.builder()
                 .email("test@num1")
                 .status(Account.Status.Y)
                 .password("1234")
                 .userRole(Account.UserRole.ROLE_COMMON)
-                .build());
-        var tourPackage= tourPackageRepository.save(TourPackage.builder()
+                .build();
+        tourPackage= TourPackage.builder()
                         .account(account)
                         .title("testTitle")
                         .description("test")
                         .price(BigDecimal.TEN)
                         .type("test")
-                .build());
-        tourPackageDateRepository.save(
+                .build();
+        tourPackageDate =
                 TourPackageDate.builder()
                         .tourPackage(tourPackage)
                         .departAt(LocalDateTime.now())
                         .currentNumPeople((short)5)
                         .arriveAt(LocalDateTime.now().plusDays(1L))
                         .peopleLimit((short) 30)
-                        .build()
-        );
+                        .build();
+    }
+
+    void setup() {
+        accountsRepository.save(account);
+        tourPackageRepository.save(tourPackage);
+        tourPackageDateRepository.save(tourPackageDate);
     }
 
     @Test
     @DisplayName("Entity save & find")
+    @Transactional
     void saveAndFind() {
         //given
         var acc=accountsRepository.getById(1L);
@@ -82,16 +92,5 @@ class TourReservationRepositoryTest {
         tourReservationRepository.flush();
         tourReservationRepository.findById(str.getId()).ifPresent(tourReservation -> System.out.println(tourReservation));
     }
-
-    @Test
-    void existsById() {
-    }
-
-    @Test
-    void findByAccountId() {
-    }
-
-    @Test
-    void getByIdAndAccountId() {
-    }
+    
 }

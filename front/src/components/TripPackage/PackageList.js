@@ -23,7 +23,7 @@ function PackageList() {
       try {
         setLoading(true);
         setTripPackages(null);
-        const response = await axios.get("/api/trip-package/");
+        const response = await axios.get("/api/tour/package/");
         setTripPackages(response.data);
       } catch (error) {}
       setLoading(false);

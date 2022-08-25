@@ -1,5 +1,6 @@
 package com.healthtrip.travelcare.repository;
 
+import com.healthtrip.travelcare.annotation.DataJpaUnitTest;
 import com.healthtrip.travelcare.entity.tour.PackageTourPayment;
 import org.junit.jupiter.api.RepeatedTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@SpringBootTest
+@DataJpaUnitTest
 class PackageTourPaymentRepositoryTest {
 
     @Autowired
@@ -20,7 +21,6 @@ class PackageTourPaymentRepositoryTest {
     TourReservationRepository tourReservationRepository;
 
     @RepeatedTest(10)
-    @Transactional
     @Rollback(value = true)
     void saveAndFind() {
         var a = tourReservationRepository.getById("220724RV8077");
