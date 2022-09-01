@@ -12,6 +12,7 @@ import java.util.List;
 
 
 @Getter
+@ToString(callSuper = true)
 @NoArgsConstructor
 @Entity
 @Table(name = "trip_package")

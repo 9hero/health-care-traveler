@@ -1,27 +1,76 @@
 package com.healthtrip.travelcare.repository;
 
+import com.healthtrip.travelcare.annotation.DataJpaUnitTest;
+import com.healthtrip.travelcare.entity.account.Account;
 import com.healthtrip.travelcare.entity.tour.tour_package.TourPackage;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 
+import java.math.BigDecimal;
 import java.util.List;
 
-@SpringBootTest
+import static org.assertj.core.api.Assertions.assertThat;
+
+@DataJpaUnitTest
 class TourPackageRepositoryTest {
 
     @Autowired
-    TourPackageRepository repository;
+    TourPackageRepository tourPackageRepository;
 
-    @Test
-    @Rollback
-    @Disabled
-    void findAllNullTest() {
-        List<TourPackage> tourPackageList = repository.findAll();
-        System.out.println("못찾아오면 널인지 : "+ tourPackageList.get(0) == null);
+    @Autowired
+    AccountsRepository accountsRepository;
+
+    Account account;
+    TourPackage tourPackage;
+
+    @BeforeEach
+    void setup() {
+        account = Account.builder()
+                .email("Admin")
+                .userRole(Account.UserRole.ROLE_ADMIN)
+                .password("temp")
+                .status(Account.Status.Y)
+                .build();
+        tourPackage = TourPackage.builder()
+                .account(account)
+                .description("test")
+                .price(BigDecimal.valueOf(1234L))
+                .title("test")
+                .type("test")
+                .build();
     }
 
+    @DisplayName("저장")
+    @Test
+    void saveEntity(){
+        // given
+        Account savedAccount = accountsRepository.save(account);
 
+        // when
+        TourPackage savedTourPackage = tourPackageRepository.save(tourPackage);
+
+        // then
+        assertThat(savedTourPackage.getId()).isGreaterThan(0);
+        assertThat(savedTourPackage.getPrice()).isEqualTo(BigDecimal.valueOf(1234L));
+        assertThat(savedTourPackage.getCreatedAt()).isNotNull();
+    }
+    @DisplayName("조회")
+    @Test
+    void findEntity(){
+        // given
+        Account savedAccount = accountsRepository.save(account);
+        TourPackage savedTourPackage = tourPackageRepository.save(tourPackage);
+
+        // when
+        TourPackage foundTourPackage = tourPackageRepository.findById(savedTourPackage.getId()).get();
+
+        // then
+        assertThat(foundTourPackage.getId()).isEqualTo(savedTourPackage.getId());
+        assertThat(savedTourPackage.getPrice()).isEqualTo(BigDecimal.valueOf(1234L));
+    }
 }

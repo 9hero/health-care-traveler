@@ -9,6 +9,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "trip_package_file")
+@ToString
 public class TourPackageFile extends BaseTimeEntity {
 
     @Builder
@@ -25,6 +26,7 @@ public class TourPackageFile extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trip_package_id")
     private TourPackage tourPackage;
