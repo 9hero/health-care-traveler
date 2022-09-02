@@ -2,14 +2,17 @@ package com.healthtrip.travelcare.repository;
 
 import com.healthtrip.travelcare.annotation.DataJpaUnitTest;
 import com.healthtrip.travelcare.entity.tour.PackageTourPayment;
-import org.junit.jupiter.api.RepeatedTest;
+import com.healthtrip.travelcare.entity.tour.reservation.TourReservation;
+import com.healthtrip.travelcare.test_common.EntityProvider;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaUnitTest
 class PackageTourPaymentRepositoryTest {
@@ -17,36 +20,64 @@ class PackageTourPaymentRepositoryTest {
     @Autowired
     PackageTourPaymentRepository packageTourPaymentRepository;
 
-    @Autowired
-    TourReservationRepository tourReservationRepository;
+    private EntityProvider entityProvider;
+    @BeforeEach
+    void setup(){
+        entityProvider = new EntityProvider();
+    }
+    @Test
+    @DisplayName("저장")
+    void save() {
+        // given
+        PackageTourPayment packageTourPayment = entityProvider.getPackageTourPayment();
+        packageTourPayment.getTourReservation().idGenerate();
 
-    @RepeatedTest(10)
-    @Rollback(value = true)
-    void saveAndFind() {
-        var a = tourReservationRepository.getById("220724RV8077");
-
-        var b = packageTourPayment();
-        b.setTourReservation(a);
+        //when
         for (  int i = 0; i<4;i++){
-            boolean conflict = packageTourPaymentRepository.existsById(b.idGenerate("TP"));
+            boolean conflict = packageTourPaymentRepository.existsById(packageTourPayment.idGenerate());
             if (!conflict) {
-                packageTourPaymentRepository.save(b);
+                packageTourPaymentRepository.save(packageTourPayment);
                 break;
             }else {
                 System.out.println("중복"+i);
                 if(i == 3)return;
             }
         }
-        packageTourPaymentRepository.flush();
-        System.out.println(packageTourPaymentRepository.findById(b.getId()).get());
+
+        // then
+        assertThat(packageTourPayment.getId()).isNotBlank();
     }
 
-    PackageTourPayment packageTourPayment() {
-        return PackageTourPayment.builder()
+    @Test
+    @DisplayName("결제번호 중복테스트")
+    void uniqueConflict() {
+        // given
+        // 기존 저장된 데이터로 가정
+        PackageTourPayment oldPackageTourPayment = entityProvider.getPackageTourPayment();
+        TourReservation tourReservation = oldPackageTourPayment.getTourReservation();
+        oldPackageTourPayment.testIdGenerate();
+        tourReservation.idGenerate();
+
+        // 새로 등록할 데이터
+        var newTourReservation=entityProvider.getNewTourResrvation();
+        newTourReservation.TESTidGenerate();
+        PackageTourPayment newPackageTourPayment = PackageTourPayment.builder()
+                .tourReservation(newTourReservation)
                 .amount(BigDecimal.valueOf(550L))
                 .paymentDate(LocalDateTime.now())
                 .currency("USD")
                 .payType("CARD")
                 .build();
+        while (!oldPackageTourPayment.getId().equals(newPackageTourPayment.testIdGenerate())){
+            System.out.println("gg");
+        };
+
+        //when
+        packageTourPaymentRepository.save(oldPackageTourPayment);
+        boolean conflict = packageTourPaymentRepository.existsById(newPackageTourPayment.getId());
+
+        // then
+        assertThat(conflict).isTrue();
     }
+
 }

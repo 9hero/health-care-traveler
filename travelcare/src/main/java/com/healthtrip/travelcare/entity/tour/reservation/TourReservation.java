@@ -39,12 +39,12 @@ public class TourReservation extends BaseTimeEntity implements Serializable, Per
     @Id
     private String id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
     @ToString.Exclude
     @JoinColumn(name = "user_id")
     private Account account;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
     @JoinColumn(name = "date_id")
     @ToString.Exclude
     private TourPackageDate tourPackageDate;
@@ -52,11 +52,11 @@ public class TourReservation extends BaseTimeEntity implements Serializable, Per
     private short personCount;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "tourReservation",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "tourReservation",fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
     private List<CustomTravelBoard> customTravelBoard;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "tourReservation",fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "tourReservation",fetch = FetchType.LAZY,cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
     private List<TourReservationPerson> tourReservationPeople;
     // 예약 번호( 결제대행사에 결제내역 조회시 필요)
 
@@ -129,7 +129,7 @@ public class TourReservation extends BaseTimeEntity implements Serializable, Per
         this.id = id;
         return this.id;
     }
-    public String TESTidGenerate(String type) {
+    public String TESTidGenerate() {
         String id = CommonUtils.TESTdateWithTypeIdGenerate("RV");
         this.id = id;
         return this.id;

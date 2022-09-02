@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Table(name = "tour_payment")
 @ToString(callSuper = true)
 public class PackageTourPayment extends BaseTimeEntity implements Persistable<String> {
-
+    private static final String ID_TYPE = "TP";
     @Builder
     public PackageTourPayment(String id, TourReservation tourReservation, BigDecimal amount, String currency, String payType, LocalDateTime paymentDate) {
         this.id = id;
@@ -31,7 +31,7 @@ public class PackageTourPayment extends BaseTimeEntity implements Persistable<St
     @Id
     private String id;
     @ToString.Exclude
-    @OneToOne(fetch = FetchType.LAZY,optional = false)
+    @OneToOne(fetch = FetchType.LAZY,optional = false,cascade = CascadeType.PERSIST)
     @JoinColumn(name = "tour_reservation_id")
     private TourReservation tourReservation;
     @Column(name = "paid_amount")
@@ -45,8 +45,13 @@ public class PackageTourPayment extends BaseTimeEntity implements Persistable<St
 //    private String status;
 //    private String receiptUrl;
 
-    public String idGenerate(String type) {
-        String id = CommonUtils.dateWithTypeIdGenerate(type);
+    public String idGenerate() {
+        String id = CommonUtils.dateWithTypeIdGenerate(ID_TYPE);
+        this.id = id;
+        return this.id;
+    }
+    public String testIdGenerate() {
+        String id = CommonUtils.TESTdateWithTypeIdGenerate(ID_TYPE);
         this.id = id;
         return this.id;
     }

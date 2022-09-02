@@ -97,9 +97,7 @@ class TourReservationRepositoryTest {
         assertThat(savedTourReservation.getTourPackageDate()).isNotNull();
     }
     @DisplayName("주문코드 중복테스트")
-    @Transactional
     @Test
-    @Rollback(value = true)
     void uniqueConflict() {
         // given
         saveEntities();
@@ -122,7 +120,7 @@ class TourReservationRepositoryTest {
 
         // when
         for (int k = 0; k<4;k++){
-            boolean conflict = tourReservationRepository.existsById(tourReservation.TESTidGenerate("RV"));
+            boolean conflict = tourReservationRepository.existsById(tourReservation.TESTidGenerate());
             if (!conflict) {
                 tourReservationRepository.save(tourReservation);
                 counter = 0;

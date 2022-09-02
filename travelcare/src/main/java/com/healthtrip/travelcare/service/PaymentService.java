@@ -67,7 +67,7 @@ public class PaymentService {
 
     private PackageTourPayment savePackageTourPayment(PackageTourPayment packageTourPayment) {
         for (int i = 0; i<10;i++){
-            boolean conflict = packageTourPaymentRepository.existsById(packageTourPayment.idGenerate("TP"));
+            boolean conflict = packageTourPaymentRepository.existsById(packageTourPayment.idGenerate());
             if (!conflict) {
                 return packageTourPaymentRepository.save(packageTourPayment);
             }else {

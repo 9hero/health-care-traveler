@@ -37,7 +37,7 @@ class TourPackageDateRepositoryTest {
                 .password("temp")
                 .status(Account.Status.Y)
                 .build();
-        tourPackage =  tourPackage = TourPackage.builder()
+        tourPackage = TourPackage.builder()
                 .account(account)
                 .description("test")
                 .price(BigDecimal.valueOf(1234L))

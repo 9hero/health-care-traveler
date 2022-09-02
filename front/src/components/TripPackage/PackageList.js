@@ -23,7 +23,7 @@ function PackageList() {
       try {
         setLoading(true);
         setTripPackages(null);
-        const response = await axios.get("/api/tour/package/");
+        const response = await axios.get("http://3.39.185.254:8080/api/tour/package/");
         setTripPackages(response.data);
       } catch (error) {}
       setLoading(false);

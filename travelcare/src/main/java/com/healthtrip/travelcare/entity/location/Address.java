@@ -38,7 +38,7 @@ public class Address extends BaseTimeEntity {
     private String city;
 
     @JoinColumn
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.PERSIST)
     private Country country;
 
     private String postalCode;
