@@ -1,8 +1,14 @@
 package com.healthtrip.travelcare.service;
 
 import com.healthtrip.travelcare.entity.tour.reservation.TourReservation;
-import com.healthtrip.travelcare.repository.*;
+import com.healthtrip.travelcare.repository.account.AccountCommonRepository;
+import com.healthtrip.travelcare.repository.account.AccountsRepository;
 import com.healthtrip.travelcare.repository.dto.response.ReservationInfoResponse;
+import com.healthtrip.travelcare.repository.location.AddressRepository;
+import com.healthtrip.travelcare.repository.location.CountryRepository;
+import com.healthtrip.travelcare.repository.tour.TourPackageDateRepository;
+import com.healthtrip.travelcare.repository.tour.TourReservationPersonRepository;
+import com.healthtrip.travelcare.repository.tour.TourReservationRepository;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

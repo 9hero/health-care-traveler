@@ -1,7 +1,7 @@
 package com.healthtrip.travelcare.service;
 
 import com.healthtrip.travelcare.entity.account.Account;
-import com.healthtrip.travelcare.repository.AccountsRepository;
+import com.healthtrip.travelcare.repository.account.AccountsRepository;
 import com.healthtrip.travelcare.repository.dto.request.AccountRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;

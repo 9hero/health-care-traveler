@@ -1,14 +1,9 @@
 package com.healthtrip.travelcare.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.healthtrip.travelcare.entity.account.Account;
-import com.healthtrip.travelcare.repository.AccountAgentRepository;
-import com.healthtrip.travelcare.repository.AccountCommonRepository;
-import com.healthtrip.travelcare.repository.AccountsRepository;
-import com.healthtrip.travelcare.repository.dto.request.AccountRequest;
-import com.healthtrip.travelcare.repository.dto.request.AddressRequest;
-import com.healthtrip.travelcare.repository.dto.request.PersonData;
-import org.apache.http.client.methods.RequestBuilder;
+import com.healthtrip.travelcare.repository.account.AccountAgentRepository;
+import com.healthtrip.travelcare.repository.account.AccountCommonRepository;
+import com.healthtrip.travelcare.repository.account.AccountsRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

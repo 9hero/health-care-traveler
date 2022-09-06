@@ -3,7 +3,7 @@ package com.healthtrip.travelcare.config.security.jwt;
 import com.healthtrip.travelcare.common.Exception.CustomException;
 import com.healthtrip.travelcare.entity.account.Account;
 import com.healthtrip.travelcare.entity.account.RefreshToken;
-import com.healthtrip.travelcare.repository.RefreshTokenRepository;
+import com.healthtrip.travelcare.repository.account.RefreshTokenRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;

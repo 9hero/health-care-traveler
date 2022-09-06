@@ -2,9 +2,9 @@ package com.healthtrip.travelcare.service;
 
 import com.healthtrip.travelcare.entity.account.Account;
 import com.healthtrip.travelcare.entity.tour.tour_package.TourPackage;
-import com.healthtrip.travelcare.repository.AccountsRepository;
-import com.healthtrip.travelcare.repository.TourPackageDateRepository;
-import com.healthtrip.travelcare.repository.TourPackageRepository;
+import com.healthtrip.travelcare.repository.account.AccountsRepository;
+import com.healthtrip.travelcare.repository.tour.TourPackageDateRepository;
+import com.healthtrip.travelcare.repository.tour.TourPackageRepository;
 import com.healthtrip.travelcare.repository.dto.request.TripPackageRequestDto;
 import com.healthtrip.travelcare.repository.dto.response.ReservationDateResponse;
 import com.healthtrip.travelcare.repository.dto.response.TripPackageFileResponse;

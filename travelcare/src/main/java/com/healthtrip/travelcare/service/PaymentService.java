@@ -1,8 +1,8 @@
 package com.healthtrip.travelcare.service;
 
 import com.healthtrip.travelcare.entity.tour.PackageTourPayment;
-import com.healthtrip.travelcare.repository.PackageTourPaymentRepository;
-import com.healthtrip.travelcare.repository.TourReservationRepository;
+import com.healthtrip.travelcare.repository.tour.PackageTourPaymentRepository;
+import com.healthtrip.travelcare.repository.tour.TourReservationRepository;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.response.IamportResponse;

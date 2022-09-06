@@ -1,6 +1,6 @@
 package com.healthtrip.travelcare.service;
 
-import com.healthtrip.travelcare.repository.AddressRepository;
+import com.healthtrip.travelcare.repository.location.AddressRepository;
 import com.healthtrip.travelcare.repository.dto.response.AddressResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

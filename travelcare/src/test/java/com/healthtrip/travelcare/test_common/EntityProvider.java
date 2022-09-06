@@ -3,6 +3,7 @@ package com.healthtrip.travelcare.test_common;
 import com.healthtrip.travelcare.entity.account.Account;
 import com.healthtrip.travelcare.entity.account.AccountAgent;
 import com.healthtrip.travelcare.entity.account.AccountCommon;
+import com.healthtrip.travelcare.entity.hospital.*;
 import com.healthtrip.travelcare.entity.location.Address;
 import com.healthtrip.travelcare.entity.location.Country;
 import com.healthtrip.travelcare.entity.tour.PackageTourPayment;
@@ -38,7 +39,19 @@ public class EntityProvider {
     private final TourReservation tourReservation;
     private final TourReservationPerson tourReservationPerson;
     private final PackageTourPayment packageTourPayment;
+
+    private final HospitalAddress hospitalAddress;
+    private final Hospital hospital;
+    private final MedicalCheckupCategory medicalCheckupCategory;
+    private final MedicalCheckupProgram medicalCheckupProgram;
+    private final MedicalCheckupItem medicalCheckupItem;
+    private final MedicalCheckupOptional medicalCheckupOptional;
+    private final ProgramCategory programCategory;
+    private final ProgramCheckupItem programCheckupItem;
+
     public EntityProvider() {
+
+        // 장소
         country = Country.builder()
                 .name("USA")
                 .build();
@@ -50,6 +63,8 @@ public class EntityProvider {
                 .addressDetail("")
                 .postalCode("12345")
                 .build();
+
+        // 계정관련
         account =Account.builder() // account agent or common 하나만
                 .email("test@num1")
                 .status(Account.Status.Y)
@@ -70,6 +85,9 @@ public class EntityProvider {
                 .name("The-Air")
                 .companyNumber("12345")
                 .build();
+
+        // 여행
+
         tourPackage= TourPackage.builder()
                 .account(account)
                 .title("testTitle")
@@ -110,6 +128,53 @@ public class EntityProvider {
                 .paymentDate(LocalDateTime.now())
                 .currency("USD")
                 .payType("CARD")
+                .build();
+
+
+        //  병원 Entity
+
+        hospitalAddress = HospitalAddress.builder()
+                .address("부산 병원")
+                .addressDetail("대로변")
+                .country(country)
+                .city("해운대")
+                .district("지역")
+                .postalCode("12345")
+                .build();
+        hospital = Hospital.builder()
+                .hospitalAddress(hospitalAddress)
+                .name("병원 이름")
+                .description("병원 설명")
+                .build();
+        medicalCheckupCategory = MedicalCheckupCategory.builder()
+                .name("기본 검사")
+                .build();
+        medicalCheckupProgram = MedicalCheckupProgram.builder()
+                .hospital(hospital)
+                .programName("임시 검진")
+                .programType(MedicalCheckupProgram.ProgramType.Total)
+                .priceForMan(BigDecimal.ONE)
+                .priceForWoman(BigDecimal.TEN)
+//              need mapping for test  .programCategories(List.of())
+                .build();
+        programCategory = ProgramCategory.builder()
+                .medicalCheckupProgram(medicalCheckupProgram)
+                .medicalCheckupCategory(medicalCheckupCategory)
+                .build();
+        medicalCheckupProgram.addCategory(programCategory);
+        medicalCheckupItem = MedicalCheckupItem.builder()
+                .medicalCheckupCategory(medicalCheckupCategory)
+                .name("결과 상담")
+                .build();
+        medicalCheckupOptional = MedicalCheckupOptional.builder()
+                .hospital(hospital)
+                .medicalCheckupItem(medicalCheckupItem)
+                .priceForMan(BigDecimal.ONE)
+                .priceForWoman(BigDecimal.TEN)
+                .build();
+        programCheckupItem = ProgramCheckupItem.builder()
+                .medicalCheckupItem(medicalCheckupItem)
+                .medicalCheckupProgram(medicalCheckupProgram)
                 .build();
     }
 

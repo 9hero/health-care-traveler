@@ -2,8 +2,8 @@ package com.healthtrip.travelcare.service;
 
 import com.healthtrip.travelcare.entity.tour.reservation.TourPackageDate;
 import com.healthtrip.travelcare.entity.tour.tour_package.TourPackage;
-import com.healthtrip.travelcare.repository.TourPackageDateRepository;
-import com.healthtrip.travelcare.repository.TourPackageRepository;
+import com.healthtrip.travelcare.repository.tour.TourPackageDateRepository;
+import com.healthtrip.travelcare.repository.tour.TourPackageRepository;
 import com.healthtrip.travelcare.repository.dto.request.ReservationDateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
