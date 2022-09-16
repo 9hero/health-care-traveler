@@ -2,7 +2,6 @@ package com.healthtrip.travelcare.service;
 
 import com.healthtrip.travelcare.common.CommonUtils;
 import com.healthtrip.travelcare.entity.account.Account;
-import com.healthtrip.travelcare.entity.account.Address;
 import com.healthtrip.travelcare.entity.location.Country;
 import com.healthtrip.travelcare.entity.tour.reservation.TourBookerAddress;
 import com.healthtrip.travelcare.entity.tour.reservation.TourPackageDate;
@@ -95,7 +94,7 @@ public class ReservationInfoService {
 
             if (singleType) {
 
-                // ----Address start-----
+                // ----AccountAddress start-----
                 TourBookerAddress singleAddress = null;
 
                 // 주소 객체 생성 common agent 분기
@@ -108,17 +107,17 @@ public class ReservationInfoService {
                 }else {
                     // 일반유저의 경우, 대표자 주소는 계정의 주소 값으로 등록 t-3
                     // 변경 front에서 직접 받아오기
-//                    singleAddress = commonRepository.getById(uid).getAddress();
+//                    singleAddress = commonRepository.getById(uid).getAccountAddress();
                 }
                 // t-3
                 TourBookerAddress savedAddress = bookerAddressRepository.save(singleAddress);
-                // ----Address done-----
+                // ----AccountAddress done-----
 
                 // 인적사항 Dto -> Entity로 변환 -> persist
                 var reservationPersonList = personDataList
                         .stream().map(personData->{
                              var personEntity = TourBooker.reservationPersonBasicEntity(personData);
-                             // address,info 연관관계설정
+                             // accountAddress,info 연관관계설정
                              personEntity.relationSet(savedTourReservation, savedAddress);
                              return personEntity;
                         }).collect(Collectors.toList());
@@ -152,7 +151,7 @@ public class ReservationInfoService {
 
     public void tourReservation() {
         // dto to local variable
-        // save ReservationInfo & Address & Person
+        // save ReservationInfo & AccountAddress & Person
     }
 
     private TourReservation saveReservationInfo(TourReservation tourReservation) {

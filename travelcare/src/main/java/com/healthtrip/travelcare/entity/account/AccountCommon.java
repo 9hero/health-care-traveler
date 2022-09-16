@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 @Entity
-@ToString(callSuper = true,exclude = {"account","address"})
+@ToString(callSuper = true,exclude = {"account","accountAddress"})
 public class AccountCommon extends BaseTimeEntity {
 
     @Id
@@ -34,7 +34,7 @@ public class AccountCommon extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
     @JoinColumn(name = "address_id")
     //cascade=ALL 할시 예약자가 빌려쓰던 주소가 같이 사라짐 정책에 따라 결정 1. 계정 삭제시 예약자 데이터도 삭제 2. 예약자 데이터는 남김
-    private Address address;
+    private AccountAddress accountAddress;
 
     private String phone;
     private String emergencyContact;
@@ -42,7 +42,7 @@ public class AccountCommon extends BaseTimeEntity {
     public static AccountCommon toEntityBasic(PersonData personData){
         return AccountCommon.builder()
 //                .account(account)
-//                .address(address)
+//                .accountAddress(accountAddress)
                 .gender(personData.getGender())
                 .emergencyContact(personData.getEmergencyContact())
                 .phone(personData.getPhone())
@@ -51,8 +51,8 @@ public class AccountCommon extends BaseTimeEntity {
                 .firstName(personData.getFirstName())
                 .build();
     }
-    public void setRelation(Address address,Account account){
-        this.address = address;
+    public void setRelation(AccountAddress accountAddress, Account account){
+        this.accountAddress = accountAddress;
         this.account = account;
     }
 }

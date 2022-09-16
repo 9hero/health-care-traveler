@@ -1,10 +1,10 @@
 package com.healthtrip.travelcare.test_common;
 
 import com.healthtrip.travelcare.entity.account.Account;
+import com.healthtrip.travelcare.entity.account.AccountAddress;
 import com.healthtrip.travelcare.entity.account.AccountAgent;
 import com.healthtrip.travelcare.entity.account.AccountCommon;
 import com.healthtrip.travelcare.entity.hospital.*;
-import com.healthtrip.travelcare.entity.account.Address;
 import com.healthtrip.travelcare.entity.location.Country;
 import com.healthtrip.travelcare.entity.tour.PackageTourPayment;
 import com.healthtrip.travelcare.entity.tour.reservation.TourBookerAddress;
@@ -31,7 +31,7 @@ public class EntityProvider {
 
     // 엔티티 제공자 답게 기본 엔티티만 주자
     private final Country country;
-    private final Address address;
+    private final AccountAddress accountAddress;
     private final TourBookerAddress tourBookerAddress;
     private final Account account;
     private final AccountAgent accountAgent;
@@ -57,7 +57,7 @@ public class EntityProvider {
         country = Country.builder()
                 .name("USA")
                 .build();
-        address = Address.builder()
+        accountAddress = AccountAddress.builder()
                 .country(country)
                 .city("new york")
                 .district("somewhere")

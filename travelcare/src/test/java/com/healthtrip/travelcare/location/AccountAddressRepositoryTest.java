@@ -1,7 +1,7 @@
 package com.healthtrip.travelcare.location;
 
 import com.healthtrip.travelcare.annotation.DataJpaUnitTest;
-import com.healthtrip.travelcare.entity.account.Address;
+import com.healthtrip.travelcare.entity.account.AccountAddress;
 import com.healthtrip.travelcare.entity.location.Country;
 import com.healthtrip.travelcare.repository.location.AddressRepository;
 import com.healthtrip.travelcare.test_common.EntityProvider;
@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @DataJpaUnitTest
-class AddressRepositoryTest {
+class AccountAddressRepositoryTest {
 
 
     @Autowired
@@ -34,9 +34,9 @@ class AddressRepositoryTest {
     @Transactional
     void address_save_savedAddress_withEntityProvider() {
         // given
-        Address addressEntity = entityProvider.getAddress();
+        AccountAddress accountAddressEntity = entityProvider.getAccountAddress();
         // when
-        Address savedAddress = addressRepository.save(addressEntity);
+        AccountAddress savedAddress = addressRepository.save(accountAddressEntity);
         Country savedCountry = savedAddress.getCountry();
 
         //then
@@ -50,11 +50,11 @@ class AddressRepositoryTest {
     @DisplayName("주소 조회 테스트")
     void address_save_savedAddress2() {
         // given
-        Address addressEntity = entityProvider.getAddress();
-        Address savedAddress = addressRepository.save(addressEntity);
+        AccountAddress accountAddressEntity = entityProvider.getAccountAddress();
+        AccountAddress savedAddress = addressRepository.save(accountAddressEntity);
         Country savedCountry = savedAddress.getCountry();
         // when
-        Address foundAddress = addressRepository.findById(savedAddress.getId()).get();
+        AccountAddress foundAddress = addressRepository.findById(savedAddress.getId()).get();
 
         //then
         assertThat(savedCountry).isNotNull();

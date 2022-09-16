@@ -9,11 +9,11 @@ import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor
-@Entity
-public class Address extends BaseTimeEntity {
+@Entity(name = "Address")
+public class AccountAddress extends BaseTimeEntity {
 
     @Builder
-    public Address(Long id, String address, String addressDetail, String district, String city, Country country, String postalCode) {
+    public AccountAddress(Long id, String address, String addressDetail, String district, String city, Country country, String postalCode) {
         this.id = id;
         this.address = address;
         this.addressDetail = addressDetail;
@@ -44,8 +44,8 @@ public class Address extends BaseTimeEntity {
 
     private String postalCode;
 
-    public static Address toEntityBasic(AddressRequest addressData){
-        return Address.builder()
+    public static AccountAddress toEntityBasic(AddressRequest addressData){
+        return AccountAddress.builder()
                 .address(addressData.getAddress1())
                 .addressDetail(addressData.getAddress2())
                 .district(addressData.getDistrict())

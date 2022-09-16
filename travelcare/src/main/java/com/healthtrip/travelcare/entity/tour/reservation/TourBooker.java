@@ -1,7 +1,6 @@
 package com.healthtrip.travelcare.entity.tour.reservation;
 
 
-import com.healthtrip.travelcare.entity.account.Address;
 import com.healthtrip.travelcare.entity.BaseTimeEntity;
 import com.healthtrip.travelcare.repository.dto.request.PersonData;
 import lombok.Builder;

@@ -4,7 +4,7 @@ import com.healthtrip.travelcare.common.Exception.CustomException;
 import com.healthtrip.travelcare.common.Sender;
 import com.healthtrip.travelcare.config.security.jwt.JwtProvider;
 import com.healthtrip.travelcare.entity.account.*;
-import com.healthtrip.travelcare.entity.account.Address;
+import com.healthtrip.travelcare.entity.account.AccountAddress;
 import com.healthtrip.travelcare.repository.account.*;
 import com.healthtrip.travelcare.repository.dto.request.AccountRequest;
 import com.healthtrip.travelcare.repository.dto.request.MailRequest;
@@ -91,7 +91,7 @@ public class AccountService implements UserDetailsService {
             var addressRequest = commonSignUp.getAddressData();
             var personData = commonSignUp.getPersonDataRequest();
 
-            Address address = Address.toEntityBasic(addressRequest);
+            AccountAddress address = AccountAddress.toEntityBasic(addressRequest);
             address.setCountry(countryRepository.getById(addressRequest.getCountryId()));
 
             Account account = Account.builder()

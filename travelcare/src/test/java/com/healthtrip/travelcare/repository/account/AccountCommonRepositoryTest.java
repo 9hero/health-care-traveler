@@ -2,8 +2,8 @@ package com.healthtrip.travelcare.repository.account;
 
 import com.healthtrip.travelcare.annotation.DataJpaUnitTest;
 import com.healthtrip.travelcare.entity.account.Account;
+import com.healthtrip.travelcare.entity.account.AccountAddress;
 import com.healthtrip.travelcare.entity.account.AccountCommon;
-import com.healthtrip.travelcare.entity.account.Address;
 import com.healthtrip.travelcare.entity.location.Country;
 import com.healthtrip.travelcare.repository.dto.request.PersonData;
 import com.healthtrip.travelcare.repository.location.AddressRepository;
@@ -34,7 +34,7 @@ class AccountCommonRepositoryTest {
     final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     private Account account;
-    private Address address;
+    private AccountAddress accountAddress;
     private Country country;
 
     private AccountCommon accountCommon;
@@ -44,7 +44,7 @@ class AccountCommonRepositoryTest {
         country = Country.builder()
                 .name("USA")
                 .build();
-        address = Address.builder()
+        accountAddress = AccountAddress.builder()
                 .country(country)
                 .city("new york")
                 .district("somewhere")
@@ -69,10 +69,10 @@ class AccountCommonRepositoryTest {
                 .build();
     }
 
-    Address setAddress() {
+    AccountAddress setAddress() {
         Country savedCountry = countryRepository.save(country);
-        address.setCountry(savedCountry);
-        return addressRepository.save(address);
+        accountAddress.setCountry(savedCountry);
+        return addressRepository.save(accountAddress);
     }
 
     @Test
@@ -80,7 +80,7 @@ class AccountCommonRepositoryTest {
     void save() {
         // given
         var savedAccount = accountsRepository.save(account);
-        Address savedAddress = setAddress();
+        AccountAddress savedAddress = setAddress();
         accountCommon.setRelation(savedAddress,savedAccount);
 
         // when
