@@ -133,4 +133,14 @@ class TourReservationRepositoryTest {
         // then
         assertThat(counter).isEqualTo(4);
     }
+    @Test
+    @DisplayName("내 예약 찾기 jpql")
+    void findMyTourReservation(){
+        // given
+        tourReservationRepository.findMyTourReservations(1L);
+
+        // when
+
+        // then
+    }
 }

@@ -23,7 +23,7 @@ import java.util.List;
 public class TourReservation extends BaseTimeEntity implements Serializable, Persistable<String> {
 
     @Builder
-    public TourReservation(String id, Account account, TourPackageDate tourPackageDate, short personCount, List<CustomTravelBoard> customTravelBoard, List<TourReservationPerson> tourReservationPeople, Status status, PaymentStatus paymentStatus, CsStatus csStatus, BigDecimal amount) {
+    public TourReservation(String id, Account account, TourPackageDate tourPackageDate, short personCount, List<CustomTravelBoard> customTravelBoard, List<TourBooker> tourReservationPeople, Status status, PaymentStatus paymentStatus, CsStatus csStatus, BigDecimal amount) {
         this.id = id;
         this.account = account;
         this.tourPackageDate = tourPackageDate;
@@ -57,7 +57,7 @@ public class TourReservation extends BaseTimeEntity implements Serializable, Per
 
     @ToString.Exclude
     @OneToMany(mappedBy = "tourReservation",fetch = FetchType.LAZY,cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
-    private List<TourReservationPerson> tourReservationPeople;
+    private List<TourBooker> tourReservationPeople;
     // 예약 번호( 결제대행사에 결제내역 조회시 필요)
 
 //    @ToString.Exclude

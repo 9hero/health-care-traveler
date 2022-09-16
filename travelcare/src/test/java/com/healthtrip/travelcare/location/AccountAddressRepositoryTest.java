@@ -1,7 +1,7 @@
 package com.healthtrip.travelcare.location;
 
 import com.healthtrip.travelcare.annotation.DataJpaUnitTest;
-import com.healthtrip.travelcare.entity.location.Address;
+import com.healthtrip.travelcare.entity.account.Address;
 import com.healthtrip.travelcare.entity.location.Country;
 import com.healthtrip.travelcare.repository.location.AddressRepository;
 import com.healthtrip.travelcare.test_common.EntityProvider;

@@ -4,12 +4,13 @@ import com.healthtrip.travelcare.entity.account.Account;
 import com.healthtrip.travelcare.entity.account.AccountAgent;
 import com.healthtrip.travelcare.entity.account.AccountCommon;
 import com.healthtrip.travelcare.entity.hospital.*;
-import com.healthtrip.travelcare.entity.location.Address;
+import com.healthtrip.travelcare.entity.account.Address;
 import com.healthtrip.travelcare.entity.location.Country;
 import com.healthtrip.travelcare.entity.tour.PackageTourPayment;
+import com.healthtrip.travelcare.entity.tour.reservation.TourBookerAddress;
 import com.healthtrip.travelcare.entity.tour.reservation.TourPackageDate;
 import com.healthtrip.travelcare.entity.tour.reservation.TourReservation;
-import com.healthtrip.travelcare.entity.tour.reservation.TourReservationPerson;
+import com.healthtrip.travelcare.entity.tour.reservation.TourBooker;
 import com.healthtrip.travelcare.entity.tour.tour_package.TourPackage;
 import com.healthtrip.travelcare.repository.dto.request.PersonData;
 import lombok.Getter;
@@ -31,13 +32,14 @@ public class EntityProvider {
     // 엔티티 제공자 답게 기본 엔티티만 주자
     private final Country country;
     private final Address address;
+    private final TourBookerAddress tourBookerAddress;
     private final Account account;
     private final AccountAgent accountAgent;
     private final AccountCommon accountCommon;
     private final TourPackage tourPackage;
     private final TourPackageDate tourPackageDate;
     private final TourReservation tourReservation;
-    private final TourReservationPerson tourReservationPerson;
+    private final TourBooker tourBooker;
     private final PackageTourPayment packageTourPayment;
 
     private final HospitalAddress hospitalAddress;
@@ -56,6 +58,14 @@ public class EntityProvider {
                 .name("USA")
                 .build();
         address = Address.builder()
+                .country(country)
+                .city("new york")
+                .district("somewhere")
+                .address("anywhere")
+                .addressDetail("")
+                .postalCode("12345")
+                .build();
+        tourBookerAddress = TourBookerAddress.builder()
                 .country(country)
                 .city("new york")
                 .district("somewhere")
@@ -112,9 +122,9 @@ public class EntityProvider {
                 .status(TourReservation.Status.Y)
                 .personCount((short) 1)
                 .build();
-        tourReservationPerson = TourReservationPerson.builder()
+        tourBooker = TourBooker.builder()
                 .tourReservation(tourReservation)
-                .address(address)
+                .address(tourBookerAddress)
                 .birth(LocalDate.now())
                 .emergencyContact("1111")
                 .phone("1111")

@@ -27,7 +27,6 @@ class MedicalCheckupProgramRepoTest {
         medicalCheckupProgram = MedicalCheckupProgram.builder()
                 .hospital(entityProvider.getHospital())
                 .programName("임시 검진")
-
                 .programType(MedicalCheckupProgram.ProgramType.Total)
                 .priceForMan(BigDecimal.ONE)
                 .priceForWoman(BigDecimal.TEN)

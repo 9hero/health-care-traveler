@@ -3,6 +3,7 @@ package com.healthtrip.travelcare.repository.tour;
 import com.healthtrip.travelcare.entity.tour.reservation.TourReservation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,8 @@ public interface TourReservationRepository extends JpaRepository<TourReservation
             "where a.user_id = :userId",nativeQuery = true)
     Map<String, Object> findMyReservation(Long userId);
 
+    @Query("select distinct t from TourReservation t where t.account.id = :userId")
+    List<TourReservation> findMyTourReservations(@Param("userId") Long userId);
     List<TourReservation> getByAccountId(Long uid);
 
     @Query(value = "select ri from TourReservation ri where ri.id=:id and ri.account.id =:uid")

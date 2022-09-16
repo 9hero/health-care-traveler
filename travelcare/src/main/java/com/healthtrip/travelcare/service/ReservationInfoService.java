@@ -2,19 +2,20 @@ package com.healthtrip.travelcare.service;
 
 import com.healthtrip.travelcare.common.CommonUtils;
 import com.healthtrip.travelcare.entity.account.Account;
-import com.healthtrip.travelcare.entity.location.Address;
+import com.healthtrip.travelcare.entity.account.Address;
 import com.healthtrip.travelcare.entity.location.Country;
+import com.healthtrip.travelcare.entity.tour.reservation.TourBookerAddress;
 import com.healthtrip.travelcare.entity.tour.reservation.TourPackageDate;
 import com.healthtrip.travelcare.entity.tour.reservation.TourReservation;
-import com.healthtrip.travelcare.entity.tour.reservation.TourReservationPerson;
+import com.healthtrip.travelcare.entity.tour.reservation.TourBooker;
 import com.healthtrip.travelcare.repository.account.AccountCommonRepository;
 import com.healthtrip.travelcare.repository.account.AccountsRepository;
 import com.healthtrip.travelcare.repository.dto.request.AddressRequest;
 import com.healthtrip.travelcare.repository.dto.request.ReservationRequest;
 import com.healthtrip.travelcare.repository.dto.response.ReservationInfoResponse;
 import com.healthtrip.travelcare.repository.dto.response.ReservationPersonResponse;
-import com.healthtrip.travelcare.repository.location.AddressRepository;
 import com.healthtrip.travelcare.repository.location.CountryRepository;
+import com.healthtrip.travelcare.repository.tour.TourBookerAddressRepository;
 import com.healthtrip.travelcare.repository.tour.TourPackageDateRepository;
 import com.healthtrip.travelcare.repository.tour.TourReservationPersonRepository;
 import com.healthtrip.travelcare.repository.tour.TourReservationRepository;
@@ -41,7 +42,7 @@ public class ReservationInfoService {
     private final TourReservationRepository tourReservationRepository;
     private final TourPackageDateRepository tourPackageDateRepository;
     private final CountryRepository countryRepository;
-    private final AddressRepository addressRepository;
+    private final TourBookerAddressRepository bookerAddressRepository;
     private final TourReservationPersonRepository tourReservationPersonRepository;
 
     @Transactional
@@ -95,27 +96,28 @@ public class ReservationInfoService {
             if (singleType) {
 
                 // ----Address start-----
-                Address singleAddress = null;
+                TourBookerAddress singleAddress = null;
 
                 // 주소 객체 생성 common agent 분기
                 if(agentUser){
                     // 입력값 등록 -> 대표자 주소값(0번지)
                     AddressRequest representative = addressList.get(0);
-                    singleAddress = Address.toEntityBasic(representative);
+                    singleAddress = TourBookerAddress.toEntityBasic(representative);
                     Country country = countryRepository.getById(representative.getCountryId());
                     singleAddress.setCountry(country);
                 }else {
                     // 일반유저의 경우, 대표자 주소는 계정의 주소 값으로 등록 t-3
-                    singleAddress = commonRepository.getById(uid).getAddress();
+                    // 변경 front에서 직접 받아오기
+//                    singleAddress = commonRepository.getById(uid).getAddress();
                 }
                 // t-3
-                Address savedAddress = addressRepository.save(singleAddress);
+                TourBookerAddress savedAddress = bookerAddressRepository.save(singleAddress);
                 // ----Address done-----
 
                 // 인적사항 Dto -> Entity로 변환 -> persist
                 var reservationPersonList = personDataList
                         .stream().map(personData->{
-                             var personEntity = TourReservationPerson.reservationPersonBasicEntity(personData);
+                             var personEntity = TourBooker.reservationPersonBasicEntity(personData);
                              // address,info 연관관계설정
                              personEntity.relationSet(savedTourReservation, savedAddress);
                              return personEntity;
@@ -128,19 +130,19 @@ public class ReservationInfoService {
                 // 주소입력수 예약인원입력수 같지 않으면 오류
                 if (addressList.size() != personDataList.size()) return ResponseEntity.badRequest().body("Error: 입력한 주소의 갯수와 고객의 수가 같지않습니다.");
                 // 주소입력수 만큼 Entity 생성
-                List<TourReservationPerson> tourReservationPersonList = new ArrayList<>();
+                List<TourBooker> tourBookerList = new ArrayList<>();
                 for(int i = 0; i<personDataList.size(); i++){
                     AddressRequest addressRequest = addressList.get(i);
                     Country country = countryRepository.getById(addressRequest.getCountryId());
-                    Address address = Address.toEntityBasic(addressRequest);
+                    TourBookerAddress address = TourBookerAddress.toEntityBasic(addressRequest);
                     address.setCountry(country);
-                    TourReservationPerson tourReservationPerson = TourReservationPerson.reservationPersonBasicEntity(personDataList.get(i));
-                    tourReservationPerson.relationSet(savedTourReservation,address);
+                    TourBooker tourBooker = TourBooker.reservationPersonBasicEntity(personDataList.get(i));
+                    tourBooker.relationSet(savedTourReservation,address);
                     // add
-                    tourReservationPersonList.add(tourReservationPerson);
+                    tourBookerList.add(tourBooker);
                 }
                 // saveAll
-                tourReservationPersonRepository.saveAll(tourReservationPersonList);
+                tourReservationPersonRepository.saveAll(tourBookerList);
             }
         }else {
             return ResponseEntity.badRequest().body("Error: 해당 여행일짜 없음");
@@ -220,11 +222,11 @@ public class ReservationInfoService {
     @Transactional(readOnly = true)
     public ResponseEntity<List<ReservationPersonResponse.rpInfo>> getPeopleDataByInfoId(String reservationId) {
         Long uid = CommonUtils.getAuthenticatedUserId();
-        List<TourReservationPerson> reservationPeople = tourReservationPersonRepository.findByTourReservationId(reservationId,uid);
+        List<TourBooker> reservationPeople = tourReservationPersonRepository.findByTourReservationId(reservationId,uid);
         var responseBody = reservationPeople.stream().map(person ->
                 ReservationPersonResponse.rpInfo.builder()
                         .reservedPersonId(person.getId())
-                        .addressId(person.getAddress().getId())
+                        .addressId(person.getTourBookerAddress().getId())
                         .birth(person.getBirth())
                         .firstName(person.getFirstName())
                         .lastName(person.getLastName())

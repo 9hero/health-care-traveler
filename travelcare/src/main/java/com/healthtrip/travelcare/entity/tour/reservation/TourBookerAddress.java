@@ -1,18 +1,21 @@
-package com.healthtrip.travelcare.entity.location;
+package com.healthtrip.travelcare.entity.tour.reservation;
 
 import com.healthtrip.travelcare.entity.BaseTimeEntity;
+import com.healthtrip.travelcare.entity.location.Country;
 import com.healthtrip.travelcare.repository.dto.request.AddressRequest;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor
 @Entity
-public class Address extends BaseTimeEntity {
+public class TourBookerAddress extends BaseTimeEntity {
 
     @Builder
-    public Address(Long id, String address, String addressDetail, String district, String city, Country country, String postalCode) {
+    public TourBookerAddress(Long id, String address, String addressDetail, String district, String city, Country country, String postalCode) {
         this.id = id;
         this.address = address;
         this.addressDetail = addressDetail;
@@ -43,8 +46,8 @@ public class Address extends BaseTimeEntity {
 
     private String postalCode;
 
-    public static Address toEntityBasic(AddressRequest addressData){
-        return Address.builder()
+    public static TourBookerAddress toEntityBasic(AddressRequest addressData){
+        return TourBookerAddress.builder()
                 .address(addressData.getAddress1())
                 .addressDetail(addressData.getAddress2())
                 .district(addressData.getDistrict())

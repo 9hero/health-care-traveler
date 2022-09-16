@@ -1,7 +1,7 @@
 package com.healthtrip.travelcare.entity.tour.reservation;
 
 
-import com.healthtrip.travelcare.entity.location.Address;
+import com.healthtrip.travelcare.entity.account.Address;
 import com.healthtrip.travelcare.entity.BaseTimeEntity;
 import com.healthtrip.travelcare.repository.dto.request.PersonData;
 import lombok.Builder;
@@ -17,9 +17,9 @@ import java.time.LocalDate;
 @Entity
 @ToString
 @Table(name = "reservation_person")
-public class TourReservationPerson extends BaseTimeEntity {
+public class TourBooker extends BaseTimeEntity {
     @Builder
-    public TourReservationPerson(Long id, String lastName , TourReservation tourReservation, Address address, String firstName, PersonData.Gender gender, LocalDate birth, String phone, String emergencyContact) {
+    public TourBooker(Long id, String lastName , TourReservation tourReservation, TourBookerAddress address, String firstName, PersonData.Gender gender, LocalDate birth, String phone, String emergencyContact) {
         this.id = id;
         this.tourReservation = tourReservation;
         this.firstName = firstName;
@@ -28,7 +28,7 @@ public class TourReservationPerson extends BaseTimeEntity {
         this.birth = birth;
         this.phone = phone;
         this.emergencyContact = emergencyContact;
-        this.address = address;
+        this.tourBookerAddress = address;
     }
 
     @Id
@@ -52,12 +52,12 @@ public class TourReservationPerson extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
     @JoinColumn
     @ToString.Exclude
-    private Address address;
+    private TourBookerAddress tourBookerAddress;
 
 
 
-    public static TourReservationPerson reservationPersonBasicEntity(PersonData personData){
-        return TourReservationPerson.builder()
+    public static TourBooker reservationPersonBasicEntity(PersonData personData){
+        return TourBooker.builder()
                 .firstName(personData.getFirstName())
                 .lastName(personData.getLastName())
                 .gender(personData.getGender())
@@ -67,9 +67,9 @@ public class TourReservationPerson extends BaseTimeEntity {
                 .build();
     }
 
-    public void relationSet(TourReservation tourReservation, Address address) {
+    public void relationSet(TourReservation tourReservation, TourBookerAddress address) {
         this.tourReservation = tourReservation;
-        this.address = address;
+        this.tourBookerAddress = address;
     }
 }
 
