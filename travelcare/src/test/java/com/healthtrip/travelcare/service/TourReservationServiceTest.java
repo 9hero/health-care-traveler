@@ -72,8 +72,8 @@ class TourReservationServiceTest {
             List<ReservationInfoResponse.MyInfo> responseBody = new ArrayList<>();
             info.forEach(reservationInfo -> {
                 ReservationInfoResponse.MyInfo myInfo = new ReservationInfoResponse.MyInfo();
-                var reservationDate = reservationInfo.getTourPackageDate();
-                var tripPackage = reservationDate.getTourPackage();
+//                var reservationDate = reservationInfo.getTourPackageDate();
+//                var tripPackage = reservationDate.getTourPackage();
                 var reservedPerson = reservationInfo.getTourReservationPeople();
                 var representPerson = reservedPerson.get(0);
 
@@ -84,12 +84,12 @@ class TourReservationServiceTest {
                 myInfo.setPersonCount(reservationInfo.getPersonCount());
 
                 // 패키지명, 가격
-                myInfo.setPackageTitle(tripPackage.getTitle());
-                myInfo.setPrice(tripPackage.getPrice());
+//                myInfo.setPackageTitle(tripPackage.getTitle());
+//                myInfo.setPrice(tripPackage.getPrice());
 
                 // 출발일 도착일
-                myInfo.setDepartAt(reservationDate.getDepartAt());
-                myInfo.setArrivedAt(reservationDate.getArriveAt());
+//                myInfo.setDepartAt(reservationDate.getDepartAt());
+//                myInfo.setArrivedAt(reservationDate.getArriveAt());
 
                 responseBody.add(myInfo);
             });

@@ -11,7 +11,7 @@ import com.healthtrip.travelcare.entity.tour.reservation.TourBookerAddress;
 import com.healthtrip.travelcare.entity.tour.reservation.TourPackageDate;
 import com.healthtrip.travelcare.entity.tour.reservation.TourReservation;
 import com.healthtrip.travelcare.entity.tour.reservation.TourBooker;
-import com.healthtrip.travelcare.entity.tour.tour_package.TourPackage;
+import com.healthtrip.travelcare.entity.tour.tour_package.*;
 import com.healthtrip.travelcare.repository.dto.request.PersonData;
 import lombok.Getter;
 
@@ -50,6 +50,11 @@ public class EntityProvider {
     private final MedicalCheckupOptional medicalCheckupOptional;
     private final ProgramCategory programCategory;
     private final ProgramCheckupItem programCheckupItem;
+    private final TourItinerary tourItinerary;
+    private final TourPlace tourPlace;
+    private final TourPlaceImage tourPlaceImage;
+    private final TourItineraryElement tourItineraryElement;
+    private final MedicalCheckupItemCategory medicalCheckupItemCategory;
 
     public EntityProvider() {
 
@@ -102,8 +107,13 @@ public class EntityProvider {
                 .account(account)
                 .title("testTitle")
                 .description("test")
-                .price(BigDecimal.TEN)
-                .type("test")
+                .prices(TourPackagePrices.builder()
+                        .adultPrice(BigDecimal.TEN)
+                        .childPrice(BigDecimal.ONE)
+                        .infantPrice(BigDecimal.ZERO).build()
+                )
+                .standardOffer("기본제공사항")
+                .nonOffer("불포함사항")
                 .build();
         tourPackageDate =
                 TourPackageDate.builder()
@@ -115,7 +125,7 @@ public class EntityProvider {
                         .build();
         tourReservation = TourReservation.builder()
                 .account(account)
-                .tourPackageDate(tourPackageDate)
+//                .tourPackageDate(tourPackageDate)
                 .amount(BigDecimal.TEN)
                 .csStatus(TourReservation.CsStatus.K)
                 .paymentStatus(TourReservation.PaymentStatus.N)
@@ -139,8 +149,34 @@ public class EntityProvider {
                 .currency("USD")
                 .payType("CARD")
                 .build();
-
-
+        // 투어 일정
+        tourItinerary = TourItinerary.builder()
+                .tourPackage(tourPackage)
+                .day("1일차")
+                .accommodation("5성 호텔")
+                .details("세부적일정입니다")
+                .notice("유의사항입니다")
+                .location("해운대구")
+                .specificLocations("해동용궁사, 해운대바다, ~~ 등")
+                .build();
+        tourItineraryElement = TourItineraryElement.builder()
+                .tourItinerary(tourItinerary)
+                .sequence((short)1)
+                .title("해운대 출발")
+                .type(TourItineraryElement.Type.MOVE)
+                .build();
+        tourPlace= TourPlace.builder()
+                .placeName("장소명")
+                .description("장소 설명")
+                .summery("장소 짧은 소개")
+                .build();
+        tourPlaceImage = TourPlaceImage.builder()
+                .tourPlace(tourPlace)
+                .fileName("uniqueFileName")
+                .fileSize(1223)
+                .originalName("파일의이름")
+                .url("대충 url")
+                .build();
         //  병원 Entity
 
         hospitalAddress = HospitalAddress.builder()
@@ -173,9 +209,13 @@ public class EntityProvider {
                 .build();
         medicalCheckupProgram.addCategory(programCategory);
         medicalCheckupItem = MedicalCheckupItem.builder()
-                .medicalCheckupCategory(medicalCheckupCategory)
                 .name("결과 상담")
                 .build();
+        medicalCheckupItemCategory = MedicalCheckupItemCategory.builder()
+                .medicalCheckupItem(medicalCheckupItem)
+                .medicalCheckupCategory(medicalCheckupCategory)
+                .build();
+        medicalCheckupItem.addCategory(medicalCheckupItemCategory);
         medicalCheckupOptional = MedicalCheckupOptional.builder()
                 .hospital(hospital)
                 .medicalCheckupItem(medicalCheckupItem)
@@ -192,7 +232,6 @@ public class EntityProvider {
         return TourReservation.builder()
 //                .tourReservationPeople()
                 .account(account)
-                .tourPackageDate(tourPackageDate)
                 .amount(BigDecimal.TEN)
                 .csStatus(TourReservation.CsStatus.K)
                 .paymentStatus(TourReservation.PaymentStatus.N)

@@ -70,8 +70,9 @@ public class ReservationInfoService {
             Account account = accountsRepository.getById(uid);
 
             // 예약 금액 계산 amount = (예약인원*투어가격) t-2
-            BigDecimal amount = BigDecimal.valueOf(personDataList.size())
-                    .multiply(tourPackageDate.getTourPackage().getPrice());
+            BigDecimal amount = null;
+//                    BigDecimal.valueOf(personDataList.size())
+//                    .multiply(tourPackageDate.getTourPackage().getPrice());
 
             // 인원체크
             boolean limitOver = tourPackageDate.plusCurrentPeopleNumber(personCount);
@@ -81,7 +82,7 @@ public class ReservationInfoService {
             TourReservation tourReservation = TourReservation.builder()
 //                    .id()
                     .account(account)
-                    .tourPackageDate(tourPackageDate)
+//                    .tourPackageDate(tourPackageDate)
                     .personCount(personCount)
                     .status(TourReservation.Status.Y)
                     .csStatus(TourReservation.CsStatus.K)
@@ -187,9 +188,9 @@ public class ReservationInfoService {
             List<ReservationInfoResponse.MyInfo> responseBody = new ArrayList<>();
             info.forEach(reservationInfo -> {
                 ReservationInfoResponse.MyInfo myInfo = new ReservationInfoResponse.MyInfo();
-                var reservationDate = reservationInfo.getTourPackageDate();
+//                var reservationDate = reservationInfo.getTourPackageDate();
                 var reservedPerson = reservationInfo.getTourReservationPeople();
-                var tripPackage = reservationDate.getTourPackage();
+//                var tripPackage = reservationDate.getTourPackage();
                 var representPerson = reservedPerson.get(0); // N+1
 
                 // 예약 번호
@@ -201,12 +202,12 @@ public class ReservationInfoService {
                 myInfo.setPersonCount(reservationInfo.getPersonCount());
 
                 // 패키지명, 가격
-                myInfo.setPackageTitle(tripPackage.getTitle());
-                myInfo.setPrice(tripPackage.getPrice());
+//                myInfo.setPackageTitle(tripPackage.getTitle());
+//                myInfo.setPrice(tripPackage.getPrice());
 
                 // 출발일 도착일
-                myInfo.setDepartAt(reservationDate.getDepartAt());
-                myInfo.setArrivedAt(reservationDate.getArriveAt());
+//                myInfo.setDepartAt(reservationDate.getDepartAt());
+//                myInfo.setArrivedAt(reservationDate.getArriveAt());
 
                 responseBody.add(myInfo);
             });

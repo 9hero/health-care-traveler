@@ -15,7 +15,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Entity
 @ToString
-@Table(name = "reservation_person")
 public class TourBooker extends BaseTimeEntity {
     @Builder
     public TourBooker(Long id, String lastName , TourReservation tourReservation, TourBookerAddress address, String firstName, PersonData.Gender gender, LocalDate birth, String phone, String emergencyContact) {

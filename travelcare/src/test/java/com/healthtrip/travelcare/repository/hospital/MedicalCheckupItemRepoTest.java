@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaUnitTest
 class MedicalCheckupItemRepoTest {
@@ -32,15 +31,18 @@ class MedicalCheckupItemRepoTest {
     void save(){
         // given
         medicalCheckupItem = MedicalCheckupItem.builder()
-                .medicalCheckupCategory(entityProvider.getMedicalCheckupCategory())
+//                .medicalCheckupItemCategories()
                 .name("대소변 검사")
                 .build();
-
+        medicalCheckupItem.addCategory(entityProvider.getMedicalCheckupItemCategory());
         // when
         medicalCheckupItemRepo.save(medicalCheckupItem);
 
         // then
         assertThat(medicalCheckupItem.getId()).isNotNull();
-        assertThat(medicalCheckupItem.getMedicalCheckupCategory().getId()).isNotNull();
+        medicalCheckupItem.getMedicalCheckupItemCategories().forEach(medicalCheckupItemCategory ->
+                assertThat(medicalCheckupItemCategory.getId()).isNotNull()
+        );
+
     }
 }

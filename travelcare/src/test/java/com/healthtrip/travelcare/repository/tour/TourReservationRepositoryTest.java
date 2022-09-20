@@ -9,7 +9,9 @@ import com.healthtrip.travelcare.repository.account.AccountsRepository;
 import com.healthtrip.travelcare.repository.tour.TourPackageDateRepository;
 import com.healthtrip.travelcare.repository.tour.TourPackageRepository;
 import com.healthtrip.travelcare.repository.tour.TourReservationRepository;
+import com.healthtrip.travelcare.test_common.EntityProvider;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaUnitTest
+@Disabled("예약 date 삭제전")
 class TourReservationRepositoryTest {
 
     @Autowired
@@ -43,30 +46,11 @@ class TourReservationRepositoryTest {
     TourReservation tourReservation;
     @BeforeEach
     void setup() {
-        account =Account.builder()
-                .email("test@num1")
-                .status(Account.Status.Y)
-                .password("1234")
-                .userRole(Account.UserRole.ROLE_COMMON)
-                .build();
-        tourPackage= TourPackage.builder()
-                        .account(account)
-                        .title("testTitle")
-                        .description("test")
-                        .price(BigDecimal.TEN)
-                        .type("test")
-                .build();
-        tourPackageDate =
-                TourPackageDate.builder()
-                        .tourPackage(tourPackage)
-                        .departAt(LocalDateTime.now())
-                        .currentNumPeople((short)5)
-                        .arriveAt(LocalDateTime.now().plusDays(1L))
-                        .peopleLimit((short) 30)
-                        .build();
+        EntityProvider entityProvider = new EntityProvider();
+        account = entityProvider.getAccount();
+        tourPackage = entityProvider.getTourPackage();
         tourReservation = TourReservation.builder()
                 .account(account)
-                .tourPackageDate(tourPackageDate)
                 .amount(BigDecimal.TEN)
                 .csStatus(TourReservation.CsStatus.K)
                 .paymentStatus(TourReservation.PaymentStatus.N)
@@ -78,7 +62,6 @@ class TourReservationRepositoryTest {
     void saveEntities() {
         accountsRepository.save(account);
         tourPackageRepository.save(tourPackage);
-        tourPackageDateRepository.save(tourPackageDate);
     }
 
     @Test
@@ -95,7 +78,6 @@ class TourReservationRepositoryTest {
         //then
         assertThat(savedTourReservation.getId()).isNotNull();
         assertThat(savedTourReservation.getAccount()).isNotNull();
-        assertThat(savedTourReservation.getTourPackageDate()).isNotNull();
     }
     @DisplayName("주문코드 중복테스트")
     @Test
@@ -107,7 +89,6 @@ class TourReservationRepositoryTest {
             tourReservations.add(TourReservation.builder()
                     .id(LocalDate.now().format(DateTimeFormatter.ofPattern("yyMMdd"))+"RV"+i)
                     .account(account)
-                    .tourPackageDate(tourPackageDate)
                     .amount(BigDecimal.TEN)
                     .csStatus(TourReservation.CsStatus.K)
                     .paymentStatus(TourReservation.PaymentStatus.N)
@@ -135,6 +116,7 @@ class TourReservationRepositoryTest {
     }
     @Test
     @DisplayName("내 예약 찾기 jpql")
+    @Disabled("아직 준비안됨")
     void findMyTourReservation(){
         // given
         tourReservationRepository.findMyTourReservations(1L);

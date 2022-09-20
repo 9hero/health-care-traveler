@@ -8,6 +8,7 @@ import com.healthtrip.travelcare.entity.tour.tour_package.TourPackageFile;
 import com.healthtrip.travelcare.repository.account.AccountsRepository;
 import com.healthtrip.travelcare.repository.tour.TourPackageFileRepository;
 import com.healthtrip.travelcare.repository.tour.TourPackageRepository;
+import com.healthtrip.travelcare.test_common.EntityProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,19 +36,9 @@ class TourPackageFileRepositoryTest {
     String uniqueFileName =CommonUtils.buildFileName("파일의이름.확장자", "images/trip-package");
     @BeforeEach
     void setup() {
-        account = Account.builder()
-                .email("Admin")
-                .userRole(Account.UserRole.ROLE_ADMIN)
-                .password("temp")
-                .status(Account.Status.Y)
-                .build();
-        tourPackage = TourPackage.builder()
-                .account(account)
-                .description("test")
-                .price(BigDecimal.valueOf(1234L))
-                .title("test")
-                .type("test")
-                .build();
+        EntityProvider entityProvider = new EntityProvider();
+        account = entityProvider.getAccount();
+        tourPackage = entityProvider.getTourPackage();
         tourPackageFile= TourPackageFile.builder()
                 .tourPackage(tourPackage)
                 .fileName(uniqueFileName)
@@ -55,6 +46,7 @@ class TourPackageFileRepositoryTest {
                 .originalName("파일의이름")
                 .url("대충 url")
                 .build();
+
     }
 
     void setEntities() {

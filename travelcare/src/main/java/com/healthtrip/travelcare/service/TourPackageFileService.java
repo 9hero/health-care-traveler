@@ -54,14 +54,14 @@ public class TourPackageFileService {
     }
 
     @Transactional(readOnly = true)
-    public List<TripPackageFileResponse.FileInfo> getData(Long tripPackageId) {
+    public List<TripPackageFileResponse.FileInfo> getImages(Long tripPackageId) {
         var files = tourPackageFileRepository.findByTourPackageId(tripPackageId);
 
-        boolean fileEmpty = files.isEmpty();
-        if (fileEmpty) {
-            System.out.println((">>>tripPackage ID: "+tripPackageId+"'s File Empty"));
-            throw new RuntimeException();
-        }
+//        boolean fileEmpty = files.isEmpty();
+//        if (fileEmpty) {
+//            System.out.println((">>>tripPackage ID: "+tripPackageId+"'s File Empty"));
+//            throw new RuntimeException();
+//        }
         var imageDtoList = new ArrayList<TripPackageFileResponse.FileInfo>();
         files.forEach(tourPackageFile -> {
             imageDtoList.add(

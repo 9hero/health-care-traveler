@@ -32,8 +32,8 @@ public class TripPackageDetailResponse {
         TripPackageDetailResponse.builder()
                 .id(tourPackage.getId())
                 .description(tourPackage.getDescription())
-                .price(tourPackage.getPrice())
-                .type(tourPackage.getType())
+//                .price(tourPackage.getPrice())
+//                .type(tourPackage.getType())
                 .build();
     }
 }

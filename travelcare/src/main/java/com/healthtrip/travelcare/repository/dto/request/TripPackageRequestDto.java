@@ -32,8 +32,8 @@ public class TripPackageRequestDto {
         return TourPackage.builder()
                 .description(dto.getDescription())
                 .title(dto.getTitle())
-                .price(dto.getPrice())
-                .type(dto.getType())
+
+
                 .build();
     }
 }

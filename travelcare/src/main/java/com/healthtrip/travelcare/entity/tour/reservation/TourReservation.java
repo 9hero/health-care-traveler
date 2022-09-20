@@ -23,10 +23,10 @@ import java.util.List;
 public class TourReservation extends BaseTimeEntity implements Serializable, Persistable<String> {
 
     @Builder
-    public TourReservation(String id, Account account, TourPackageDate tourPackageDate, short personCount, List<CustomTravelBoard> customTravelBoard, List<TourBooker> tourReservationPeople, Status status, PaymentStatus paymentStatus, CsStatus csStatus, BigDecimal amount) {
+    public TourReservation(String id, Account account, short personCount, List<CustomTravelBoard> customTravelBoard, List<TourBooker> tourReservationPeople, Status status, PaymentStatus paymentStatus, CsStatus csStatus, BigDecimal amount) {
         this.id = id;
         this.account = account;
-        this.tourPackageDate = tourPackageDate;
+
         this.personCount = personCount;
         this.customTravelBoard = customTravelBoard;
         this.tourReservationPeople = tourReservationPeople;
@@ -43,11 +43,6 @@ public class TourReservation extends BaseTimeEntity implements Serializable, Per
     @ToString.Exclude
     @JoinColumn(name = "user_id")
     private Account account;
-
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "date_id")
-    @ToString.Exclude
-    private TourPackageDate tourPackageDate;
 
     private short personCount;
 

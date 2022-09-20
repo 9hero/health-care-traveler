@@ -4,10 +4,10 @@ import javax.persistence.*;
 
 import com.healthtrip.travelcare.entity.account.Account;
 import com.healthtrip.travelcare.entity.BaseTimeEntity;
-import com.healthtrip.travelcare.entity.tour.reservation.TourPackageDate;
+import com.healthtrip.travelcare.repository.dto.response.TourPackageResponse;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 
@@ -15,20 +15,22 @@ import java.util.List;
 @ToString(callSuper = true)
 @NoArgsConstructor
 @Entity
-@Table(name = "trip_package")
 public class TourPackage extends BaseTimeEntity {
 
     @Builder
-    public TourPackage(Long id, Account account, String title, String description, BigDecimal price, String type, List<TourPackageFile> tourPackageFileList) {
+    public TourPackage(Long id, Account account, String title, String description, String standardOffer, String nonOffer, String notice, TourPackagePrices prices, TourPackageFile mainImage, List<TourPackageFile> tourPackageFileList, List<TourItinerary> tourItineraryList) {
         this.id = id;
         this.account = account;
         this.title = title;
         this.description = description;
-        this.price = price;
-        this.type = type;
+        this.standardOffer = standardOffer;
+        this.nonOffer = nonOffer;
+        this.notice = notice;
+        this.prices = prices;
+        this.mainImage = mainImage;
         this.tourPackageFileList = tourPackageFileList;
+        this.tourItineraryList = tourItineraryList;
     }
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,18 +46,34 @@ public class TourPackage extends BaseTimeEntity {
 
     private String description;
 
-    private BigDecimal price;
+//  이 아래 4개의 필드를 불러오지 않고는 영속성을 사용할 수 없다면,
+    // 1:1 맵핑을 해야한다. 항상 필요한 컬럼이 아니기 떄문이다.
+    private String standardOffer;
 
-    private String type;
+    private String nonOffer;
 
-//    private Moneta //Moneta jsr354 국제 통화표현 라이브러리
+    private String notice;
+
+    @Embedded
+    private TourPackagePrices prices;
+
+    @ToString.Exclude
+    @OneToOne(fetch = FetchType.LAZY)
+    private TourPackageFile mainImage;
+
+    @ToString.Exclude
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "tourPackage",fetch = FetchType.LAZY,cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
     private List<TourPackageFile> tourPackageFileList;
 
-    @OneToMany(mappedBy = "tourPackage")
-    private List<TourPackageDate> tourPackageDateList;
+    @ToString.Exclude
+    @BatchSize(size = 10)
+    @OneToMany(mappedBy = "tourPackage",fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
+    private List<TourItinerary> tourItineraryList;
 
     public void setAccount(Account account){
         this.account = account;
     }
+
+
 }
