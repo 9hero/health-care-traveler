@@ -27,7 +27,7 @@ public class TourPackageFile extends BaseTimeEntity {
     private Long id;
 
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST,optional = false)
     @JoinColumn(name = "trip_package_id")
     private TourPackage tourPackage;
 

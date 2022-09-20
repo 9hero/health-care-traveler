@@ -18,6 +18,7 @@ import lombok.Getter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Random;
 
 @Getter
 public class EntityProvider {
@@ -55,6 +56,7 @@ public class EntityProvider {
     private final TourPlaceImage tourPlaceImage;
     private final TourItineraryElement tourItineraryElement;
     private final MedicalCheckupItemCategory medicalCheckupItemCategory;
+    private final TourPackageFile tourPackageFile;
 
     public EntityProvider() {
 
@@ -115,6 +117,14 @@ public class EntityProvider {
                 .standardOffer("기본제공사항")
                 .nonOffer("불포함사항")
                 .build();
+        tourPackageFile= TourPackageFile.builder()
+                .tourPackage(tourPackage)
+                .fileName("중복없는이름")
+                .fileSize(1223)
+                .originalName("파일의이름")
+                .url("대충url")
+                .build();
+        tourPackage.setMainImage(tourPackageFile);
         tourPackageDate =
                 TourPackageDate.builder()
                         .tourPackage(tourPackage)

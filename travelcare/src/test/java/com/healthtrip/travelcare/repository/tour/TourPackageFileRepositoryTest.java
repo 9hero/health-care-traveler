@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 
 import java.math.BigDecimal;
 
@@ -43,10 +44,9 @@ class TourPackageFileRepositoryTest {
                 .tourPackage(tourPackage)
                 .fileName(uniqueFileName)
                 .fileSize(1223)
-                .originalName("파일의이름")
-                .url("대충 url")
+                .originalName("파일의이름2")
+                .url("대충 url2")
                 .build();
-
     }
 
     void setEntities() {
@@ -58,7 +58,13 @@ class TourPackageFileRepositoryTest {
     void save() {
         // given
         setEntities();
-
+        tourPackageFile= TourPackageFile.builder()
+                .tourPackage(tourPackageRepository.getById(134L))
+                .fileName(uniqueFileName)
+                .fileSize(1223)
+                .originalName("파일의이름")
+                .url("대충 url")
+                .build();
         // when
         TourPackageFile savedTourPackageFile = tourPackageFileRepository.save(tourPackageFile);
 

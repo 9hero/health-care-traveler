@@ -1,6 +1,7 @@
 package com.healthtrip.travelcare.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.healthtrip.travelcare.annotation.IntegrationTestController;
 import com.healthtrip.travelcare.repository.account.AccountAgentRepository;
 import com.healthtrip.travelcare.repository.account.AccountCommonRepository;
 import com.healthtrip.travelcare.repository.account.AccountsRepository;
@@ -20,9 +21,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
-@ActiveProfiles("integration")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc
+@IntegrationTestController
 public class AccountControllerITests {
 
     @Autowired
@@ -49,26 +48,27 @@ public class AccountControllerITests {
     @DisplayName("일반회원 가입 테스트-가입성공")
     void common_signup_ok() {
         //given
-        String json = "{\n" +
-                "  \"email\": \"gogmow@naver.com\",\n" +
-                "  \"password\": \"ahah99\",\n" +
-                "  \"addressData\": {\n" +
-                "    \"address1\": \"주소1\",\n" +
-                "    \"address2\": \"주소2\",\n" +
-                "    \"district\": \"지역\",\n" +
-                "    \"cityName\": \"도시명\",\n" +
-                "    \"postalCode\": \"12345\",\n" +
-                "    \"countryId\": 1\n" +
-                "  },\n" +
-                "  \"personDataRequest\": {\n" +
-                "    \"firstName\": \"머머\",\n" +
-                "    \"lastName\": \"구\",\n" +
-                "    \"gender\": \"M\",\n" +
-                "    \"birth\": \"2022-08-16\",\n" +
-                "    \"phone\": \"string\",\n" +
-                "    \"emergencyContact\": \"string\"\n" +
-                "  }\n" +
-                "}";
+        var jsonB = new StringBuffer();
+        jsonB.append("{\n");
+        jsonB.append("  \"email\": \"gogmow@naver.com\",\n" );
+        jsonB.append("  \"password\": \"ahah99\",\n" );
+        jsonB.append("  \"addressData\": {\n" );
+        jsonB.append("    \"address1\": \"주소1\",\n" );
+        jsonB.append("    \"address2\": \"주소2\",\n" );
+        jsonB.append("    \"district\": \"지역\",\n" );
+        jsonB.append("    \"cityName\": \"도시명\",\n" );
+        jsonB.append("    \"postalCode\": \"12345\",\n" );
+        jsonB.append("    \"countryId\": 1\n" );
+        jsonB.append("  },\n" );
+        jsonB.append("  \"personDataRequest\": {\n" );
+        jsonB.append("    \"firstName\": \"머머\",\n" );
+        jsonB.append("    \"lastName\": \"구\",\n" );
+        jsonB.append("    \"gender\": \"M\",\n" );
+        jsonB.append("    \"birth\": \"2022-08-16\",\n" );
+        jsonB.append("    \"phone\": \"string\",\n" );
+        jsonB.append("    \"emergencyContact\": \"string\"\n" );
+        jsonB.append("  }\n" );
+        jsonB.append("}");
 
         //when
         try {
@@ -76,7 +76,7 @@ public class AccountControllerITests {
                         MockMvcRequestBuilders
                                 .post("/api/account/common")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(json)
+                                .content(jsonB.toString())
                 );
 
         //then

@@ -7,6 +7,7 @@ import com.healthtrip.travelcare.entity.BaseTimeEntity;
 import com.healthtrip.travelcare.repository.dto.response.TourPackageResponse;
 import lombok.*;
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.util.List;
 
@@ -57,8 +58,10 @@ public class TourPackage extends BaseTimeEntity {
     @Embedded
     private TourPackagePrices prices;
 
+    @Setter
     @ToString.Exclude
-    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
     private TourPackageFile mainImage;
 
     @ToString.Exclude
