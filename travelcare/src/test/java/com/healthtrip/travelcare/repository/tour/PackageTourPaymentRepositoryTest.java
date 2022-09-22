@@ -33,7 +33,7 @@ class PackageTourPaymentRepositoryTest {
     void save() {
         // given
         PackageTourPayment packageTourPayment = entityProvider.getPackageTourPayment();
-        packageTourPayment.getTourReservation().idGenerate();
+//        packageTourPayment.getTourReservation().idGenerate();
 
         //when
         for (  int i = 0; i<4;i++){
@@ -59,11 +59,11 @@ class PackageTourPaymentRepositoryTest {
         PackageTourPayment oldPackageTourPayment = entityProvider.getPackageTourPayment();
         TourReservation tourReservation = oldPackageTourPayment.getTourReservation();
         oldPackageTourPayment.testIdGenerate();
-        tourReservation.idGenerate();
+//        tourReservation.idGenerate();
 
         // 새로 등록할 데이터
         var newTourReservation=entityProvider.getNewTourResrvation();
-        newTourReservation.TESTidGenerate();
+//        newTourReservation.TESTidGenerate();
         PackageTourPayment newPackageTourPayment = PackageTourPayment.builder()
                 .tourReservation(newTourReservation)
                 .amount(BigDecimal.valueOf(550L))

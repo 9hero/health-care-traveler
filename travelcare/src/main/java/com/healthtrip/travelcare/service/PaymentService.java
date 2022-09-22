@@ -46,7 +46,7 @@ public class PaymentService {
                 boolean saved = savePackageTourPayment(entity) != null;
 
                 // 예약 결제완료
-                reservationInfo.paid();
+//                reservationInfo.paid();
                 if (saved){
                     return "결제완료";
                 }else {
@@ -56,7 +56,7 @@ public class PaymentService {
             }
             // 실패
             else {
-                reservationInfo.cancel();
+//                reservationInfo.cancel();
                 return "실제 결제된 금액과 주문금액이 다릅니다. 자동 환불되지 않으니, 관리자에게 문의하여 주십쇼.";
             }
         } else { //해당 주문내역이 없음

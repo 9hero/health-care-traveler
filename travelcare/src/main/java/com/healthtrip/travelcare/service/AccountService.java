@@ -88,7 +88,7 @@ public class AccountService implements UserDetailsService {
             //아이디 존재
             return ResponseEntity.status(HttpStatus.CONFLICT).body("이메일 중복");
         }else {
-            var addressRequest = commonSignUp.getAddressData();
+            var addressRequest = commonSignUp.getPersonDataRequest().getAddressRequest();
             var personData = commonSignUp.getPersonDataRequest();
 
             AccountAddress address = AccountAddress.toEntityBasic(addressRequest);

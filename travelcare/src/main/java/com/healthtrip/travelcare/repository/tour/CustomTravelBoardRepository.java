@@ -10,13 +10,13 @@ public interface CustomTravelBoardRepository extends JpaRepository<CustomTravelB
 
     List<CustomTravelBoard> findByTourReservationId(Long reservationId);
 
-    @Query("select ctb from CustomTravelBoard ctb " +
-            "join ctb.tourReservation ri " +
-            "where ctb.tourReservation.id =:reservationId" +
-            " and ri.account.id = :uid")
-    List<CustomTravelBoard> findByTourReservationIdAndUserId(Long reservationId, Long uid);
+//    @Query("select ctb from CustomTravelBoard ctb " +
+//            "join ctb.tourReservation ri " +
+//            "where ctb.tourReservation.id =:reservationId" +
+//            " and ri.account.id = :uid")
+//    List<CustomTravelBoard> findByTourReservationIdAndUserId(Long reservationId, Long uid);
 
-    @Query("select ctb from CustomTravelBoard ctb join ctb.tourReservation ri " +
-            "where ctb.id = :id and ri.account.id = :uid")
-    CustomTravelBoard findByIdAndAccountId(Long id, Long uid);
+//    @Query("select ctb from CustomTravelBoard ctb join ctb.tourReservation ri " +
+//            "where ctb.id = :id and ri.account.id = :uid")
+//    CustomTravelBoard findByIdAndAccountId(Long id, Long uid);
 }

@@ -81,12 +81,9 @@ public class ReservationInfoService {
             // 예약 하기
             TourReservation tourReservation = TourReservation.builder()
 //                    .id()
-                    .account(account)
+//                    .account(account)
 //                    .tourPackageDate(tourPackageDate)
                     .personCount(personCount)
-                    .status(TourReservation.Status.Y)
-                    .csStatus(TourReservation.CsStatus.K)
-                    .paymentStatus(TourReservation.PaymentStatus.N)
                     .amount(amount)
                     .build();
             // 주문번호 생성 후 저장 중복번호일 경우 4번까지만 시도함 실패시
@@ -157,7 +154,8 @@ public class ReservationInfoService {
 
     private TourReservation saveReservationInfo(TourReservation tourReservation) {
         for (int i = 0; i<4;i++){
-            boolean conflict = tourReservationRepository.existsById(tourReservation.idGenerate());
+            boolean conflict = false;
+//                    tourReservationRepository.existsById(tourReservation.idGenerate());
             if (!conflict) {
                 return tourReservationRepository.save(tourReservation);
             }else {
@@ -182,23 +180,24 @@ public class ReservationInfoService {
 //        필요 Entity: paged info,Date,TripPackage,ReservationPerson
         Long uid = CommonUtils.getAuthenticatedUserId();
         // 내 예약정보 전부 가져오기  현재 N+4 한방쿼리 or EntityGraph or FetchJoin -> paging 처리도 필수
-        List<TourReservation> info = tourReservationRepository.findByAccountId(uid);
+        List<TourReservation> info = null;
+//
         if(!info.isEmpty()){
             // 예약정보 있는경우: 응답값 초기화 및 필요한 객체들 불러오기
             List<ReservationInfoResponse.MyInfo> responseBody = new ArrayList<>();
             info.forEach(reservationInfo -> {
                 ReservationInfoResponse.MyInfo myInfo = new ReservationInfoResponse.MyInfo();
 //                var reservationDate = reservationInfo.getTourPackageDate();
-                var reservedPerson = reservationInfo.getTourReservationPeople();
+//                var reservedPerson = reservationInfo.getTourReservationPeople();
 //                var tripPackage = reservationDate.getTourPackage();
-                var representPerson = reservedPerson.get(0); // N+1
+//                var representPerson = reservedPerson.get(0); // N+1
 
                 // 예약 번호
-                myInfo.setReservationInfoId(reservationInfo.getId());
+//                myInfo.setReservationInfoId(reservationInfo.getId());
                 // 예약자(임시로 대표자 이름만)
-                myInfo.setPersonName(representPerson.getFirstName() + " "+representPerson.getLastName());
+//                myInfo.setPersonName(representPerson.getFirstName() + " "+representPerson.getLastName());
                 // 예약상태, 에약인원
-                myInfo.setStatus(reservationInfo.getStatus());
+//                myInfo.setStatus(reservationInfo.getStatus());
                 myInfo.setPersonCount(reservationInfo.getPersonCount());
 
                 // 패키지명, 가격
@@ -220,9 +219,10 @@ public class ReservationInfoService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<List<ReservationPersonResponse.rpInfo>> getPeopleDataByInfoId(String reservationId) {
+    public ResponseEntity<List<ReservationPersonResponse.rpInfo>> getPeopleDataByInfoId(Long reservationId) {
         Long uid = CommonUtils.getAuthenticatedUserId();
-        List<TourBooker> reservationPeople = tourReservationPersonRepository.findByTourReservationId(reservationId,uid);
+        List<TourBooker> reservationPeople = null;
+//                tourReservationPersonRepository.findByTourReservationId(reservationId,uid);
         var responseBody = reservationPeople.stream().map(person ->
                 ReservationPersonResponse.rpInfo.builder()
                         .reservedPersonId(person.getId())

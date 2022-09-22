@@ -18,7 +18,7 @@ public class PersonData {
     private LocalDate birth;
     private String phone;
     private String emergencyContact;
-
+    private AddressRequest addressRequest;
     public enum Gender {
         M,W
     }

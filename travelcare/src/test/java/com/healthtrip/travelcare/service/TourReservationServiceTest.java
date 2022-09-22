@@ -66,36 +66,36 @@ class TourReservationServiceTest {
     void selectMyInfo() {
         //        필요정보 : 예약자, 예약 인원, 패키지명, 가격, 출발일, 도착일, 예약상태
         // 내 예약정보 전부 가져오기
-        List<TourReservation> info = tourReservationRepository.findByAccountId(70L);
-        if (!info.isEmpty()) {
-            // 예약정보 있는경우: 응답값 초기화 및 필요한 객체들 불러오기
-            List<ReservationInfoResponse.MyInfo> responseBody = new ArrayList<>();
-            info.forEach(reservationInfo -> {
-                ReservationInfoResponse.MyInfo myInfo = new ReservationInfoResponse.MyInfo();
-//                var reservationDate = reservationInfo.getTourPackageDate();
-//                var tripPackage = reservationDate.getTourPackage();
-                var reservedPerson = reservationInfo.getTourReservationPeople();
-                var representPerson = reservedPerson.get(0);
+//        List<TourReservation> info = tourReservationRepository.findByAccountId(70L);
+//        if (!info.isEmpty()) {
+//            // 예약정보 있는경우: 응답값 초기화 및 필요한 객체들 불러오기
+//            List<ReservationInfoResponse.MyInfo> responseBody = new ArrayList<>();
+//            info.forEach(reservationInfo -> {
+//                ReservationInfoResponse.MyInfo myInfo = new ReservationInfoResponse.MyInfo();
+////                var reservationDate = reservationInfo.getTourPackageDate();
+////                var tripPackage = reservationDate.getTourPackage();
+////                var reservedPerson = reservationInfo.getTourReservationPeople();
+////                var representPerson = reservedPerson.get(0);
+//
+//                // 예약자(임시로 대표자 이름만)
+//                myInfo.setPersonName(representPerson.getFirstName() + " " + representPerson.getLastName());
+//                // 예약상태, 에약인원
+//                myInfo.setStatus(reservationInfo.getStatus());
+//                myInfo.setPersonCount(reservationInfo.getPersonCount());
+//
+//                // 패키지명, 가격
+////                myInfo.setPackageTitle(tripPackage.getTitle());
+////                myInfo.setPrice(tripPackage.getPrice());
+//
+//                // 출발일 도착일
+////                myInfo.setDepartAt(reservationDate.getDepartAt());
+////                myInfo.setArrivedAt(reservationDate.getArriveAt());
+//
+//                responseBody.add(myInfo);
+//            });
+//
+//            responseBody.forEach(System.out::println);
 
-                // 예약자(임시로 대표자 이름만)
-                myInfo.setPersonName(representPerson.getFirstName() + " " + representPerson.getLastName());
-                // 예약상태, 에약인원
-                myInfo.setStatus(reservationInfo.getStatus());
-                myInfo.setPersonCount(reservationInfo.getPersonCount());
-
-                // 패키지명, 가격
-//                myInfo.setPackageTitle(tripPackage.getTitle());
-//                myInfo.setPrice(tripPackage.getPrice());
-
-                // 출발일 도착일
-//                myInfo.setDepartAt(reservationDate.getDepartAt());
-//                myInfo.setArrivedAt(reservationDate.getArriveAt());
-
-                responseBody.add(myInfo);
-            });
-
-            responseBody.forEach(System.out::println);
-        }
     }
 
 }

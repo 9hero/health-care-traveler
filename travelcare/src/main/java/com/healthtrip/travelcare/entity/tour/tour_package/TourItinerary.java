@@ -1,14 +1,14 @@
 package com.healthtrip.travelcare.entity.tour.tour_package;
 
 import com.healthtrip.travelcare.entity.BaseTimeEntity;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -16,7 +16,7 @@ import java.util.Set;
 public class TourItinerary extends BaseTimeEntity {
 
     @Builder
-    public TourItinerary(Long id, String day, String location, String specificLocations, String accommodation, String details, String notice, TourPackage tourPackage, Set<TourItineraryElement> itineraryElements) {
+    public TourItinerary(Long id, String day, String location, String specificLocations, String accommodation, String details, String notice, TourPackage tourPackage, List<TourItineraryElement> itineraryElements) {
         this.id = id;
         this.day = day;
         this.location = location;
@@ -53,8 +53,14 @@ public class TourItinerary extends BaseTimeEntity {
     private TourPackage tourPackage;
 
     @BatchSize(size = 100)
-    @OneToMany(mappedBy = "tourItinerary",fetch = FetchType.LAZY)
-    private Set<TourItineraryElement> itineraryElements;
+    @OneToMany(mappedBy = "tourItinerary",fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
+    private List<TourItineraryElement> itineraryElements;
 
+    public void addItineraryElement(TourItineraryElement tourItineraryElement) {
+        if (itineraryElements == null){
+            itineraryElements = new ArrayList<>();
+        }
+        itineraryElements.add(tourItineraryElement);
+    }
 
 }

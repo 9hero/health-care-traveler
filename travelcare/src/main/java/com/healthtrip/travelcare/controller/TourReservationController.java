@@ -57,7 +57,7 @@ public class TourReservationController {
 
     @Operation(summary = "예약인원정보 보기 (예약 번호 필요)",description = "예약 번호는 /api/reservation/info/me 에서 받아올 수 있습니다.")
     @GetMapping(domain+"/{reservationId}")
-    public ResponseEntity<List<ReservationPersonResponse.rpInfo>> reservationDetails(@PathVariable String reservationId){
+    public ResponseEntity<List<ReservationPersonResponse.rpInfo>> reservationDetails(@PathVariable Long reservationId){
         return reservationInfoService.getPeopleDataByInfoId(reservationId);
     }
 

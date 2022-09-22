@@ -20,7 +20,6 @@ public class AccountRequest {
     public static class CommonSignUp {
         private String email;
         private String password;
-        private AddressRequest addressData;
         private PersonData personDataRequest;
     }
     @Data

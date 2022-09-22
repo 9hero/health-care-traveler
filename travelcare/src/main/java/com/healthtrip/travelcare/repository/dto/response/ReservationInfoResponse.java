@@ -1,5 +1,6 @@
 package com.healthtrip.travelcare.repository.dto.response;
 
+import com.healthtrip.travelcare.entity.reservation.Reservation;
 import com.healthtrip.travelcare.entity.tour.reservation.TourReservation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -25,7 +26,7 @@ public class ReservationInfoResponse {
         private String personName;
         private String packageTitle;
         private BigDecimal price;
-        private TourReservation.Status status;
+        private Reservation.Status status;
         @Schema(description = "예약한 인원수")
         private short personCount;
         private LocalDateTime departAt;

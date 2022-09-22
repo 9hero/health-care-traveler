@@ -25,7 +25,7 @@ class CustomTravelBoardRepositoryTest {
 //        var customTravelBoard = optional.get();
 //        System.out.println("엉덩큐엘 나오나?");
 //        System.out.println("user id = "+customTravelBoard.getReservationInfo().getAccount().getId());
-        System.out.println(customTravelBoardRepository.findByIdAndAccountId(53L,127L));
+//        System.out.println(customTravelBoardRepository.findByIdAndAccountId(53L,127L));
 //        customTravelBoardRepository.findByReservationInfoId(23L).forEach(System.out::println);
     }
 }

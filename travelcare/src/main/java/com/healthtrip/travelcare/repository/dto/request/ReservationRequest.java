@@ -2,11 +2,9 @@ package com.healthtrip.travelcare.repository.dto.request;
 
 
 import com.healthtrip.travelcare.entity.account.Account;
+import com.healthtrip.travelcare.entity.tour.reservation.TourReservation;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -28,7 +26,24 @@ public class ReservationRequest {
         private List<AddressRequest> addressData;
         private List<PersonData> reservationPersonData;
     }
+    public static class TourR {
+        private Long userId;
+        private Long packageId;
+        private short manCount;
 
+
+    }
+    public static class HospitalR {
+
+    }
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Integration {
+        private List<PersonData> reservationPersonData;
+        private TourR tour;
+        private HospitalR hospital;
+    }
     public enum AddressType{
         SINGLE,
         FOREACH

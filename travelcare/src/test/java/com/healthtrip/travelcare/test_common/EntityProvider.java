@@ -6,11 +6,10 @@ import com.healthtrip.travelcare.entity.account.AccountAgent;
 import com.healthtrip.travelcare.entity.account.AccountCommon;
 import com.healthtrip.travelcare.entity.hospital.*;
 import com.healthtrip.travelcare.entity.location.Country;
+import com.healthtrip.travelcare.entity.reservation.Booker;
+import com.healthtrip.travelcare.entity.reservation.Reservation;
 import com.healthtrip.travelcare.entity.tour.PackageTourPayment;
-import com.healthtrip.travelcare.entity.tour.reservation.TourBookerAddress;
-import com.healthtrip.travelcare.entity.tour.reservation.TourPackageDate;
-import com.healthtrip.travelcare.entity.tour.reservation.TourReservation;
-import com.healthtrip.travelcare.entity.tour.reservation.TourBooker;
+import com.healthtrip.travelcare.entity.tour.reservation.*;
 import com.healthtrip.travelcare.entity.tour.tour_package.*;
 import com.healthtrip.travelcare.repository.dto.request.PersonData;
 import lombok.Getter;
@@ -18,7 +17,6 @@ import lombok.Getter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Random;
 
 @Getter
 public class EntityProvider {
@@ -57,12 +55,16 @@ public class EntityProvider {
     private final TourItineraryElement tourItineraryElement;
     private final MedicalCheckupItemCategory medicalCheckupItemCategory;
     private final TourPackageFile tourPackageFile;
+    private final HospitalReservation hospitalReservation;
+    private final Reservation reservation;
+    private final Booker booker;
+    private final TourOption tourOption;
 
     public EntityProvider() {
 
         // 장소
         country = Country.builder()
-                .name("USA")
+                .name("Unite of states")
                 .build();
         accountAddress = AccountAddress.builder()
                 .country(country)
@@ -134,13 +136,10 @@ public class EntityProvider {
                         .peopleLimit((short) 30)
                         .build();
         tourReservation = TourReservation.builder()
-                .account(account)
-//                .tourPackageDate(tourPackageDate)
+                .tourPackage(tourPackage)
                 .amount(BigDecimal.TEN)
-                .csStatus(TourReservation.CsStatus.K)
-                .paymentStatus(TourReservation.PaymentStatus.N)
-                .status(TourReservation.Status.Y)
                 .personCount((short) 1)
+                .reservedTime(LocalDateTime.now())
                 .build();
         tourBooker = TourBooker.builder()
                 .tourReservation(tourReservation)
@@ -173,8 +172,9 @@ public class EntityProvider {
                 .tourItinerary(tourItinerary)
                 .sequence((short)1)
                 .title("해운대 출발")
-                .type(TourItineraryElement.Type.MOVE)
+                .showType(TourItineraryElement.ShowType.MOVE)
                 .build();
+        tourItinerary.addItineraryElement(tourItineraryElement);
         tourPlace= TourPlace.builder()
                 .placeName("장소명")
                 .description("장소 설명")
@@ -236,16 +236,46 @@ public class EntityProvider {
                 .medicalCheckupItem(medicalCheckupItem)
                 .medicalCheckupProgram(medicalCheckupProgram)
                 .build();
+        hospitalReservation = HospitalReservation.builder()
+                .amount(BigDecimal.TEN)
+                .manCount((short) 2)
+                .reservedTime(LocalDateTime.now())
+                .medicalCheckupProgram(medicalCheckupProgram)
+                .build();
+
+        // 예약
+        reservation = Reservation.builder()
+                .account(account)
+                .tourReservation(tourReservation)
+                .hospitalReservation(hospitalReservation)
+                .amount(BigDecimal.TEN)
+//                .booker(entityProvider.getBooker())
+                .status(Reservation.Status.Y)
+                .manCount((short) 2)
+                .paymentStatus(Reservation.PaymentStatus.Y)
+                .build();
+        reservation.idGenerate();
+        booker = Booker.builder()
+                .birth(LocalDate.now())
+                .firstName("first")
+                .lastName("last")
+                .gender(Booker.Gender.M)
+                .phone("phone")
+                .emergencyContact("emergency")
+                .reservation(reservation)
+                .tourReserved(true)
+                .hospitalReserved(false)
+                .simpleAddress("한줄주소")
+                .build();
+        tourOption = TourOption.builder()
+                .optionName("렌트카")
+                .build();
     }
 
     public TourReservation getNewTourResrvation() {
         return TourReservation.builder()
-//                .tourReservationPeople()
-                .account(account)
+                .reservedTime(LocalDateTime.now())
                 .amount(BigDecimal.TEN)
-                .csStatus(TourReservation.CsStatus.K)
-                .paymentStatus(TourReservation.PaymentStatus.N)
-                .status(TourReservation.Status.Y)
                 .personCount((short) 1)
                 .build();
     }

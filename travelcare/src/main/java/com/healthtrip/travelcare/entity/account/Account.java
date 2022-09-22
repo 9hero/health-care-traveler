@@ -17,18 +17,17 @@ import java.util.*;
 @NoArgsConstructor
 @Entity
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true,exclude = {"noticeBoard","tourReservationList"})
+@EqualsAndHashCode(callSuper = true,exclude = {"noticeBoard"})
 public class Account extends BaseTimeEntity implements UserDetails {
 
     @Builder
-    public Account(Long id, String email, String password, Status status, UserRole userRole, List<NoticeBoard> noticeBoard, List<TourReservation> tourReservationList) {
+    public Account(Long id, String email, String password, Status status, UserRole userRole, List<NoticeBoard> noticeBoard) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.status = status;
         this.userRole = userRole;
         this.noticeBoard = noticeBoard;
-        this.tourReservationList = tourReservationList;
         authorities = new HashSet<>();
     }
 
@@ -46,9 +45,6 @@ public class Account extends BaseTimeEntity implements UserDetails {
     @ToString.Exclude
     private List<NoticeBoard> noticeBoard;
 
-    @OneToMany(mappedBy = "account",fetch = FetchType.LAZY)
-    @ToString.Exclude
-    private List<TourReservation> tourReservationList;
 
     @Enumerated(value = EnumType.STRING)
     private Status status;

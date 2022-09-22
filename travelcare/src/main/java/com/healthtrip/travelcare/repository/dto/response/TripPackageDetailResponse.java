@@ -33,7 +33,7 @@ public class TripPackageDetailResponse {
                 .id(tourPackage.getId())
                 .description(tourPackage.getDescription())
 //                .price(tourPackage.getPrice())
-//                .type(tourPackage.getType())
+//                .type(tourPackage.getShowType())
                 .build();
     }
 }

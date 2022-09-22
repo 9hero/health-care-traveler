@@ -30,7 +30,8 @@ public class CustomTravelBoardService {
         // 커스텀 여행 등록을 위해 연결된 패키지 예약을 가져옴
 //        var reservationInfo = reservationInfoRepository.getById(request.getReservationId());
         // reservationInfo 사용 주의 custom 불러올시 Lazy로 다시한번 db요청함 필요하면 EntityGraph 이용
-        var reservationInfo= tourReservationRepository.getByIdAndAccountId(request.getReservationId(), CommonUtils.getAuthenticatedUserId());
+        TourReservation reservationInfo= null;
+//                tourReservationRepository.getByIdAndAccountId(request.getReservationId(), CommonUtils.getAuthenticatedUserId());
         if (reservationInfo == null){
             return ResponseEntity.ok(false);
         }
@@ -47,7 +48,7 @@ public class CustomTravelBoardService {
             return ResponseEntity.ok(false);
         }
         // 성공시 패키지 예약을 대기중으로 바꾼다.
-        reservationInfo.customTravelOn();
+
         return ResponseEntity.ok(true);
     }
 
@@ -63,7 +64,7 @@ public class CustomTravelBoardService {
             var savedCustom = customTravelRepository.save(customTravelBoard);
 
             // 답변 등록 후 패키지 상태 업데이트= 대기중 -> 승인 or 거절
-            savedCustom.getTourReservation().customStatusUpdate(request.getAnswerStatus());
+//            savedCustom.getTourReservation().customStatusUpdate(request.getAnswerStatus());
             return ResponseEntity.ok("답변완료");
         }else {
             return ResponseEntity.notFound().build();
@@ -73,7 +74,8 @@ public class CustomTravelBoardService {
     @Transactional(readOnly = true)
     public ResponseEntity<List<CustomTravelResponse.Info>> myCustomRequests(Long reservationId) {
         // 예약 번호와 유저 번호로 하나의 예약정보 가져오기
-        List<CustomTravelBoard> customTravelBoardList = customTravelRepository.findByTourReservationIdAndUserId(reservationId, CommonUtils.getAuthenticatedUserId());
+        List<CustomTravelBoard> customTravelBoardList = null;
+//                customTravelRepository.findByTourReservationIdAndUserId(reservationId, CommonUtils.getAuthenticatedUserId());
         if(customTravelBoardList.size() != 0){
             //있다면 예약정보-> 커스텀요청 목록-> DTO변환 -> List로 변경
             List<CustomTravelResponse.Info> responseBody = customTravelBoardList.stream().map(customTravelBoard ->
@@ -96,11 +98,12 @@ public class CustomTravelBoardService {
     @Transactional
     public ResponseEntity<Boolean> clientModify(CustomTravelRequest.ClientModify request) {
         // 커스텀 여행을 가져옴
-        CustomTravelBoard customTravelBoard = customTravelRepository.findByIdAndAccountId(request.getCustomTravelId(),CommonUtils.getAuthenticatedUserId());
+        CustomTravelBoard customTravelBoard = null;
+//                customTravelRepository.findByIdAndAccountId(request.getCustomTravelId(),CommonUtils.getAuthenticatedUserId());
         if (customTravelBoard != null){
         // 이미 확정된 사항이라면 수정불가
-            boolean statusCheck = customTravelBoard.getTourReservation().getStatus() != TourReservation.Status.Y;
-            if(statusCheck) {
+//            boolean statusCheck = customTravelBoard.getTourReservation().getStatus() != TourReservation.Status.Y;
+            if(false) {
         // 커스텀 여행 객체 변경
                 customTravelBoard.updateClientRequest(request);
                 customTravelRepository.save(customTravelBoard);

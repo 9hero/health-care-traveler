@@ -14,12 +14,12 @@ import java.util.List;
 public class TourItineraryElement {
 
     @Builder
-    public TourItineraryElement(Long id, TourItinerary tourItinerary, List<TourPlaceList> tourPlaceLists, String title, Type type, Short sequence) {
+    public TourItineraryElement(Long id, TourItinerary tourItinerary, List<TourPlaceList> tourPlaceLists, String title, ShowType showType, Short sequence) {
         this.id = id;
         this.tourItinerary = tourItinerary;
         this.tourPlaceLists = tourPlaceLists;
         this.title = title;
-        this.type = type;
+        this.showType = showType;
         this.sequence = sequence;
     }
 
@@ -40,11 +40,11 @@ public class TourItineraryElement {
 
     // front에서 사용할 타입 게시물타입, 이동타입, 정보타입
     @Enumerated(EnumType.STRING)
-    private Type type;
+    private ShowType showType;
 
     // 일정 순서 1:도착 -> 2:이동 -> 3....n:종료
     private Short sequence;
-    public enum Type {
+    public enum ShowType {
         MOVE
     }
 }

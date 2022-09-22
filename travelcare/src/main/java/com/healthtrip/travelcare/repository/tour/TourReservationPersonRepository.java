@@ -11,9 +11,5 @@ public interface TourReservationPersonRepository extends JpaRepository<TourBooke
 
     List<TourBooker> findByTourReservationId(Long reservationId);
 
-    @Query(value = "select distinct rp from TourBooker rp " +
-            "join fetch rp.tourReservation ri " +
-            "where ri.account.id =:accountId and ri.id =:reservationId")
-    List<TourBooker> findByTourReservationId(@Param("reservationId") String reservationId, @Param("accountId") Long accountId);
 
 }

@@ -1,7 +1,6 @@
 package com.healthtrip.travelcare.controller;
 
 import com.healthtrip.travelcare.common.Exception.CustomException;
-import com.healthtrip.travelcare.controller.temp.XssTest;
 import com.healthtrip.travelcare.repository.dto.request.AccountRequest;
 import com.healthtrip.travelcare.repository.dto.request.RefreshTokenRequest;
 import com.healthtrip.travelcare.repository.dto.response.AccountResponse;
@@ -28,19 +27,6 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "계정 API",description = "모두 허용")
 public class AccountController {
 
-    @Operation(hidden = true)
-    @PostMapping("/xssBody")
-    public XssTest xssTest(@RequestBody XssTest xssTest) {
-        log.info("xss: {}",xssTest);
-        log.info("xss localDate: {}",xssTest.getLocalDate());
-        return xssTest;
-    }
-    @Operation(hidden = true)
-    @PostMapping("/xssForm")
-    public XssTest xssForm(XssTest xssTest) {
-        log.info("xss: {}",xssTest);
-        return xssTest;
-    }
 
     private final AccountService accountService;
     @ApiResponses({
