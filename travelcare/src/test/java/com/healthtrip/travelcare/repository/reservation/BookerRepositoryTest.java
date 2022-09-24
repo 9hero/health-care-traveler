@@ -5,6 +5,7 @@ import com.healthtrip.travelcare.entity.reservation.Booker;
 import com.healthtrip.travelcare.repository.dto.request.PersonData;
 import com.healthtrip.travelcare.test_common.EntityProvider;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,5 +40,15 @@ class BookerRepositoryTest {
         // then
         assertThat(booker.getId()).isNotNull();
         assertThat(booker.getReservation().getId()).isNotNull();
+    }
+    @Test
+    @DisplayName("JPQL findReservationBookersById 쿼리테스트")
+    @Disabled("jpa 쿼리 확인용")
+    void findReservationBookersById(){
+        // given
+//        var a = bookerRepository.findReservationBookersById("220923R8197", 261L);
+        // when
+        System.out.println("break");
+        // then
     }
 }

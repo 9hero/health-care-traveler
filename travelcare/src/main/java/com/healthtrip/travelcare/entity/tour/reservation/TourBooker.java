@@ -2,6 +2,7 @@ package com.healthtrip.travelcare.entity.tour.reservation;
 
 
 import com.healthtrip.travelcare.entity.BaseTimeEntity;
+import com.healthtrip.travelcare.entity.reservation.Booker;
 import com.healthtrip.travelcare.repository.dto.request.PersonData;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,7 +18,7 @@ import java.time.LocalDate;
 @ToString
 public class TourBooker extends BaseTimeEntity {
     @Builder
-    public TourBooker(Long id, String lastName , TourReservation tourReservation, TourBookerAddress address, String firstName, PersonData.Gender gender, LocalDate birth, String phone, String emergencyContact) {
+    public TourBooker(Long id, String lastName , TourReservation tourReservation, TourBookerAddress address, String firstName, Booker.Gender gender, LocalDate birth, String phone, String emergencyContact) {
         this.id = id;
         this.tourReservation = tourReservation;
         this.firstName = firstName;
@@ -36,7 +37,7 @@ public class TourBooker extends BaseTimeEntity {
     private String lastName;
 
     @Enumerated(EnumType.STRING)
-    private PersonData.Gender gender;
+    private Booker.Gender gender;
 
     private LocalDate birth;
     private String phone;

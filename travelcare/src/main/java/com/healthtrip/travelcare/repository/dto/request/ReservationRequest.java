@@ -2,10 +2,12 @@ package com.healthtrip.travelcare.repository.dto.request;
 
 
 import com.healthtrip.travelcare.entity.account.Account;
-import com.healthtrip.travelcare.entity.tour.reservation.TourReservation;
+import com.healthtrip.travelcare.entity.tour.reservation.TourOption;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class ReservationRequest {
@@ -26,11 +28,17 @@ public class ReservationRequest {
         private List<AddressRequest> addressData;
         private List<PersonData> reservationPersonData;
     }
+    @NoArgsConstructor
+    @Getter
+    @Setter
     public static class TourR {
-        private Long userId;
-        private Long packageId;
-        private short manCount;
 
+        private Long packageId;
+        private Short adultCount;
+        private Short childCount;
+        private Short infantCount;
+        private LocalDateTime reservedAt;
+        private BigDecimal tourTotalAmount;
 
     }
     public static class HospitalR {
@@ -40,9 +48,12 @@ public class ReservationRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Integration {
-        private List<PersonData> reservationPersonData;
+        private String reservationName;
         private TourR tour;
+        private List<TourOptionsRequest> tourOptions;
         private HospitalR hospital;
+        private List<BookerRequest> bookerData;
+        private BigDecimal totalAmount;
     }
     public enum AddressType{
         SINGLE,

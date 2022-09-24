@@ -32,6 +32,8 @@ public class AccountRequest {
         private String password;
         private String name;
         private String companyNumber;
+        private String companyContact;
+        private AddressRequest companyAddress;
     }
     @Data
     @NoArgsConstructor

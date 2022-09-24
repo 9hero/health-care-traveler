@@ -5,6 +5,7 @@ import com.healthtrip.travelcare.entity.account.Account;
 import com.healthtrip.travelcare.entity.account.AccountAddress;
 import com.healthtrip.travelcare.entity.account.AccountCommon;
 import com.healthtrip.travelcare.entity.location.Country;
+import com.healthtrip.travelcare.entity.reservation.Booker;
 import com.healthtrip.travelcare.repository.dto.request.PersonData;
 import com.healthtrip.travelcare.repository.location.AddressRepository;
 import com.healthtrip.travelcare.repository.location.CountryRepository;
@@ -42,7 +43,7 @@ class AccountCommonRepositoryTest {
     @BeforeEach
     void setup() {
         country = Country.builder()
-                .name("USA")
+                .name("USAs")
                 .build();
         accountAddress = AccountAddress.builder()
                 .country(country)
@@ -65,7 +66,7 @@ class AccountCommonRepositoryTest {
                 .emergencyContact("010-4321-3123")
                 .firstName("json")
                 .lastName("kim")
-                .gender(PersonData.Gender.M)
+                .gender(Booker.Gender.M)
                 .build();
     }
 

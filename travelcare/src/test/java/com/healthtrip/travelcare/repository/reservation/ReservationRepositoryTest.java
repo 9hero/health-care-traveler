@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,11 +36,39 @@ class ReservationRepositoryTest {
         // given
 //        reservation.idGenerate();
         // when
+        reservation.idGenerate();
         reservationRepository.save(reservation);
+//        reservationRepository.flush();
         // then
         assertThat(reservation.getId()).isNotNull();
         assertThat(reservation.getAccount().getId()).isNotNull();
         assertThat(reservation.getTourReservation().getId()).isNotNull();
         assertThat(reservation.getHospitalReservation().getId()).isNotNull();
+        assertThat(reservation.getTitle()).isNotEmpty();
+    }
+
+    @Test
+    @DisplayName("findMyReservations")
+    void findMyReservations(){
+        // given
+        reservationRepository.save(reservation);
+        Long accountId = reservation.getAccount().getId();
+        // when
+        var a = reservationRepository.findMyReservations(accountId);
+        // then
+        assertThat(a).isNotEmpty();
+        a.forEach(reservation1 -> assertThat(reservation1
+        ).isNotNull());
+
+    }
+
+    @Test
+    @DisplayName("findMyReservationInfo")
+    void findMyReservationInfo(){
+        // given
+        var a =reservationRepository.findMyReservationInfo("220923R4921",261L);
+        // when
+        System.out.println("break");
+        // then
     }
 }

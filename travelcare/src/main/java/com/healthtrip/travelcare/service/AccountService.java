@@ -5,6 +5,7 @@ import com.healthtrip.travelcare.common.Sender;
 import com.healthtrip.travelcare.config.security.jwt.JwtProvider;
 import com.healthtrip.travelcare.entity.account.*;
 import com.healthtrip.travelcare.entity.account.AccountAddress;
+import com.healthtrip.travelcare.entity.location.Country;
 import com.healthtrip.travelcare.repository.account.*;
 import com.healthtrip.travelcare.repository.dto.request.AccountRequest;
 import com.healthtrip.travelcare.repository.dto.request.MailRequest;
@@ -124,7 +125,11 @@ public class AccountService implements UserDetailsService {
                     .status(Account.Status.Y)
                     .build();
             AccountAgent accountAgent = AccountAgent.toEntityBasic(agentSignUp);
+            Country country = countryRepository.getById(agentSignUp.getCompanyAddress().getCountryId());
+            AccountAddress companyAddress = AccountAddress.toEntityBasic(agentSignUp.getCompanyAddress());
+            companyAddress.setCountry(country);
             accountAgent.setRelation(account);
+            accountAgent.setCompanyAddress(companyAddress);
             accountAgentRepository.save(accountAgent);
             return ResponseEntity.ok("가입 완료");
         }
@@ -164,7 +169,7 @@ public class AccountService implements UserDetailsService {
                     .build();
             sender.naverSender(mail);
         }catch(RuntimeException e) {
-            log.info("발송 실패 msg: {}",e.getMessage());
+            log.error("발송 실패 msg: {}",e.getMessage());
         }
 
         // return id,expiration,emailExist

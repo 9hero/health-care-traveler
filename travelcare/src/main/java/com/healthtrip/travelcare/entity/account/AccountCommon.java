@@ -1,6 +1,7 @@
 package com.healthtrip.travelcare.entity.account;
 
 import com.healthtrip.travelcare.entity.BaseTimeEntity;
+import com.healthtrip.travelcare.entity.reservation.Booker;
 import com.healthtrip.travelcare.repository.dto.request.PersonData;
 import lombok.*;
 
@@ -28,7 +29,7 @@ public class AccountCommon extends BaseTimeEntity {
     private String firstName;
     private String lastName;
     @Enumerated(EnumType.STRING)
-    private PersonData.Gender gender;
+    private Booker.Gender gender;
     private LocalDate birth;
 
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)

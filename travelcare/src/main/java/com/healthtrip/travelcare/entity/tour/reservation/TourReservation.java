@@ -43,6 +43,7 @@ public class TourReservation extends BaseTimeEntity{
 
     private LocalDateTime reservedTime;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
     private TourPackage tourPackage;
 }

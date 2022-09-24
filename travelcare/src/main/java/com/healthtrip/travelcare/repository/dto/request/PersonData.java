@@ -1,5 +1,6 @@
 package com.healthtrip.travelcare.repository.dto.request;
 
+import com.healthtrip.travelcare.entity.reservation.Booker;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,12 +15,11 @@ import java.time.LocalDate;
 public class PersonData {
     private String firstName;
     private String lastName;
-    private Gender gender;
+    private Booker.Gender gender;
     private LocalDate birth;
     private String phone;
     private String emergencyContact;
     private AddressRequest addressRequest;
-    public enum Gender {
-        M,W
-    }
+
+
 }

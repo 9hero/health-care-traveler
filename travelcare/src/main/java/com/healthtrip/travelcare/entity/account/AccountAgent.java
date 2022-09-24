@@ -2,9 +2,7 @@ package com.healthtrip.travelcare.entity.account;
 
 import com.healthtrip.travelcare.entity.BaseTimeEntity;
 import com.healthtrip.travelcare.repository.dto.request.AccountRequest;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -12,6 +10,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @Entity
+@NoArgsConstructor
 public class AccountAgent extends BaseTimeEntity {
 
     @Id
@@ -21,7 +20,7 @@ public class AccountAgent extends BaseTimeEntity {
     private String name;
 
     private String companyNumber;
-
+    private String companyContact;
     @MapsId
     @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id")
@@ -31,7 +30,16 @@ public class AccountAgent extends BaseTimeEntity {
         return AccountAgent.builder()
                 .name(agentSignUp.getName())
                 .companyNumber(agentSignUp.getCompanyNumber())
+                .companyContact(agentSignUp.getCompanyContact())
                 .build();
+    }
+
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "account_address_id")
+    private AccountAddress companyAddress;
+
+    public void setCompanyAddress(AccountAddress companyAddress) {
+        this.companyAddress = companyAddress;
     }
 
     public void setRelation(Account account) {

@@ -54,6 +54,10 @@ public class Booker {
     @ToString.Exclude
     private Reservation reservation;
 
+    public void setReservation(Reservation reservation) {
+        this.reservation = reservation;
+        reservation.addBooker(this);
+    }
 
 //    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
 //    @JoinColumn

@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
-@Tag(name = "커스텀 여행 문의 API",description = "로그인 필요=Authorization:Bearer 'jwt'")
+@Tag(name = "(비활성)커스텀 여행 문의 API")
 public class CustomTourController {
     private final String domain = "/tour/custom";
     private final String adminApi = "/admin"+domain;

@@ -97,7 +97,7 @@ public class EntityProvider {
                 .emergencyContact("010-4321-3123")
                 .firstName("json")
                 .lastName("kim")
-                .gender(PersonData.Gender.M)
+                .gender(Booker.Gender.M)
                 .build();
         accountAgent = AccountAgent.builder()
                 .account(account)
@@ -149,7 +149,7 @@ public class EntityProvider {
                 .phone("1111")
                 .lastName("james")
                 .firstName("borne")
-                .gender(PersonData.Gender.M)
+                .gender(Booker.Gender.M)
                 .build();
         packageTourPayment = PackageTourPayment.builder()
                 .tourReservation(tourReservation)
@@ -246,6 +246,7 @@ public class EntityProvider {
         // 예약
         reservation = Reservation.builder()
                 .account(account)
+                .title("예약명")
                 .tourReservation(tourReservation)
                 .hospitalReservation(hospitalReservation)
                 .amount(BigDecimal.TEN)

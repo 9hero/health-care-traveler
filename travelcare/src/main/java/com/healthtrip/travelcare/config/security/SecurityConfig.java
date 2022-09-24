@@ -82,6 +82,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 // reservation
                 .antMatchers("/api/tour/reservation/**").authenticated()
+
+                .antMatchers("/api/reservation/**").permitAll()
                 // custom reservation
                 .antMatchers("/api/tour/custom/**").authenticated()
 

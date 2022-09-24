@@ -81,7 +81,6 @@ class TourItineraryRepositoryTest {
         tourItineraryRepository.save(tourItinerary);
 
         Long tourPackageId = tourItinerary.getTourPackage().getId();
-
         TourItinerary tourItinerary2 = TourItinerary.builder()
                 .tourPackage(entityProvider.getTourPackage())
                 .day("2일차")
@@ -90,13 +89,15 @@ class TourItineraryRepositoryTest {
                 .notice("유의사항입니다")
                 .location("해운대구")
                 .specificLocations("해동용궁사, 해운대바다, ~~ 등")
-                .itineraryElements(List.of(TourItineraryElement.builder()
-                                .tourItinerary(tourItinerary)
-                                .sequence((short) 1)
-                                .showType(TourItineraryElement.ShowType.MOVE)
-                                .title("gg")
-                        .build()))
                 .build();
+        tourItinerary2.addItineraryElement(
+                TourItineraryElement.builder()
+                        .tourItinerary(tourItinerary2)
+                        .sequence((short) 1)
+                        .showType(TourItineraryElement.ShowType.MOVE)
+                        .title("일정2의 요소").build()
+        );
+
         tourItineraryRepository.save(tourItinerary2);
         // when
         List<TourItinerary> tourItineraryList = tourItineraryRepository.findWithElements(tourPackageId);

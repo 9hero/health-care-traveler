@@ -4,12 +4,14 @@ import com.healthtrip.travelcare.entity.tour.reservation.TourOption;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor
 @Entity
+@ToString
 public class ReservationTourOptions {
     @Builder
     public ReservationTourOptions(Long id, Reservation reservation, TourOption tourOption, String day, Short manCount, String requesterName) {
@@ -25,11 +27,23 @@ public class ReservationTourOptions {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ToString.Exclude
+    @JoinColumn
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
     private Reservation reservation;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    public void setReservation(Reservation reservation) {
+        this.reservation = reservation;
+    }
+
+    @ToString.Exclude
+    @JoinColumn
+    @ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
     private TourOption tourOption;
+
+    public void setTourOption(TourOption tourOption) {
+        this.tourOption = tourOption;
+    }
 
     private String day;
 
