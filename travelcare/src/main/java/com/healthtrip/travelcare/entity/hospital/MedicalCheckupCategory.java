@@ -23,10 +23,10 @@ public class MedicalCheckupCategory extends BaseTimeEntity {
 
     private String name;
 
-    @OneToMany(mappedBy = "medicalCheckupCategory",cascade = CascadeType.PERSIST)
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "medicalCheckupCategory",cascade = CascadeType.PERSIST)
     private List<ProgramCategory> programCategories;
 
-    @OneToMany(mappedBy = "medicalCheckupCategory",cascade = CascadeType.PERSIST)
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "medicalCheckupCategory",cascade = CascadeType.PERSIST)
     private List<MedicalCheckupItemCategory> medicalCheckupItemCategories;
 
 

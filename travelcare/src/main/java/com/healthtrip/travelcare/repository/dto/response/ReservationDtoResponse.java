@@ -44,10 +44,11 @@ public class ReservationDtoResponse implements Serializable {
     @NoArgsConstructor
     @Getter
     public static class RVDetails implements Serializable{
-        ReservationDtoResponse reservationDtoResponse;
-        TourReservationDtoResponse tourReservationDtoResponse;
-        List<ReservationPersonResponse.rpInfo> bookerInfoList;
-        List<ReservationTourOptionsRes> tourOptions;
+        private ReservationDtoResponse reservationDtoResponse;
+        private TourReservationDtoResponse tourReservationDtoResponse;
+        private HospitalReservationDtoResponse hospitalReservationDtoResponse;
+        private List<ReservationPersonResponse.rpInfo> bookerInfoList;
+        private List<ReservationTourOptionsRes> tourOptions;
     }
 
 

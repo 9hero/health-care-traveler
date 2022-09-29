@@ -7,11 +7,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 
-import java.math.BigDecimal;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaUnitTest
 class MedicalCheckupProgramRepoTest {
@@ -24,13 +24,7 @@ class MedicalCheckupProgramRepoTest {
     @BeforeEach
     void setup(){
         entityProvider = new EntityProvider();
-        medicalCheckupProgram = MedicalCheckupProgram.builder()
-                .hospital(entityProvider.getHospital())
-                .programName("임시 검진")
-                .programType(MedicalCheckupProgram.ProgramType.Total)
-                .priceForMan(BigDecimal.ONE)
-                .priceForWoman(BigDecimal.TEN)
-                .build();
+        medicalCheckupProgram = entityProvider.getMedicalCheckupProgram();
     }
 
     @Test
@@ -49,6 +43,31 @@ class MedicalCheckupProgramRepoTest {
         assertThat(medicalCheckupProgram.getId()).isNotNull();
 
     }
+    @Test
+    @DisplayName("findByHospital")
+    void findByHospital(){
+        // given
+        medicalCheckupProgramRepo.save(medicalCheckupProgram);
+        // when
+        var foundProgram = medicalCheckupProgramRepo
+                .findByHospitalId(entityProvider.getHospital().getId(),
+                        PageRequest.of(0,10));
 
+        // then
+        assertThat(foundProgram).isNotEmpty();
+    }
+    @Test
+    @DisplayName("findByCategoryIds")
+    void findByCategoryIds(){
+        // given
+        medicalCheckupProgramRepo.save(medicalCheckupProgram);
+        // when
+        var foundProgramByCategory = medicalCheckupProgramRepo
+                .findByCategoryIds(
+                        List.of(entityProvider.getMedicalCheckupCategory().getId())
+                );
+        // then
+        assertThat(foundProgramByCategory).isNotEmpty();
+    }
 
 }

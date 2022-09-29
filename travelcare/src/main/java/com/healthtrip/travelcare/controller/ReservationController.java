@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -34,10 +35,11 @@ public class ReservationController {
         return reservationService.findMyReservation(pageable);
     }
     @Operation(summary = "예약 상세 보기",description = "예약 상세내용을 확인합니다.")
-    @GetMapping(domain+"/details")
-    public ReservationDtoResponse.RVDetails myReservationInfo(String reservationId) {
+    @GetMapping(domain+"/{id}")
+    public ReservationDtoResponse.RVDetails myReservationInfo(@PathVariable("id") String reservationId) {
         return reservationService.findMyReservationDetail(reservationId);
     }
+
 
 //    @Operation(summary = "예약인원정보 보기 (예약 번호 필요)",description = "예약 번호는 /api/reservation 에서 받아올 수 있습니다.")
 //    @GetMapping(domain+"/{reservationId}")

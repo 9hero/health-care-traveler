@@ -76,7 +76,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 // tour payment
 //                .antMatchers(HttpMethod.POST)
-
+                // tour option
+                .antMatchers("/api/tour/options/**").permitAll()
                 // trip package
                 .antMatchers(HttpMethod.GET,"/api/tour/package/**").permitAll()
 
@@ -86,6 +87,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/reservation/**").permitAll()
                 // custom reservation
                 .antMatchers("/api/tour/custom/**").authenticated()
+
+                // hospital temp
+                .antMatchers("/api/hospitals/**").permitAll()
 
                 .anyRequest().authenticated()
                 .and()

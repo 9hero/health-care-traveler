@@ -16,7 +16,7 @@ import java.util.List;
 public class MedicalCheckupProgram extends BaseTimeEntity {
 
     @Builder
-    public MedicalCheckupProgram(Long id, Hospital hospital, MedicalCheckupProgram extraCheckupProgram, ProgramType programType, String programName, BigDecimal priceForMan, BigDecimal priceForWoman, List<ProgramCheckupItem> programCheckupItems, List<ProgramCategory> programCategories) {
+    public MedicalCheckupProgram(Long id, Hospital hospital, MedicalCheckupProgram extraCheckupProgram, ProgramType programType, String programName, BigDecimal priceForMan, BigDecimal priceForWoman, List<ProgramCheckupItem> programCheckupItems, List<ProgramCategory> programCategories, String elements) {
         this.id = id;
         this.hospital = hospital;
         this.extraCheckupProgram = extraCheckupProgram;
@@ -26,6 +26,7 @@ public class MedicalCheckupProgram extends BaseTimeEntity {
         this.priceForWoman = priceForWoman;
         this.programCheckupItems = programCheckupItems = new ArrayList<>();
         this.programCategories = programCategories = new ArrayList<>();
+        this.elements = elements;
     }
 
     @Id
@@ -33,7 +34,7 @@ public class MedicalCheckupProgram extends BaseTimeEntity {
     private Long id;
 
     @JoinColumn
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST,optional = false)
     private Hospital hospital;
 
     @OneToOne(optional = true,fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
@@ -47,6 +48,7 @@ public class MedicalCheckupProgram extends BaseTimeEntity {
     private BigDecimal priceForMan;
 
     private BigDecimal priceForWoman;
+    private String elements;
 
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "medicalCheckupProgram",cascade = CascadeType.PERSIST)
     private List<ProgramCheckupItem> programCheckupItems;
@@ -66,8 +68,8 @@ public class MedicalCheckupProgram extends BaseTimeEntity {
     @Getter
     public enum ProgramType {
         In_Depth("정밀검사"),
-        Total("종합검사"),
-        Inpatient("입원검사");
+        Total("종합검진"),
+        Inpatient("입원검진");
 
         private final String description;
 

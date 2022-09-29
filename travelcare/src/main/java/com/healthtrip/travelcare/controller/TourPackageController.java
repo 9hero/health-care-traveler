@@ -15,18 +15,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-@Tag(name = "여행 패키지 API")
+@Tag(name = "투어 패키지 API")
 public class TourPackageController {
     private final String domain = "/tour/package";
     private final String adminApi = "/admin"+domain;
     private final TourPackageService tpService;
-//    @SecurityRequirement(name = "no")
-//    @Operation(summary = "메인 화면을 위한 여행 패키지 페이지를 불러옵니다")
-//    @GetMapping(domain)
-//    public List<TourPackageResponse.TPBasicInfo> mainPageTourPackagesPaged(@PageableDefault Pageable pageable){
-//        var tpList = tpService.allTripPack();
-//        return tpList;
-//    }
+
     @SecurityRequirement(name = "no")
     @Operation(summary = "메인 화면을 위한 여행 패키지 리스트를 불러옵니다")
     @GetMapping(domain)
@@ -47,7 +41,6 @@ public class TourPackageController {
     @Operation(summary = "패키지를 등록합니다.",description = "이미지 뭉치와 패키지 등록정보를 보내주세요",hidden = true)
     @PostMapping(adminApi) // 테스트 전
     public ResponseEntity addTripPack(TripPackageRequestDto tripPackageRequestDto){
-         // 후에 JWT로 변경 예정, user와 단방향 설정됨 trippack -> account
         try {
         return tpService.addTripPack(tripPackageRequestDto);
         }catch (RuntimeException e){

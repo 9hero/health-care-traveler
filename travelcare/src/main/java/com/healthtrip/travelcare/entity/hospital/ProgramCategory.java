@@ -23,7 +23,7 @@ public class ProgramCategory extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
     private MedicalCheckupProgram medicalCheckupProgram;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.PERSIST)
     private MedicalCheckupCategory medicalCheckupCategory;
 
     public void setMedicalCheckupProgram(MedicalCheckupProgram medicalCheckupProgram) {

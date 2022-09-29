@@ -52,7 +52,8 @@ public class Reservation extends BaseTimeEntity implements Persistable<String> {
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
 
-//    @ToString.Exclude
+    @BatchSize(size = 100)
+    @ToString.Exclude
     @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST,mappedBy = "reservation")
     private List<Booker> bookers;
 //    @ToString.Exclude

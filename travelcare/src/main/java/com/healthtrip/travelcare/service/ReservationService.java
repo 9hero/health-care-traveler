@@ -4,18 +4,20 @@ import com.healthtrip.travelcare.common.CommonUtils;
 import com.healthtrip.travelcare.common.Exception.CustomException;
 import com.healthtrip.travelcare.entity.account.Account;
 import com.healthtrip.travelcare.entity.hospital.HospitalReservation;
+import com.healthtrip.travelcare.entity.reservation.AddedCheckup;
 import com.healthtrip.travelcare.entity.reservation.Booker;
 import com.healthtrip.travelcare.entity.reservation.Reservation;
 import com.healthtrip.travelcare.entity.reservation.ReservationTourOptions;
 import com.healthtrip.travelcare.entity.tour.reservation.TourBooker;
 import com.healthtrip.travelcare.entity.tour.reservation.TourReservation;
 import com.healthtrip.travelcare.repository.account.AccountsRepository;
-import com.healthtrip.travelcare.repository.dto.response.ReservationDtoResponse;
-import com.healthtrip.travelcare.repository.dto.response.ReservationPersonResponse;
-import com.healthtrip.travelcare.repository.dto.response.ReservationTourOptionsRes;
-import com.healthtrip.travelcare.repository.dto.response.TourReservationDtoResponse;
+import com.healthtrip.travelcare.repository.dto.request.BookerRequest;
+import com.healthtrip.travelcare.repository.dto.response.*;
 import com.healthtrip.travelcare.repository.hospital.HospitalReservationRepository;
 import com.healthtrip.travelcare.repository.dto.request.ReservationRequest;
+import com.healthtrip.travelcare.repository.hospital.MedicalCheckupOptionalRepo;
+import com.healthtrip.travelcare.repository.hospital.MedicalCheckupProgramRepo;
+import com.healthtrip.travelcare.repository.reservation.AddedCheckupRepository;
 import com.healthtrip.travelcare.repository.reservation.BookerRepository;
 import com.healthtrip.travelcare.repository.reservation.ReservationRepository;
 import com.healthtrip.travelcare.repository.reservation.ReservationTourOptionsRepository;
@@ -40,16 +42,18 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ReservationService {
+    private final AccountsRepository accountsRepository;
     private final ReservationRepository reservationRepository;
+    private final BookerRepository bookerRepository;
     private final TourPackageRepository tourPackageRepository;
     private final TourReservationRepository tourReservationRepository;
-    private final HospitalReservationRepository hospitalReservationRepository;
-    private final AccountsRepository accountsRepository;
-
     private final TourOptionRepository tourOptionRepository;
-
     private final ReservationTourOptionsRepository addedTourOptionsRepository ;
-    private final BookerRepository bookerRepository;
+
+    private final HospitalReservationRepository hospitalReservationRepository;
+    private final MedicalCheckupOptionalRepo medicalCheckupOptionalRepo;
+    private final AddedCheckupRepository addedCheckupRepository;
+    private final MedicalCheckupProgramRepo medicalCheckupProgramRepo;
 
     public TourReservation reserveTour(ReservationRequest.TourR tourReserve) {
         var tourPackage = tourPackageRepository.findById(tourReserve.getPackageId())
@@ -84,7 +88,31 @@ public class ReservationService {
         }
     }
     public HospitalReservation reserveHospital(ReservationRequest.HospitalR hospitalReserve) {
-        return null;
+        var medicalCheckupProgram = medicalCheckupProgramRepo.findById(hospitalReserve.getMedicalProgramId()).orElseThrow(() -> {
+            throw new CustomException("", null);
+        });
+        // 병원예약
+        HospitalReservation hospitalReservation = HospitalReservation.builder()
+                .medicalCheckupProgram(medicalCheckupProgram)
+                .reservedTime(hospitalReserve.getReservedAt())
+                .manCount(hospitalReserve.getManCount())
+                .amount(hospitalReserve.getHospitalTotalAmount())
+                .build();
+        var savedHospitalReservation = hospitalReservationRepository.save(hospitalReservation);
+        // 선택검사추가
+        var addedCheckups= medicalCheckupOptionalRepo.findAllById(hospitalReserve.getMedicalCheckUpOptionalIds())
+                .stream().map(medicalCheckupOptional -> {
+                    return AddedCheckup.builder()
+                            .hospitalReservation(savedHospitalReservation)
+                            .medicalCheckupOptional(medicalCheckupOptional)
+                            .build();
+                }).collect(Collectors.toList());
+        addedCheckupRepository.saveAll(addedCheckups);
+
+        // 가격비교
+
+        return savedHospitalReservation;
+
     }
 
 
@@ -102,45 +130,49 @@ public class ReservationService {
                 .paymentStatus(Reservation.PaymentStatus.N)
                 .build();
         this.idGenerate(reservation);
-
-        // 투어 예약
-        if (reservationDTO.getTour() != null){
-            reservation.setTourReservation(reserveTour(reservationDTO.getTour()));
-
-        // 검진예약
-        }else if (reservationDTO.getHospital() != null){
-            reservation.setHospitalReservation(reserveHospital(reservationDTO.getHospital()));
-
-        }else {
-            throw new CustomException("예약 정보 없음",HttpStatus.BAD_REQUEST);
-        }
-
         var savedReservation = reservationRepository.save(reservation);
 
         // 예약자 생성
-        reservationDTO.getBookerData().forEach(personData -> {
-            Booker booker = personData.toEntity();
-            booker.setReservation(reservation);
+        List<Booker> bookerList = reservationDTO.getBookerData().stream().map(BookerRequest::toEntity).collect(Collectors.toList());
+        bookerList.forEach(booker -> {
+            booker.setReservation(savedReservation);
         });
+        bookerRepository.saveAll(bookerList);
 
-        /* 추가 옵션적용(선택검사, 투어옵션) */
-        // 투어옵션
-        var reservationTourOptionsList =
-        reservationDTO.getTourOptions().stream().map(tourOptionsRequest -> {
-            // 엔티티 변환
-            ReservationTourOptions reservationTourOptions = tourOptionsRequest.toReservationTourOptions();
+        boolean isTour = reservationDTO.getTour() != null;
+        boolean hospital = reservationDTO.getHospital() != null;
+        // 투어 예약
+        if (isTour){
+            savedReservation.setTourReservation(reserveTour(reservationDTO.getTour()));
+            var reservationTourOptionsList =
+                    reservationDTO.getTourOptions().stream().map(tourOptionsRequest -> {
+                        // 엔티티 변환
+                        ReservationTourOptions reservationTourOptions = tourOptionsRequest.toReservationTourOptions();
 
-            // 투어옵션 항목 가져오기
-            var tourOption = tourOptionRepository.getById(tourOptionsRequest.getTourOptionId());
+                        // 투어옵션 항목 가져오기
+                        var tourOption = tourOptionRepository.getById(tourOptionsRequest.getTourOptionId());
 
-            // 연관관계 설정
-            reservationTourOptions.setTourOption(tourOption);
-            reservationTourOptions.setReservation(reservation);
-            return reservationTourOptions;
-        }).collect(Collectors.toList());
-        addedTourOptionsRepository.saveAll(reservationTourOptionsList);
+                        // 연관관계 설정
+                        reservationTourOptions.setTourOption(tourOption);
+                        reservationTourOptions.setReservation(savedReservation);
+                        return reservationTourOptions;
+                    }).collect(Collectors.toList());
+            addedTourOptionsRepository.saveAll(reservationTourOptionsList);
+        }
 
-        // 선택검사
+        // 검진예약
+        if (hospital) {
+            // 병원 예약자 확인
+            var hospitalBookers = bookerList.stream().filter(Booker::isHospitalReserved).collect(Collectors.toList());
+
+            // 예약
+            HospitalReservation hospitalReservation = reserveHospital(reservationDTO.getHospital());
+            savedReservation.setHospitalReservation(hospitalReservation);
+        }
+        if(!(isTour || hospital)){
+            throw new CustomException("예약 정보 없음",HttpStatus.BAD_REQUEST);
+        }
+
 
     }
 
@@ -190,18 +222,22 @@ public class ReservationService {
         // 통합예약
         var reservation = reservationRepository.findMyReservationInfo(reservationId,CommonUtils.getAuthenticatedUserId());
         reservationDetailsDTO.setReservationDtoResponse(ReservationDtoResponse.toResponse(reservation));
-        // 검진예약
-//            reservation.getHospitalReservation();
+        // 병원예약
+        if (reservation.getHospitalReservation()!=null){
+            reservationDetailsDTO.setHospitalReservationDtoResponse(
+                    HospitalReservationDtoResponse.toResponse(
+                            reservation.getHospitalReservation()
+                    )
+            );
+        }
+
         // 투어예약
+        if (reservation.getTourReservation()!=null){
+
         reservationDetailsDTO.setTourReservationDtoResponse(
             TourReservationDtoResponse.toResponse(
                     reservation.getTourReservation()
             )
-        );
-        // 예약자 명단
-        reservationDetailsDTO.setBookerInfoList(
-            reservation.getBookers().stream().map(ReservationPersonResponse.rpInfo::toResponse
-            ).collect(Collectors.toList())
         );
         // 투어 추가 옵션
         reservationDetailsDTO.setTourOptions(
@@ -211,7 +247,12 @@ public class ReservationService {
                 return a;
             }).collect(Collectors.toList())
         );
-
+        }
+        // 예약자 명단
+        reservationDetailsDTO.setBookerInfoList(
+            reservation.getBookers().stream().map(ReservationPersonResponse.rpInfo::toResponse
+            ).collect(Collectors.toList())
+        );
         return reservationDetailsDTO;
     }
 }
