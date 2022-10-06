@@ -68,12 +68,12 @@ public class HospitalController {
     public MedicalCheckProgramRes.MCPdetailsAdmin programDetailAdmin(@PathVariable(name = "id") Long programId) {
         return hospitalService.getProgramDetailsForAdmin(programId);
     }
-    @Operation(summary = "프로그램 추가")
+    @Operation(summary = "(미완)프로그램 추가",hidden = true)
     @PostMapping(admin+"/{id}/MedicalCheckup/programs")
     public void addProgram(@PathVariable(name = "id") Long hospitalId) {
         hospitalService.addProgram(hospitalId);
     }
-    @Operation(summary = "프로그램 범주 추가")
+    @Operation(summary = "프로그램 범주 추가",description = "categoryId: 추가할 id <br/>programCategoryIds: 삭제할 범주 id")
     @PutMapping(admin+"/MedicalCheckup/programs/{programId}")
     public void modifyProgramCategory(
                                       @PathVariable(name = "programId") Long programId,

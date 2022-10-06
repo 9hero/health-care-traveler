@@ -54,7 +54,7 @@ public class ReservationController {
     public void reservationConfirm(@PathVariable("id") String reservationId) {
         reservationService.confirm(reservationId);
     }
-    @Operation(summary = "예약 반려",description = "예약을 반려합니다 status B -> N")
+    @Operation(summary = "예약 반려",description = "예약을 반려합니다 status B -> N <br/> reason: 반려사유 작성")
     @PutMapping(admin+"/{id}")
     public void reservationReject(@PathVariable("id") String reservationId, @RequestBody ReservationRejectionReq reservationRejectionReq) {
         reservationService.reject(reservationId,reservationRejectionReq);
