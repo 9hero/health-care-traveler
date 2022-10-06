@@ -28,7 +28,10 @@ public class ProgramCategory extends BaseTimeEntity {
 
     public void setMedicalCheckupProgram(MedicalCheckupProgram medicalCheckupProgram) {
         this.medicalCheckupProgram = medicalCheckupProgram;
-        medicalCheckupProgram.getProgramCategories().add(this);
+//        var programCategories = medicalCheckupProgram.getProgramCategories();
+//        if (programCategories != null){
+//        medicalCheckupProgram.getProgramCategories().add(this);
+//        }
     }
 
 }

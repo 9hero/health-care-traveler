@@ -1,5 +1,6 @@
 package com.healthtrip.travelcare.entity.reservation;
 
+import com.healthtrip.travelcare.entity.BaseTimeEntity;
 import com.healthtrip.travelcare.entity.tour.reservation.TourOption;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @ToString
-public class ReservationTourOptions {
+public class ReservationTourOptions extends BaseTimeEntity {
     @Builder
     public ReservationTourOptions(Long id, Reservation reservation, TourOption tourOption, String day, Short manCount, String requesterName) {
         this.id = id;

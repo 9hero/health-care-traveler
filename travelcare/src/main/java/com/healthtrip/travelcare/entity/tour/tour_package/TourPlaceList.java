@@ -1,5 +1,6 @@
 package com.healthtrip.travelcare.entity.tour.tour_package;
 
+import com.healthtrip.travelcare.entity.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +10,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor
-public class TourPlaceList {
+public class TourPlaceList extends BaseTimeEntity {
 
     @Builder
     public TourPlaceList(Long id, TourItineraryElement tourItineraryElement, TourPlace tourPlace, ShowType showType) {

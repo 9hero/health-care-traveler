@@ -53,18 +53,17 @@ public class MedicalCheckupProgram extends BaseTimeEntity {
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "medicalCheckupProgram",cascade = CascadeType.PERSIST)
     private List<ProgramCheckupItem> programCheckupItems;
 
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "medicalCheckupProgram",cascade = CascadeType.PERSIST)
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "medicalCheckupProgram",cascade = {CascadeType.PERSIST})
     private List<ProgramCategory> programCategories;
 
     public void setCategories(List<ProgramCategory> programCategories) {
         this.programCategories = programCategories;
-        programCategories.forEach(programCategory -> {
-            programCategory.setMedicalCheckupProgram(this);
-        });
     }
     public void addCategory(ProgramCategory programCategory) {
         this.programCategories.add(programCategory);
     }
+
+
     @Getter
     public enum ProgramType {
         In_Depth("정밀검사"),

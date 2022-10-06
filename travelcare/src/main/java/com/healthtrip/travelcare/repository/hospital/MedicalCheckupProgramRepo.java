@@ -24,4 +24,19 @@ public interface MedicalCheckupProgramRepo extends JpaRepository<MedicalCheckupP
             "join fetch h.hospitalAddress " +
             "where mcp.id = :programId")
     MedicalCheckupProgram programDetailsById(@Param(value = "programId") Long programId);
+
+    @Query("select distinct mcp from MedicalCheckupProgram mcp " +
+            "join fetch mcp.hospital h " +
+            "join fetch h.hospitalAddress " +
+            "join fetch mcp.programCategories pc " +
+            "join fetch pc.medicalCheckupCategory " +
+            "where mcp.id = :programId")
+    MedicalCheckupProgram programDetailsByIdForAdmin(@Param(value = "programId") Long programId);
+
+    @Query("select distinct mcp from MedicalCheckupProgram mcp " +
+            "join fetch mcp.programCategories pc " +
+            "join fetch pc.medicalCheckupCategory mcc " +
+            "where mcp.id =:programId")
+    MedicalCheckupProgram findByIdAndCategoryIdsFetch(@Param(value = "programId") Long programId);
+
 }

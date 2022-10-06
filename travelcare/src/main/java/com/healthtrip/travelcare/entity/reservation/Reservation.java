@@ -4,7 +4,6 @@ import com.healthtrip.travelcare.common.CommonUtils;
 import com.healthtrip.travelcare.entity.BaseTimeEntity;
 import com.healthtrip.travelcare.entity.account.Account;
 import com.healthtrip.travelcare.entity.hospital.HospitalReservation;
-import com.healthtrip.travelcare.entity.tour.reservation.TourOption;
 import com.healthtrip.travelcare.entity.tour.reservation.TourReservation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -24,7 +23,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Reservation extends BaseTimeEntity implements Persistable<String> {
     @Builder
-    public Reservation(String id, String title, Short manCount, Status status, BigDecimal amount, PaymentStatus paymentStatus, List<Booker> bookers, TourReservation tourReservation, HospitalReservation hospitalReservation, Account account, List<ReservationTourOptions> reservationTourOptions) {
+    public Reservation(String id, String title, Short manCount, Status status, BigDecimal amount, PaymentStatus paymentStatus, List<Booker> bookers, TourReservation tourReservation, HospitalReservation hospitalReservation, Account account, List<ReservationTourOptions> reservationTourOptions, List<ReservationRejection> reservationRejection) {
         this.id = id;
         this.title = title;
         this.manCount = manCount;
@@ -36,6 +35,7 @@ public class Reservation extends BaseTimeEntity implements Persistable<String> {
         this.hospitalReservation = hospitalReservation;
         this.account = account;
         this.reservationTourOptions = reservationTourOptions;
+        this.reservationRejection = reservationRejection;
     }
 
     @Id
@@ -44,7 +44,7 @@ public class Reservation extends BaseTimeEntity implements Persistable<String> {
     private String title;
 
     private Short manCount;
-    // 결제상태: N: 결제전 Y: 결제완료 R: 환불완료
+
     @Enumerated(EnumType.STRING)
     private Status status;
 
@@ -67,6 +67,10 @@ public class Reservation extends BaseTimeEntity implements Persistable<String> {
     @BatchSize(size = 10)
 //    @ToString.Exclude
     private List<ReservationTourOptions> reservationTourOptions;
+
+    @BatchSize(size = 100)
+    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST,mappedBy = "reservation")
+    private List<ReservationRejection> reservationRejection;
 
     public void setTourReservation(TourReservation tourReservation) {
         this.tourReservation = tourReservation;
@@ -97,6 +101,15 @@ public class Reservation extends BaseTimeEntity implements Persistable<String> {
         bookers.add(booker);
     }
 
+    public void reject(ReservationRejection rejection) {
+        if (reservationRejection == null){
+            this.reservationRejection = new ArrayList<>();
+        }
+        reservationRejection.add(rejection);
+        rejection.setReservation(this);
+        this.status = Status.N;
+    }
+
     // 예약상태
     public enum Status{
         @Schema(description = "예약 가능")
@@ -105,6 +118,9 @@ public class Reservation extends BaseTimeEntity implements Persistable<String> {
         N,
         @Schema(description = "답변전:Before")
         B
+    }
+    public void permit(){
+        this.status = Status.Y;
     }
     public void paid() {
         this.paymentStatus = PaymentStatus.Y;

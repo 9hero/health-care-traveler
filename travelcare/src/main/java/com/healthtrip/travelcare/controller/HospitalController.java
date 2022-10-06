@@ -61,4 +61,25 @@ public class HospitalController {
     public List<MedicalCheckupOptionalRes> findMedicalCheckupOptions(@PathVariable(name = "id") Long hospitalId) {
         return hospitalService.getMedicalCheckupOptions(hospitalId);
     }
+
+    /* 어드민 API */
+    @Operation(summary = "프로그램 상세정보 조회(관리자)")
+    @GetMapping(admin+"/MedicalCheckup/programs/{id}")
+    public MedicalCheckProgramRes.MCPdetailsAdmin programDetailAdmin(@PathVariable(name = "id") Long programId) {
+        return hospitalService.getProgramDetailsForAdmin(programId);
+    }
+    @Operation(summary = "프로그램 추가")
+    @PostMapping(admin+"/{id}/MedicalCheckup/programs")
+    public void addProgram(@PathVariable(name = "id") Long hospitalId) {
+        hospitalService.addProgram(hospitalId);
+    }
+    @Operation(summary = "프로그램 범주 추가")
+    @PutMapping(admin+"/MedicalCheckup/programs/{programId}")
+    public void modifyProgramCategory(
+                                      @PathVariable(name = "programId") Long programId,
+                                      @RequestBody CategorySearchRequest.ModifyProgramCategory categorySearchRequest
+    ) {
+        hospitalService.modifyProgramCategory(programId,categorySearchRequest);
+    }
+
 }

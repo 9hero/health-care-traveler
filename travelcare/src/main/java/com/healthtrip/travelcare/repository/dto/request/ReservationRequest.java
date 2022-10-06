@@ -2,8 +2,6 @@ package com.healthtrip.travelcare.repository.dto.request;
 
 
 import com.healthtrip.travelcare.entity.account.Account;
-import com.healthtrip.travelcare.entity.hospital.MedicalCheckupOptional;
-import com.healthtrip.travelcare.entity.tour.reservation.TourOption;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
@@ -40,27 +38,26 @@ public class ReservationRequest {
         private Short infantCount;
         private LocalDateTime reservedAt;
         private BigDecimal tourTotalAmount;
-
+        private List<TourOptionsRequest> tourOptions;
     }
     @NoArgsConstructor
     @Getter
     @Setter
     public static class HospitalR {
         private Long medicalProgramId;
-        private Short manCount;
+        private Short personCount;
         private LocalDateTime reservedAt;
         private BigDecimal hospitalTotalAmount;
-        private List<Long> medicalCheckUpOptionalIds;
+        private List<MedicalCheckupOptionalReq> medicalCheckUpOptionals;
     }
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Integration {
         private String reservationName;
-        private TourR tour;
-        private List<TourOptionsRequest> tourOptions;
-        private HospitalR hospital;
         private List<BookerRequest> bookerData;
+        private TourR tour;
+        private HospitalR hospital;
         private BigDecimal totalAmount;
     }
     public enum AddressType{

@@ -1,5 +1,6 @@
 package com.healthtrip.travelcare.entity.tour.tour_package;
 
+import com.healthtrip.travelcare.entity.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-public class TourItineraryElement {
+public class TourItineraryElement extends BaseTimeEntity {
 
     @Builder
     public TourItineraryElement(Long id, TourItinerary tourItinerary, List<TourPlaceList> tourPlaceLists, String title, ShowType showType, Short sequence) {

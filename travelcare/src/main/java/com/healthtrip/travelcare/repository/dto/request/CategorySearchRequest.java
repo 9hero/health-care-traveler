@@ -14,4 +14,14 @@ import java.util.List;
 @Schema(name = "범주로 검색요청")
 public class CategorySearchRequest {
     private List<Long> categoryId;
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class ModifyProgramCategory{
+        private List<Long> categoryId;
+        private List<Long> programCategoryIds;
+    }
+
 }

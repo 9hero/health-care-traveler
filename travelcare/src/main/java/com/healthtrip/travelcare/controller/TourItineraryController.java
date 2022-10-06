@@ -29,4 +29,6 @@ public class TourItineraryController {
         return tourItineraryService.getTourItineraries(tourPackageId);
     }
 
+
+    /* 관리자 */
 }

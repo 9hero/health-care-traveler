@@ -24,6 +24,7 @@ public class ReservationTourOptionsRes implements Serializable {
     private String optionName;
     public static ReservationTourOptionsRes toResponse(ReservationTourOptions reservationTourOptions) {
         return ReservationTourOptionsRes.builder()
+                .tourOptionId(reservationTourOptions.getId())
                 .day(reservationTourOptions.getDay())
                 .manCount(reservationTourOptions.getManCount())
                 .requesterName(reservationTourOptions.getRequesterName())

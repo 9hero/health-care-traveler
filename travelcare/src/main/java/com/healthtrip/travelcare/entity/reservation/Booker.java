@@ -1,6 +1,6 @@
 package com.healthtrip.travelcare.entity.reservation;
 
-import com.healthtrip.travelcare.entity.account.Account;
+import com.healthtrip.travelcare.entity.BaseTimeEntity;
 import com.healthtrip.travelcare.entity.tour.reservation.TourBooker;
 import com.healthtrip.travelcare.repository.dto.request.PersonData;
 import lombok.Builder;
@@ -15,11 +15,12 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Entity
 @ToString
-public class Booker {
+public class Booker extends BaseTimeEntity {
 
     @Builder
     public Booker(Long id, String firstName, String lastName, Gender gender, LocalDate birth, String phone, String emergencyContact, String simpleAddress, boolean tourReserved, boolean hospitalReserved, Reservation reservation) {
         this.id = id;
+//        this.requesterId = requesterId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
@@ -36,6 +37,9 @@ public class Booker {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+//    @Transient
+//    private Long requesterId;
     private String firstName;
     private String lastName;
 

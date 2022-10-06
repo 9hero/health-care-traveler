@@ -4,14 +4,12 @@ import com.healthtrip.travelcare.common.CommonUtils;
 import com.healthtrip.travelcare.common.Exception.CustomException;
 import com.healthtrip.travelcare.entity.account.Account;
 import com.healthtrip.travelcare.entity.hospital.HospitalReservation;
-import com.healthtrip.travelcare.entity.reservation.AddedCheckup;
-import com.healthtrip.travelcare.entity.reservation.Booker;
-import com.healthtrip.travelcare.entity.reservation.Reservation;
-import com.healthtrip.travelcare.entity.reservation.ReservationTourOptions;
-import com.healthtrip.travelcare.entity.tour.reservation.TourBooker;
+import com.healthtrip.travelcare.entity.reservation.*;
 import com.healthtrip.travelcare.entity.tour.reservation.TourReservation;
 import com.healthtrip.travelcare.repository.account.AccountsRepository;
 import com.healthtrip.travelcare.repository.dto.request.BookerRequest;
+import com.healthtrip.travelcare.repository.dto.request.MedicalCheckupOptionalReq;
+import com.healthtrip.travelcare.repository.dto.request.ReservationRejectionReq;
 import com.healthtrip.travelcare.repository.dto.response.*;
 import com.healthtrip.travelcare.repository.hospital.HospitalReservationRepository;
 import com.healthtrip.travelcare.repository.dto.request.ReservationRequest;
@@ -28,7 +26,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,7 +52,7 @@ public class ReservationService {
     private final AddedCheckupRepository addedCheckupRepository;
     private final MedicalCheckupProgramRepo medicalCheckupProgramRepo;
 
-    public TourReservation reserveTour(ReservationRequest.TourR tourReserve) {
+    public TourReservation reserveTour(ReservationRequest.TourR tourReserve, Reservation savedReservation) {
         var tourPackage = tourPackageRepository.findById(tourReserve.getPackageId())
                 .orElseThrow(() -> {
                     throw new CustomException("패키지 찾을 수 없음", HttpStatus.BAD_REQUEST);
@@ -76,43 +73,118 @@ public class ReservationService {
         );
 
         if (equals == 0){
+            // 투어 예약
             var tourReservation = TourReservation.builder()
                     .tourPackage(tourPackage)
                     .amount(tourReserve.getTourTotalAmount())
                     .personCount(peopleNum)
                     .reservedTime(LocalDateTime.now())
                     .build();
+
+            // 추가 옵션
+            if (tourReserve.getTourOptions() != null){
+                var reservationTourOptionsList =
+                        tourReserve.getTourOptions().stream().map(tourOptionsRequest -> {
+                            // 엔티티 변환
+                            ReservationTourOptions reservationTourOptions = tourOptionsRequest.toReservationTourOptions();
+
+                            // 투어옵션 항목 가져오기
+                            var tourOption = tourOptionRepository.getById(tourOptionsRequest.getTourOptionId());
+
+                            // 연관관계 설정
+                            reservationTourOptions.setTourOption(tourOption);
+                            reservationTourOptions.setReservation(savedReservation);
+                            return reservationTourOptions;
+                        }).collect(Collectors.toList());
+                addedTourOptionsRepository.saveAll(reservationTourOptionsList);
+            }
+
             return tourReservationRepository.save(tourReservation);
         }else {
             throw new CustomException("상품 가격과 예약 금액이 다릅니다.", HttpStatus.BAD_REQUEST);
         }
     }
-    public HospitalReservation reserveHospital(ReservationRequest.HospitalR hospitalReserve) {
+    public HospitalReservation reserveHospital(ReservationRequest.HospitalR hospitalReserve, List<Booker> hospitalBookers) {
         var medicalCheckupProgram = medicalCheckupProgramRepo.findById(hospitalReserve.getMedicalProgramId()).orElseThrow(() -> {
-            throw new CustomException("", null);
+            throw new CustomException("해당 검진 없음", HttpStatus.BAD_REQUEST);
         });
+        // 남녀 카운트
+        int manNumber = 0;
+        int womanNumber = 0;
+        for(Booker booker : hospitalBookers){
+            if(booker.getGender().equals(Booker.Gender.M)){
+                manNumber++;
+            }else {
+                womanNumber++;
+            }
+        }
+        // 가격비교
+        // checkupOption에서 끌어온 가격 * 예약인원 수 == 프론트가 보낸 값
+        // + 프로그램 가격 * 남 + 여성프로그램 가격 * 여
+        BigDecimal programPrice =
+                medicalCheckupProgram.getPriceForMan().multiply(BigDecimal.valueOf(manNumber))
+                        .add(medicalCheckupProgram.getPriceForWoman().multiply(BigDecimal.valueOf(womanNumber)));
+
+        // 선택검진 가격추가 및 비교 결과 값
+        BigDecimal addedCheckupAmount = BigDecimal.ZERO;
+
         // 병원예약
         HospitalReservation hospitalReservation = HospitalReservation.builder()
                 .medicalCheckupProgram(medicalCheckupProgram)
                 .reservedTime(hospitalReserve.getReservedAt())
-                .manCount(hospitalReserve.getManCount())
-                .amount(hospitalReserve.getHospitalTotalAmount())
+                .personCount(hospitalReserve.getPersonCount())
                 .build();
         var savedHospitalReservation = hospitalReservationRepository.save(hospitalReservation);
+
         // 선택검사추가
-        var addedCheckups= medicalCheckupOptionalRepo.findAllById(hospitalReserve.getMedicalCheckUpOptionalIds())
-                .stream().map(medicalCheckupOptional -> {
+        var medicalCheckupOptionalReqList = hospitalReserve.getMedicalCheckUpOptionals();
+        boolean additionalCheckupEmpty = (medicalCheckupOptionalReqList == null);
+        if (!additionalCheckupEmpty){
+            // 1. 벌크로 영속성에 저장 +1
+            var optionIDs = medicalCheckupOptionalReqList.stream()
+                    .map(MedicalCheckupOptionalReq::getMedicalCheckUpOptionalID).collect(Collectors.toList());
+            medicalCheckupOptionalRepo.findAllById(optionIDs);
+            // Req 객체로부터 AddedCheckup 객체 생성
+            var addedCheckupList = medicalCheckupOptionalReqList.stream().map(optionalReq -> {
+                var medicalCheckupOptional =
+                        medicalCheckupOptionalRepo
+                                .findById(optionalReq.getMedicalCheckUpOptionalID())
+                                .get();
+
+            /*
+                DB에 저장된 선택검사 가격
+               .multiply(사용자가 입력한 인원)
+             */
+                var dbOptionAmount = medicalCheckupOptional.getPriceForMan()
+                        .multiply(BigDecimal.valueOf(optionalReq.getPersonCount()));
+
+                // 입력 총가격 vs DB계산 가격
+                int moneyEquals = optionalReq.getAmount().compareTo(dbOptionAmount);
+                if (moneyEquals == 0) {
                     return AddedCheckup.builder()
                             .hospitalReservation(savedHospitalReservation)
                             .medicalCheckupOptional(medicalCheckupOptional)
+                            .bookerName(optionalReq.getRequesterName())
+                            .amount(dbOptionAmount)
                             .build();
-                }).collect(Collectors.toList());
-        addedCheckupRepository.saveAll(addedCheckups);
+                } else {
+                    throw new CustomException("가격 변조 가능성 감지", HttpStatus.BAD_REQUEST);
+                }
 
-        // 가격비교
+            }).collect(Collectors.toList());
+            addedCheckupRepository.saveAll(addedCheckupList);
 
-        return savedHospitalReservation;
 
+            // 선택검진 가격 합산
+            for (AddedCheckup addedCheckup:addedCheckupList) {
+                addedCheckupAmount = addedCheckupAmount.add(addedCheckup.getAmount());
+            }
+        }
+
+        // 가격 비교
+        BigDecimal totalAmount = programPrice.add(addedCheckupAmount); // 여기서
+        hospitalReservation.setAmount(totalAmount);
+        return hospitalReservationRepository.save(savedHospitalReservation); // 여기 사이에 select * from account 발생 debug 때문일수도 있음
     }
 
 
@@ -120,12 +192,20 @@ public class ReservationService {
     public void integrationReserve(ReservationRequest.Integration reservationDTO) {
         Account account = accountsRepository.getById(CommonUtils.getAuthenticatedUserId());
 
-        // *주의* 가격비교 생략
+        // 종합 가격비교는 맨 마지막에서 각 비교는 도메인 예약에서 비교
+        // 입력 가격 : 예약금, 투어예약금, 병원예약금, 투어옵션(현재x), 병원옵션
+        // 가격비교
+        // 계산순서 투어 -> 병원 -> 합산금 = 예약금
+        BigDecimal tourTotalAmount = BigDecimal.ZERO;
+        BigDecimal hospitalTotalAmount = BigDecimal.ZERO;
+        BigDecimal inputTotalAmount = reservationDTO.getTotalAmount();
+
         var reservation = Reservation.builder()
                 .account(account)
+//              .reservationTime()
                 .title(reservationDTO.getReservationName())
                 .amount(reservationDTO.getTotalAmount())
-                .status(Reservation.Status.N)
+                .status(Reservation.Status.B)
                 .manCount((short) reservationDTO.getBookerData().size())
                 .paymentStatus(Reservation.PaymentStatus.N)
                 .build();
@@ -143,21 +223,10 @@ public class ReservationService {
         boolean hospital = reservationDTO.getHospital() != null;
         // 투어 예약
         if (isTour){
-            savedReservation.setTourReservation(reserveTour(reservationDTO.getTour()));
-            var reservationTourOptionsList =
-                    reservationDTO.getTourOptions().stream().map(tourOptionsRequest -> {
-                        // 엔티티 변환
-                        ReservationTourOptions reservationTourOptions = tourOptionsRequest.toReservationTourOptions();
-
-                        // 투어옵션 항목 가져오기
-                        var tourOption = tourOptionRepository.getById(tourOptionsRequest.getTourOptionId());
-
-                        // 연관관계 설정
-                        reservationTourOptions.setTourOption(tourOption);
-                        reservationTourOptions.setReservation(savedReservation);
-                        return reservationTourOptions;
-                    }).collect(Collectors.toList());
-            addedTourOptionsRepository.saveAll(reservationTourOptionsList);
+            TourReservation tourReservation = reserveTour(reservationDTO.getTour(),savedReservation);
+            savedReservation.setTourReservation(tourReservation);
+            // 투어
+            tourTotalAmount = reservation.getTourReservation().getAmount();
         }
 
         // 검진예약
@@ -166,14 +235,20 @@ public class ReservationService {
             var hospitalBookers = bookerList.stream().filter(Booker::isHospitalReserved).collect(Collectors.toList());
 
             // 예약
-            HospitalReservation hospitalReservation = reserveHospital(reservationDTO.getHospital());
+            HospitalReservation hospitalReservation = reserveHospital(reservationDTO.getHospital(),hospitalBookers);
             savedReservation.setHospitalReservation(hospitalReservation);
+            // 검진
+            hospitalTotalAmount = reservation.getHospitalReservation().getAmount();
         }
         if(!(isTour || hospital)){
             throw new CustomException("예약 정보 없음",HttpStatus.BAD_REQUEST);
         }
 
-
+        // 최종
+        int result = inputTotalAmount.compareTo(tourTotalAmount.add(hospitalTotalAmount));
+        if (result != 0){
+            throw new CustomException("입력한 가격과 원본 상품가격과 같지 않습니다. ",HttpStatus.BAD_REQUEST);
+        }
     }
 
     private Reservation idGenerate(Reservation reservation) {
@@ -193,7 +268,7 @@ public class ReservationService {
 
     @Transactional(readOnly = true)
     public List<ReservationDtoResponse> findMyReservation(Pageable pageable) {
-       List<Reservation> reservationList= reservationRepository.findByIdAccountId(CommonUtils.getAuthenticatedUserId(),pageable);
+       List<Reservation> reservationList= reservationRepository.findMyReservationsWithStatus(CommonUtils.getAuthenticatedUserId(),pageable);
        return reservationList.stream().map(ReservationDtoResponse::toResponse).collect(Collectors.toList());
     }
 
@@ -221,12 +296,33 @@ public class ReservationService {
         var reservationDetailsDTO = new ReservationDtoResponse.RVDetails();
         // 통합예약
         var reservation = reservationRepository.findMyReservationInfo(reservationId,CommonUtils.getAuthenticatedUserId());
-        reservationDetailsDTO.setReservationDtoResponse(ReservationDtoResponse.toResponse(reservation));
+
+        // dto 변환
+        var dto = ReservationDtoResponse.toResponse(reservation);
+
+        // 반려사유 체크
+        var rejections = reservation.getReservationRejection();
+        if (rejections != null && !rejections.isEmpty()){
+            dto.setRejection(reservation.getReservationRejection().get(0).getReason());
+        }
+        reservationDetailsDTO.setReservationDtoResponse(dto);
         // 병원예약
         if (reservation.getHospitalReservation()!=null){
+            var addedCheckupList = addedCheckupRepository.findByHospitalReservationId(reservation.getHospitalReservation().getId());
+            var addedCheckupResponses=addedCheckupList.stream().map(addedCheckup -> {
+                return AddedCheckupResponse.builder()
+                        .id(addedCheckup.getId())
+                        .optionName(addedCheckup.getMedicalCheckupOptional().getMedicalCheckupItem().getName())
+                        .amount(addedCheckup.getAmount())
+                        .bookerName(addedCheckup.getBookerName())
+                        .build();
+            }).collect(Collectors.toList());
             reservationDetailsDTO.setHospitalReservationDtoResponse(
                     HospitalReservationDtoResponse.toResponse(
-                            reservation.getHospitalReservation()
+                            // 병원예약
+                            reservation.getHospitalReservation(),
+                            // 추가검진
+                            addedCheckupResponses
                     )
             );
         }
@@ -240,7 +336,7 @@ public class ReservationService {
             )
         );
         // 투어 추가 옵션
-        reservationDetailsDTO.setTourOptions(
+        reservationDetailsDTO.getTourReservationDtoResponse().setTourOptions(
             reservation.getReservationTourOptions().stream().map(reservationTourOptions -> {
                 var a = ReservationTourOptionsRes.toResponse(reservationTourOptions);
                 a.setOptionName(reservationTourOptions.getTourOption().getOptionName());
@@ -254,5 +350,39 @@ public class ReservationService {
             ).collect(Collectors.toList())
         );
         return reservationDetailsDTO;
+    }
+
+    @Transactional
+    public void confirm(String reservationId) {
+        var reservation = reservationRepository.findById(reservationId).orElseThrow(() -> {
+            throw new CustomException("잘못된 예약번호",HttpStatus.BAD_REQUEST);
+        });
+        reservation.permit();
+//        reservation.setReservationRejection(null);
+    }
+
+    @Transactional
+    public void reject(String reservationId, ReservationRejectionReq reservationRejectionReq) {
+        var reservation = reservationRepository.findById(reservationId).orElseThrow(() -> {
+            throw new CustomException("잘못된 예약번호",HttpStatus.BAD_REQUEST);
+        });
+        reservation.reject(ReservationRejection.builder()
+                .reason(reservationRejectionReq.getReason())
+                .build()
+        );
+
+
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReservationDtoResponse> findAll() {
+        return reservationRepository.findAll().stream().map(reservation -> {
+                    var dto = ReservationDtoResponse.toResponse(reservation);
+                    if (!reservation.getReservationRejection().isEmpty()) {
+                        dto.setRejection(reservation.getReservationRejection().get(0).getReason());
+                    }
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 }

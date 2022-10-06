@@ -15,15 +15,17 @@ import java.util.List;
 @Builder
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class ReservationDtoResponse implements Serializable {
 
-    private final String id;
-    private final String title;
-    private final BigDecimal amount;
-    private final Short manCount;
-    private final Reservation.Status status;
-    private final Reservation.PaymentStatus paymentStatus;
-    private final LocalDateTime reservedTime;
+    private String id;
+    private String title;
+    private BigDecimal amount;
+    private Short manCount;
+    private Reservation.Status status;
+    private Reservation.PaymentStatus paymentStatus;
+    private LocalDateTime reservedTime;
+    private String rejection;
 
     public static ReservationDtoResponse toResponse(Reservation reservation) {
         return ReservationDtoResponse.builder()
@@ -34,7 +36,9 @@ public class ReservationDtoResponse implements Serializable {
                 .status(reservation.getStatus())
                 .paymentStatus(reservation.getPaymentStatus())
 //                .reservedTime()
+//                .rejection(reservation.getReservationRejection().get(0).getReason())
                 .build();
+
     }
 
     @Schema(name = "예약 상세 dto")
@@ -48,7 +52,7 @@ public class ReservationDtoResponse implements Serializable {
         private TourReservationDtoResponse tourReservationDtoResponse;
         private HospitalReservationDtoResponse hospitalReservationDtoResponse;
         private List<ReservationPersonResponse.rpInfo> bookerInfoList;
-        private List<ReservationTourOptionsRes> tourOptions;
+
     }
 
 

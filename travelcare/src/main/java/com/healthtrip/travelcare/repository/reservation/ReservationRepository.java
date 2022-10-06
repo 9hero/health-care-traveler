@@ -16,6 +16,12 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
     @Query("select r from Reservation r where r.account.id = ?1")
     List<Reservation> findByIdAccountId(@NonNull Long id, Pageable pageable);
 
+    @Query("select distinct r from Reservation r " +
+            "left join fetch r.reservationRejection " +
+            "where r.account.id = ?1")
+    List<Reservation> findMyReservationsWithStatus(@NonNull Long id, Pageable pageable);
+
+
     @Query("select r from Reservation r " +
             "left join fetch r.hospitalReservation " +
             "left join fetch r.tourReservation where r.account.id = :id")

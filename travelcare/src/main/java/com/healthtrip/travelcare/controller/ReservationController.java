@@ -1,5 +1,7 @@
 package com.healthtrip.travelcare.controller;
 
+import com.healthtrip.travelcare.entity.reservation.ReservationRejection;
+import com.healthtrip.travelcare.repository.dto.request.ReservationRejectionReq;
 import com.healthtrip.travelcare.repository.dto.request.ReservationRequest;
 import com.healthtrip.travelcare.repository.dto.response.ReservationDtoResponse;
 import com.healthtrip.travelcare.repository.dto.response.ReservationPersonResponse;
@@ -20,7 +22,7 @@ import java.util.List;
 @Tag(name = "예약 API")
 public class ReservationController {
     private final String domain = "/reservation";
-    private String admin = "/admin"+domain;
+    private final String admin = "/admin"+domain;
     private final ReservationService reservationService;
 
     @Operation(summary = "통합 예약",description = "투어와 검진 동시에 예약합니다.")
@@ -41,9 +43,22 @@ public class ReservationController {
     }
 
 
-//    @Operation(summary = "예약인원정보 보기 (예약 번호 필요)",description = "예약 번호는 /api/reservation 에서 받아올 수 있습니다.")
-//    @GetMapping(domain+"/{reservationId}")
-//    public List<ReservationPersonResponse.rpInfo> reservationDetails(@PathVariable String reservationId){
-//        return reservationService.getPeopleDataByReservationId(reservationId);
-//    }
+    /* 어드민 API */
+    @Operation(summary = "예약 모두 조회",description = "예약을 모두 확인합니다.")
+    @GetMapping(admin)
+    public List<ReservationDtoResponse> getReservationAll() {
+        return reservationService.findAll();
+    }
+    @Operation(summary = "예약 허가",description = "예약을 허가합니다 status B -> Y")
+    @PatchMapping(admin+"/{id}")
+    public void reservationConfirm(@PathVariable("id") String reservationId) {
+        reservationService.confirm(reservationId);
+    }
+    @Operation(summary = "예약 반려",description = "예약을 반려합니다 status B -> N")
+    @PutMapping(admin+"/{id}")
+    public void reservationReject(@PathVariable("id") String reservationId, @RequestBody ReservationRejectionReq reservationRejectionReq) {
+        reservationService.reject(reservationId,reservationRejectionReq);
+    }
+
+
 }

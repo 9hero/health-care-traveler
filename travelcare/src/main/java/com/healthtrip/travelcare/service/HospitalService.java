@@ -1,14 +1,12 @@
 package com.healthtrip.travelcare.service;
 
+import com.healthtrip.travelcare.entity.hospital.ProgramCategory;
 import com.healthtrip.travelcare.repository.dto.request.CategorySearchRequest;
 import com.healthtrip.travelcare.repository.dto.response.HospitalResponse;
 import com.healthtrip.travelcare.repository.dto.response.MedicalCheckProgramRes;
 import com.healthtrip.travelcare.repository.dto.response.MedicalCheckupCategoryRes;
 import com.healthtrip.travelcare.repository.dto.response.MedicalCheckupOptionalRes;
-import com.healthtrip.travelcare.repository.hospital.HospitalRepository;
-import com.healthtrip.travelcare.repository.hospital.MedicalCheckupCategoryRepo;
-import com.healthtrip.travelcare.repository.hospital.MedicalCheckupOptionalRepo;
-import com.healthtrip.travelcare.repository.hospital.MedicalCheckupProgramRepo;
+import com.healthtrip.travelcare.repository.hospital.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,6 +23,7 @@ public class HospitalService {
     private final MedicalCheckupProgramRepo programRepo;
     private final MedicalCheckupCategoryRepo checkupCategoryRepo;
     private final MedicalCheckupOptionalRepo medicalCheckupOptionalRepo;
+    private final ProgramCheckupCategoriesRepo programCategoryRepo;
     @Transactional(readOnly = true)
     public List<HospitalResponse> getHospitals() {
         var hospitals = hospitalRepository.findAll();
@@ -65,4 +64,35 @@ public class HospitalService {
                     .build();
         }).collect(Collectors.toList());
     }
+
+
+    /* admin api */
+
+    @Transactional(readOnly = true)
+    public MedicalCheckProgramRes.MCPdetailsAdmin getProgramDetailsForAdmin(Long programId) {
+        return MedicalCheckProgramRes.MCPdetailsAdmin.toResponse(programRepo.programDetailsByIdForAdmin(programId));
+    }
+    @Transactional
+    public void addProgram(Long hospitalId) {
+
+    }
+    @Transactional
+    public void modifyProgramCategory(Long programId, CategorySearchRequest.ModifyProgramCategory categorySearchRequest) {
+        var categoryIds = categorySearchRequest.getCategoryId();
+
+        // 삭제할 범주 ids
+        var programCategoryIds = categorySearchRequest.getProgramCategoryIds();
+        if (programCategoryIds != null){
+            programCategoryRepo.deleteAllByIds(programCategoryIds);
+        }
+        var program = programRepo.findByIdAndCategoryIdsFetch(programId);
+        var programCategories = checkupCategoryRepo.findAllById(categoryIds).stream().map(medicalCheckupCategory -> {
+            return ProgramCategory.builder()
+                    .medicalCheckupCategory(medicalCheckupCategory)
+                    .medicalCheckupProgram(program)
+                    .build();
+        }).collect(Collectors.toList());
+        program.setCategories(programCategories);
+    }
+
 }

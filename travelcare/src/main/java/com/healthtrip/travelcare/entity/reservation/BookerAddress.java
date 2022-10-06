@@ -1,5 +1,6 @@
 package com.healthtrip.travelcare.entity.reservation;
 
+import com.healthtrip.travelcare.entity.BaseTimeEntity;
 import com.healthtrip.travelcare.entity.location.Country;
 import com.healthtrip.travelcare.entity.tour.reservation.TourBookerAddress;
 import com.healthtrip.travelcare.repository.dto.request.AddressRequest;
@@ -12,7 +13,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Entity
-public class BookerAddress {
+public class BookerAddress extends BaseTimeEntity {
     @Builder
     public BookerAddress(Long id, String address, String addressDetail, String district, String city, Country country, String postalCode) {
         this.id = id;

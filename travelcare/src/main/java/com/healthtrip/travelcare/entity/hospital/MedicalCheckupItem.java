@@ -26,6 +26,7 @@ public class MedicalCheckupItem extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true,name = "name")
     private String name;
 
     @OneToMany(mappedBy = "medicalCheckupItem",fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)

@@ -20,7 +20,7 @@ public class MedicalCheckupOptional extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST,optional = false)
     private MedicalCheckupItem medicalCheckupItem;
 
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)

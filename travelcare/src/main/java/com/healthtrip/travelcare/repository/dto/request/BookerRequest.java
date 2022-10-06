@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class BookerRequest {
 
+//    private Long requesterId;
     private PersonData personData;
     private boolean tourReserved;
     private boolean hospitalReserved;
@@ -22,6 +23,7 @@ public class BookerRequest {
 
     public Booker toEntity() {
         return Booker.builder()
+//                .requesterId(requesterId)
                 .birth(this.personData.getBirth())
                 .firstName(this.personData.getFirstName())
                 .lastName(this.personData.getLastName())
