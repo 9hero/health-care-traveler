@@ -25,5 +25,12 @@ public class CategorySearchRequest {
         @Schema(description = "삭제할 범주 id, 주의 프로그램 상세조회 해야지 얻을 수 있음")
         private List<Long> programCategoryIds;
     }
-
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class AddProgramCategory{
+        @Schema(description = "추가할 범주 id")
+        private List<Long> categoryId;
+    }
 }

@@ -8,8 +8,8 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Map;
 
-public interface TourReservationRepository extends JpaRepository<TourReservation,String> {
-    boolean existsById(String id);
+public interface TourReservationRepository extends JpaRepository<TourReservation,Long> {
+    boolean existsById(Long id);
 
 
 

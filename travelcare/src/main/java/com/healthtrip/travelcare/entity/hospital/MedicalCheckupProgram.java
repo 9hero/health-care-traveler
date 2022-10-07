@@ -4,6 +4,7 @@ import com.healthtrip.travelcare.entity.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -16,10 +17,10 @@ import java.util.List;
 public class MedicalCheckupProgram extends BaseTimeEntity {
 
     @Builder
-    public MedicalCheckupProgram(Long id, Hospital hospital, MedicalCheckupProgram extraCheckupProgram, ProgramType programType, String programName, BigDecimal priceForMan, BigDecimal priceForWoman, List<ProgramCheckupItem> programCheckupItems, List<ProgramCategory> programCategories, String elements) {
+    public MedicalCheckupProgram(Long id, Hospital hospital, MedicalCheckupProgram referenceCheckupProgram, ProgramType programType, String programName, BigDecimal priceForMan, BigDecimal priceForWoman, List<ProgramCheckupItem> programCheckupItems, List<ProgramCategory> programCategories, String elements) {
         this.id = id;
         this.hospital = hospital;
-        this.extraCheckupProgram = extraCheckupProgram;
+        this.referenceCheckupProgram = referenceCheckupProgram;
         this.programType = programType;
         this.programName = programName;
         this.priceForMan = priceForMan;
@@ -37,8 +38,10 @@ public class MedicalCheckupProgram extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST,optional = false)
     private Hospital hospital;
 
+    @Setter
     @OneToOne(optional = true,fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
-    private MedicalCheckupProgram extraCheckupProgram;
+    @JoinColumn(name = "extra_checkup_program_id")
+    private MedicalCheckupProgram referenceCheckupProgram;
 
     @Enumerated(EnumType.STRING)
     private ProgramType programType;

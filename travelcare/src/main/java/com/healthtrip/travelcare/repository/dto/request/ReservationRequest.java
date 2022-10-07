@@ -48,7 +48,7 @@ public class ReservationRequest {
         private Short personCount;
         private LocalDateTime reservedAt;
         private BigDecimal hospitalTotalAmount;
-        private List<MedicalCheckupOptionalReq> medicalCheckUpOptionals;
+        private List<ReservationAddCheckupRequest> medicalCheckUpOptionals;
     }
     @Data
     @NoArgsConstructor

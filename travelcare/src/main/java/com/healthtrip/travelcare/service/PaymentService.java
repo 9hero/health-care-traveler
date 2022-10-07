@@ -1,6 +1,7 @@
 package com.healthtrip.travelcare.service;
 
 import com.healthtrip.travelcare.entity.tour.PackageTourPayment;
+import com.healthtrip.travelcare.repository.reservation.ReservationRepository;
 import com.healthtrip.travelcare.repository.tour.PackageTourPaymentRepository;
 import com.healthtrip.travelcare.repository.tour.TourReservationRepository;
 import com.siot.IamportRestClient.IamportClient;
@@ -21,7 +22,7 @@ import java.time.ZoneId;
 public class PaymentService {
 
     private final IamportClient iamportClient;
-    private final TourReservationRepository tourReservationRepository;
+    private final ReservationRepository reservationRepository;
     private final PackageTourPaymentRepository packageTourPaymentRepository;
     public String verify(String imp_uid, String merchant_uid) throws IamportResponseException, IOException {
         // 결제내역 조회
@@ -29,7 +30,7 @@ public class PaymentService {
         Payment payment = result.getResponse();
 
         // 주문내역 조회
-        var infoOptional = tourReservationRepository.findById(merchant_uid);
+        var infoOptional = reservationRepository.findById(merchant_uid);
         if (infoOptional.isPresent()) {
             // 실제 결제금액과 예약 상품 금액 비교
             var reservationInfo = infoOptional.get();
@@ -40,7 +41,7 @@ public class PaymentService {
                         .payType(payment.getPayMethod())
                         .currency(payment.getCurrency())
                         .paymentDate(LocalDateTime.ofInstant(payment.getPaidAt().toInstant(), ZoneId.systemDefault()))
-                        .tourReservation(reservationInfo)
+                        .tourReservation(reservationInfo.getTourReservation())
                         .amount(payment.getAmount())
                         .build();
                 boolean saved = savePackageTourPayment(entity) != null;

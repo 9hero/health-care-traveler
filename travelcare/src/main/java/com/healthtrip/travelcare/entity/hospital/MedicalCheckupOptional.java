@@ -26,7 +26,6 @@ public class MedicalCheckupOptional extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
     private Hospital hospital;
 
-    private BigDecimal priceForMan;
+    private BigDecimal price;
 
-    private BigDecimal priceForWoman;
 }

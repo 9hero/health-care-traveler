@@ -8,7 +8,7 @@ import com.healthtrip.travelcare.entity.reservation.*;
 import com.healthtrip.travelcare.entity.tour.reservation.TourReservation;
 import com.healthtrip.travelcare.repository.account.AccountsRepository;
 import com.healthtrip.travelcare.repository.dto.request.BookerRequest;
-import com.healthtrip.travelcare.repository.dto.request.MedicalCheckupOptionalReq;
+import com.healthtrip.travelcare.repository.dto.request.ReservationAddCheckupRequest;
 import com.healthtrip.travelcare.repository.dto.request.ReservationRejectionReq;
 import com.healthtrip.travelcare.repository.dto.response.*;
 import com.healthtrip.travelcare.repository.hospital.HospitalReservationRepository;
@@ -26,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +42,7 @@ import java.util.stream.Collectors;
 public class ReservationService {
     private final AccountsRepository accountsRepository;
     private final ReservationRepository reservationRepository;
+    private final ReservationTourOptionsRepository reservationTourOptionsRepository;
     private final BookerRepository bookerRepository;
     private final TourPackageRepository tourPackageRepository;
     private final TourReservationRepository tourReservationRepository;
@@ -142,20 +144,20 @@ public class ReservationService {
         if (!additionalCheckupEmpty){
             // 1. 벌크로 영속성에 저장 +1
             var optionIDs = medicalCheckupOptionalReqList.stream()
-                    .map(MedicalCheckupOptionalReq::getMedicalCheckUpOptionalID).collect(Collectors.toList());
+                    .map(ReservationAddCheckupRequest::getMedicalCheckUpOptionID).collect(Collectors.toList());
             medicalCheckupOptionalRepo.findAllById(optionIDs);
             // Req 객체로부터 AddedCheckup 객체 생성
             var addedCheckupList = medicalCheckupOptionalReqList.stream().map(optionalReq -> {
                 var medicalCheckupOptional =
                         medicalCheckupOptionalRepo
-                                .findById(optionalReq.getMedicalCheckUpOptionalID())
+                                .findById(optionalReq.getMedicalCheckUpOptionID())
                                 .get();
 
             /*
                 DB에 저장된 선택검사 가격
                .multiply(사용자가 입력한 인원)
              */
-                var dbOptionAmount = medicalCheckupOptional.getPriceForMan()
+                var dbOptionAmount = medicalCheckupOptional.getPrice()
                         .multiply(BigDecimal.valueOf(optionalReq.getPersonCount()));
 
                 // 입력 총가격 vs DB계산 가격
@@ -292,10 +294,17 @@ public class ReservationService {
         return responseBody;
     }
 
+    @Transactional(readOnly = true)
     public ReservationDtoResponse.RVDetails findMyReservationDetail(String reservationId) {
         var reservationDetailsDTO = new ReservationDtoResponse.RVDetails();
+        boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(Account.UserRole.ROLE_ADMIN);
+        Reservation reservation = null;
         // 통합예약
-        var reservation = reservationRepository.findMyReservationInfo(reservationId,CommonUtils.getAuthenticatedUserId());
+        if (isAdmin){
+            reservation = reservationRepository.findMyReservationInfo(reservationId);
+        }else {
+            reservation = reservationRepository.findMyReservationInfo(reservationId,CommonUtils.getAuthenticatedUserId());
+        }
 
         // dto 변환
         var dto = ReservationDtoResponse.toResponse(reservation);
@@ -384,5 +393,11 @@ public class ReservationService {
                     return dto;
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void setTourOptionPrice(Long id, BigDecimal price) {
+        var reservationTourOptions = reservationTourOptionsRepository.findById(id).get();
+        reservationTourOptions.setAmount(price);
     }
 }

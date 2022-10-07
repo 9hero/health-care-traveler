@@ -10,9 +10,8 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class MedicalCheckupOptionalReq {
-    private Long medicalCheckUpOptionalID;
-    private String requesterName;
-    private Long personCount;
-    private BigDecimal amount;
+public class MedicalCheckupOptionReq {
+    private Long checkupItemId;
+    private BigDecimal price;
+
 }

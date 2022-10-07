@@ -2,12 +2,10 @@ package com.healthtrip.travelcare.entity.reservation;
 
 import com.healthtrip.travelcare.entity.BaseTimeEntity;
 import com.healthtrip.travelcare.entity.tour.reservation.TourOption;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Getter
 @NoArgsConstructor
@@ -15,13 +13,14 @@ import javax.persistence.*;
 @ToString
 public class ReservationTourOptions extends BaseTimeEntity {
     @Builder
-    public ReservationTourOptions(Long id, Reservation reservation, TourOption tourOption, String day, Short manCount, String requesterName) {
+    public ReservationTourOptions(Long id, Reservation reservation, TourOption tourOption, String day, Short manCount, String requesterName, BigDecimal amount) {
         this.id = id;
         this.reservation = reservation;
         this.tourOption = tourOption;
         this.day = day;
         this.manCount = manCount;
         this.requesterName = requesterName;
+        this.amount = amount;
     }
 
     @Id
@@ -51,4 +50,7 @@ public class ReservationTourOptions extends BaseTimeEntity {
     private Short manCount;
 
     private String requesterName;
+
+    @Setter
+    private BigDecimal amount;
 }

@@ -34,4 +34,10 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
             "and r.id = :reservationId")
     Reservation findMyReservationInfo(@Param("reservationId") String reservationId,@Param ("accountId")@NonNull Long accountId);
 
+    @Query("select distinct r from Reservation r " +
+            "left join fetch r.hospitalReservation " +
+            "left join fetch r.tourReservation " +
+            "left join fetch r.bookers " +
+            "where r.id = :reservationId")
+    Reservation findMyReservationInfo(@Param("reservationId") String reservationId);
 }

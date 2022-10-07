@@ -15,9 +15,10 @@ import java.util.Set;
 public class MedicalCheckupItem extends BaseTimeEntity {
 
     @Builder
-    public MedicalCheckupItem(Long id, String name, Set<MedicalCheckupItemCategory> medicalCheckupItemCategories) {
+    public MedicalCheckupItem(Long id, String name, String description, Set<MedicalCheckupItemCategory> medicalCheckupItemCategories) {
         this.id = id;
         this.name = name;
+        this.description = description;
         this.medicalCheckupItemCategories = medicalCheckupItemCategories;
 
     }
@@ -28,7 +29,7 @@ public class MedicalCheckupItem extends BaseTimeEntity {
 
     @Column(unique = true,name = "name")
     private String name;
-
+    private String description;
     @OneToMany(mappedBy = "medicalCheckupItem",fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
     private Set<MedicalCheckupItemCategory> medicalCheckupItemCategories;
 

@@ -2,8 +2,6 @@ package com.healthtrip.travelcare.repository.dto.response;
 
 import com.healthtrip.travelcare.entity.hospital.HospitalReservation;
 
-import com.healthtrip.travelcare.entity.reservation.AddedCheckup;
-import com.healthtrip.travelcare.repository.dto.request.MedicalCheckupOptionalReq;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

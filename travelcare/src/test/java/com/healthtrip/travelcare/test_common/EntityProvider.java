@@ -11,7 +11,6 @@ import com.healthtrip.travelcare.entity.reservation.Reservation;
 import com.healthtrip.travelcare.entity.tour.PackageTourPayment;
 import com.healthtrip.travelcare.entity.tour.reservation.*;
 import com.healthtrip.travelcare.entity.tour.tour_package.*;
-import com.healthtrip.travelcare.repository.dto.request.PersonData;
 import lombok.Getter;
 
 import java.math.BigDecimal;
@@ -229,8 +228,7 @@ public class EntityProvider {
         medicalCheckupOptional = MedicalCheckupOptional.builder()
                 .hospital(hospital)
                 .medicalCheckupItem(medicalCheckupItem)
-                .priceForMan(BigDecimal.ONE)
-                .priceForWoman(BigDecimal.TEN)
+                .price(BigDecimal.ONE)
                 .build();
         programCheckupItem = ProgramCheckupItem.builder()
                 .medicalCheckupItem(medicalCheckupItem)
@@ -238,7 +236,7 @@ public class EntityProvider {
                 .build();
         hospitalReservation = HospitalReservation.builder()
                 .amount(BigDecimal.TEN)
-                .manCount((short) 2)
+                .personCount((short) 2)
                 .reservedTime(LocalDateTime.now())
                 .medicalCheckupProgram(medicalCheckupProgram)
                 .build();

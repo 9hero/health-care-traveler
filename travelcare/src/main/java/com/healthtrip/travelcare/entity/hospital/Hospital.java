@@ -25,4 +25,5 @@ public class Hospital extends BaseTimeEntity {
 
     private String name;
     private String description;
+    private String simpleAddress;
 }

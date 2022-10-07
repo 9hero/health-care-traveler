@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.healthtrip'
-version = '0.5.0-SNAPSHOT'+new Date().format("yyyyMMddHHmmss")
+version = '0.6.0-SNAPSHOT'+new Date().format("yyyyMMddHHmmss")
 sourceCompatibility = '11'
 
 configurations {
