@@ -21,8 +21,8 @@ public class MedicalCheckProgramRes {
 
     private String programName;
 
-    private MedicalCheckupProgram.ProgramType programType;
-
+//    private MedicalCheckupProgram.ProgramType programType;
+    private String programType;
     private BigDecimal priceForMan;
 
     private BigDecimal priceForWoman;
@@ -33,7 +33,7 @@ public class MedicalCheckProgramRes {
         return MedicalCheckProgramRes.builder()
                 .id(medicalCheckupProgram.getId())
                 .programName(medicalCheckupProgram.getProgramName())
-                .programType(medicalCheckupProgram.getProgramType())
+                .programType(medicalCheckupProgram.getProgramType().getDescription())
                 .priceForWoman(medicalCheckupProgram.getPriceForWoman())
                 .priceForMan(medicalCheckupProgram.getPriceForMan())
                 .elements(medicalCheckupProgram.getElements())
@@ -68,7 +68,7 @@ public class MedicalCheckProgramRes {
 
         public static MCPdetailsAdmin toResponse(MedicalCheckupProgram programDetailsByIdForAdmin) {
             // 프로그램 정보 담기
-            var mcPdetailsAdmin = MCPdetailsAdmin.builder()
+            var mcpDetailsAdmin = MCPdetailsAdmin.builder()
                     .medicalCheckProgramRes(MedicalCheckProgramRes.toResponse(programDetailsByIdForAdmin))
                     .build();
             // 프로그램 범주 추가
@@ -83,8 +83,8 @@ public class MedicalCheckProgramRes {
                                 .build()
                 );
             }
-            mcPdetailsAdmin.setProgramCategoryRes(checkupCategoryRes);
-            return mcPdetailsAdmin;
+            mcpDetailsAdmin.setProgramCategoryRes(checkupCategoryRes);
+            return mcpDetailsAdmin;
         }
 
     }

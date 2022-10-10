@@ -1,6 +1,5 @@
 package com.healthtrip.travelcare.controller;
 
-import com.healthtrip.travelcare.entity.hospital.MedicalCheckupOptional;
 import com.healthtrip.travelcare.repository.dto.request.*;
 import com.healthtrip.travelcare.repository.dto.response.*;
 import com.healthtrip.travelcare.service.HospitalService;
@@ -112,4 +111,11 @@ public class HospitalController {
         hospitalService.modifyProgramCategory(programId,categorySearchRequest);
     }
 
+    @Operation(summary = "프로그램 범주 추가",description = "categoryId: 추가할 id <br/>programCategoryIds: 삭제할 범주 id")
+    @PutMapping(admin+"/MedicalCheckup/programs")
+    public void addProgramsCategory(
+            @RequestBody List<CategorySearchRequest.AddMultipleProgramCategory> categorySearchRequest
+    ) {
+        hospitalService.addProgramsToCategories(categorySearchRequest);
+    }
 }

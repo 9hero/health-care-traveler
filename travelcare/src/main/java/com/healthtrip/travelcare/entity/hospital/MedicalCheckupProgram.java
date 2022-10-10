@@ -71,8 +71,8 @@ public class MedicalCheckupProgram extends BaseTimeEntity {
     public enum ProgramType {
         In_Depth("정밀검사"),
         Total("종합검진"),
-        Inpatient("입원검진");
-
+        Inpatient("입원검진"),
+        Specialized("특화검진");
         private final String description;
 
         ProgramType(String description) {

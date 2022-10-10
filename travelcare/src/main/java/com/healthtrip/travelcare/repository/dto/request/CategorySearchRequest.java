@@ -29,6 +29,16 @@ public class CategorySearchRequest {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
+    public static class AddMultipleProgramCategory{
+        @Schema(description = "대상 검진 프로그램 id")
+        private Long programId;
+        @Schema(description = "추가할 범주 id")
+        private List<Long> categoryId;
+    }
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
     public static class AddProgramCategory{
         @Schema(description = "추가할 범주 id")
         private List<Long> categoryId;

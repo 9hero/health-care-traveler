@@ -131,6 +131,19 @@ public class HospitalService {
         program.setCategories(programCategories);
     }
     @Transactional
+    public void addProgramsToCategories(List<CategorySearchRequest.AddMultipleProgramCategory> categorySearchRequest) {
+        // 영속성 캐시 저장
+        checkupCategoryRepo.findAll();
+        var programIds = categorySearchRequest.stream().map(CategorySearchRequest.AddMultipleProgramCategory::getProgramId).collect(Collectors.toList());
+        programRepo.findAllById(programIds);
+
+        for(var programCategoryRequest : categorySearchRequest){
+            var medicalCheckupProgram = programRepo.getById(programCategoryRequest.getProgramId());
+            addProgramCategory(medicalCheckupProgram,programCategoryRequest.getCategoryId());
+        }
+
+    }
+    @Transactional
     public void addProgramCategory(MedicalCheckupProgram program, List<Long> categoryIds) {
         var programCategories = checkupCategoryRepo.findAllById(categoryIds).stream().map(medicalCheckupCategory -> {
             return ProgramCategory.builder()
@@ -214,4 +227,6 @@ public class HospitalService {
         }).collect(Collectors.toList());
         medicalCheckupOptionalRepo.saveAll(medicalCheckupOptionals);
     }
+
+
 }
