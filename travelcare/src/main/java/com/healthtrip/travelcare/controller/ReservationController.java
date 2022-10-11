@@ -34,8 +34,7 @@ public class ReservationController {
     }
     @Operation(summary = "내 예약 보기",description = "전체 예약을 확인합니다.")
     @GetMapping(domain)
-    public List<ReservationDtoResponse> myReservation(@Parameter(description = "Sort 객체 없이 보내주세요 <br> page: 현재 페이지, size: 페이지 당 객체 수 <br> /api/reservation?page=0&size=1")
-            @PageableDefault(size = 10) Pageable pageable ) {
+    public List<ReservationDtoResponse> myReservation(@Parameter(name = "페이지요청",description = "기본 설정: 0page 10size",example = "{\"page\":0,\"size\":10}") @PageableDefault Pageable pageable) {
         return reservationService.findMyReservation(pageable);
     }
     @Operation(summary = "예약 상세 보기",description = "예약 상세내용을 확인합니다.")

@@ -61,10 +61,11 @@ class MedicalCheckupProgramRepoTest {
     void findByCategoryIds(){
         // given
         medicalCheckupProgramRepo.save(medicalCheckupProgram);
+        var ids = List.of(entityProvider.getMedicalCheckupCategory().getId());
         // when
         var foundProgramByCategory = medicalCheckupProgramRepo
                 .findByCategoryIds(
-                        List.of(entityProvider.getMedicalCheckupCategory().getId())
+                        ids, (long) ids.size()
                 );
         // then
         assertThat(foundProgramByCategory).isNotEmpty();

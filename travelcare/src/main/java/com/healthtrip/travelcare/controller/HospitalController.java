@@ -5,6 +5,9 @@ import com.healthtrip.travelcare.repository.dto.response.*;
 import com.healthtrip.travelcare.service.HospitalService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +32,7 @@ public class HospitalController {
     public List<HospitalResponse> getHospitals() {
         return hospitalService.getHospitals();
     }
+
     @GetMapping(domain+"/{id}/MedicalCheckup/programs")
     @Operation(summary = "병원 검진 프로그램 목록 불러오기",description = "Query Parameter입니다.")
     public List<MedicalCheckProgramRes> findMedicalCheckProgramByHospital(
@@ -36,6 +40,7 @@ public class HospitalController {
             , @PathVariable(name = "id") Long hospitalId) {
         return hospitalService.getProgramsByHospital(hospitalId,pageable);
     }
+
     @GetMapping(domain+"/MedicalCheckup/categories")
     @Operation(summary = "검진 카테고리 모두 불러오기")
     public List<MedicalCheckupCategoryRes> findHeathCheckProgramByHospital() {
@@ -44,7 +49,7 @@ public class HospitalController {
 
     @PostMapping(domain+"/MedicalCheckup/categories/programs")
     @Operation(summary = "검진 카테고리로 검진 프로그램 검색")
-    public List<MedicalCheckProgramRes> findWithCategoryIds(@RequestBody CategorySearchRequest categorySearchRequest) {
+    public List<MedicalCheckProgramRes.MCPdetailsWithHospital> findWithCategoryIds(@RequestBody CategorySearchRequest categorySearchRequest) {
         return hospitalService.getProgramsByCategories(categorySearchRequest);
     }
     @Operation(summary = "프로그램 상세정보")
@@ -66,13 +71,13 @@ public class HospitalController {
         hospitalService.newHospital(hospitalRequest);
 
     }
-    @Operation(summary = "(테스트 전)의료 검진 프로그램 추가")
+    @Operation(summary = "의료 검진 프로그램 추가")
     @PostMapping(admin+"/{id}/MedicalCheckup/program")
     public void addProgram(@PathVariable(name = "id") Long hospitalId,
                            @RequestBody MedicalCheckProgramReq medicalCheckProgramReq) {
         hospitalService.addProgram(hospitalId,medicalCheckProgramReq);
     }
-    @Operation(summary = "(테스트 전)의료 검진 프로그램 여러개 추가")
+    @Operation(summary = "의료 검진 프로그램 여러개 추가")
     @PostMapping(admin+"/{id}/MedicalCheckup/programs")
     public void addProgram(@PathVariable(name = "id") Long hospitalId,
                            @RequestBody List<MedicalCheckProgramReq> medicalCheckProgramReq) {
@@ -90,7 +95,7 @@ public class HospitalController {
     public void addMedicalCheckupItems(@RequestBody List<MedicalCheckupItemReq> reqList){
         hospitalService.addMedicalCheckupItems(reqList);
     }
-    @Operation(summary = "(테스트 전)선택검사 추가")
+    @Operation(summary = "선택검사 추가")
     @PostMapping(admin + "/{id}/MedicalCheckup/option")
     public void addMedicalCheckupOption(@PathVariable(name = "id") Long hospitalId,
                                         @RequestBody List<MedicalCheckupOptionReq> medicalCheckupOptionalReqList) {
@@ -102,8 +107,8 @@ public class HospitalController {
     public MedicalCheckProgramRes.MCPdetailsAdmin programDetailAdmin(@PathVariable(name = "id") Long programId) {
         return hospitalService.getProgramDetailsForAdmin(programId);
     }
-    @Operation(summary = "프로그램 범주 추가",description = "categoryId: 추가할 id <br/>programCategoryIds: 삭제할 범주 id")
-    @PutMapping(admin+"/MedicalCheckup/programs/{programId}")
+    @Operation(summary = "대상 검진 프로그램에 범주 추가",description = "categoryId: 추가할 id <br/>programCategoryIds: 삭제할 범주 id")
+    @PutMapping(admin+"/MedicalCheckup/programs/{programId}/category")
     public void modifyProgramCategory(
                                       @PathVariable(name = "programId") Long programId,
                                       @RequestBody CategorySearchRequest.ModifyProgramCategory categorySearchRequest
@@ -111,8 +116,8 @@ public class HospitalController {
         hospitalService.modifyProgramCategory(programId,categorySearchRequest);
     }
 
-    @Operation(summary = "프로그램 범주 추가",description = "categoryId: 추가할 id <br/>programCategoryIds: 삭제할 범주 id")
-    @PutMapping(admin+"/MedicalCheckup/programs")
+    @Operation(summary = "한번에 여러 검진 프로그램에 범주 추가",description = "배열로 이루어진 객체: <br/>[{programId:대상 프로그램 categoryId: 추가할 id}, {programId:199 categoryId:144,156}, ~~]")
+    @PutMapping(admin+"/MedicalCheckup/programs/category")
     public void addProgramsCategory(
             @RequestBody List<CategorySearchRequest.AddMultipleProgramCategory> categorySearchRequest
     ) {

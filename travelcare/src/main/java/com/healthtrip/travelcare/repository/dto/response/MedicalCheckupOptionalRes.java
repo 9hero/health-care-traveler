@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 public class MedicalCheckupOptionalRes {
     private Long optionId;
     private String optionName;
-    private BigDecimal manPrice;
-    private BigDecimal womanPrice;
+    private BigDecimal price;
+
 
 }

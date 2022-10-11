@@ -47,14 +47,19 @@ public class HospitalService {
         return checkupCategoryRepo.findAll().stream().map(MedicalCheckupCategoryRes::toResponse).collect(Collectors.toList());
     }
     @Transactional(readOnly = true)
-    public List<MedicalCheckProgramRes> getProgramsByCategories(CategorySearchRequest request) {
-        return programRepo.findByCategoryIds(request.getCategoryId())
-                .stream().map(MedicalCheckProgramRes::toResponse).collect(Collectors.toList());
-
+    public List<MedicalCheckProgramRes.MCPdetailsWithHospital> getProgramsByCategories(CategorySearchRequest request) {
+        var categoryIds = request.getCategoryId();
+        return programRepo.findByCategoryIds(categoryIds, (long) categoryIds.size())
+                .stream().map(MedicalCheckProgramRes.MCPdetailsWithHospital::toResponse).collect(Collectors.toList());
     }
     @Transactional(readOnly = true)
     public MedicalCheckProgramRes.MCPdetails getProgramDetails(Long programId) {
-        return MedicalCheckProgramRes.MCPdetails.toResponse(programRepo.programDetailsById(programId));
+        var medicalCheckupProgram = programRepo.programDetailsById(programId);
+        if (medicalCheckupProgram != null){
+            return MedicalCheckProgramRes.MCPdetails.toResponse(medicalCheckupProgram);
+        }else {
+            return null;
+        }
     }
     @Transactional(readOnly = true)
     public List<MedicalCheckupOptionalRes> getMedicalCheckupOptions(Long hospitalId) {
@@ -62,7 +67,7 @@ public class HospitalService {
         return optionalList.stream().map(medicalCheckupOptional -> {
             return MedicalCheckupOptionalRes.builder()
                     .optionId(medicalCheckupOptional.getId())
-                    .manPrice(medicalCheckupOptional.getPrice())
+                    .price(medicalCheckupOptional.getPrice())
                     .optionName(medicalCheckupOptional.getMedicalCheckupItem().getName())
                     .build();
         }).collect(Collectors.toList());

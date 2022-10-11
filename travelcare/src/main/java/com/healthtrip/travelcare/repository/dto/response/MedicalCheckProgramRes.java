@@ -1,6 +1,5 @@
 package com.healthtrip.travelcare.repository.dto.response;
 
-import com.healthtrip.travelcare.entity.hospital.MedicalCheckupCategory;
 import com.healthtrip.travelcare.entity.hospital.MedicalCheckupProgram;
 import com.healthtrip.travelcare.entity.hospital.ProgramCategory;
 import lombok.AllArgsConstructor;
@@ -21,7 +20,6 @@ public class MedicalCheckProgramRes {
 
     private String programName;
 
-//    private MedicalCheckupProgram.ProgramType programType;
     private String programType;
     private BigDecimal priceForMan;
 
@@ -38,7 +36,6 @@ public class MedicalCheckProgramRes {
                 .priceForMan(medicalCheckupProgram.getPriceForMan())
                 .elements(medicalCheckupProgram.getElements())
                 .build();
-
     }
 
     @Data
@@ -55,7 +52,6 @@ public class MedicalCheckProgramRes {
                     .hospitalResponse(HospitalResponse.WithAddressHR.toResponse(medicalCheckupProgram.getHospital()))
                     .build();
         }
-
     }
 
     @Data
@@ -87,5 +83,20 @@ public class MedicalCheckProgramRes {
             return mcpDetailsAdmin;
         }
 
+    }
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class MCPdetailsWithHospital {
+        private MedicalCheckProgramRes medicalCheckProgramRes;
+        private HospitalResponse hospitalResponse;
+
+        public static MCPdetailsWithHospital toResponse(MedicalCheckupProgram medicalCheckupProgram) {
+            return MCPdetailsWithHospital.builder()
+                    .medicalCheckProgramRes(MedicalCheckProgramRes.toResponse(medicalCheckupProgram))
+                    .hospitalResponse(HospitalResponse.toResponse(medicalCheckupProgram.getHospital()))
+                    .build();
+        }
     }
 }

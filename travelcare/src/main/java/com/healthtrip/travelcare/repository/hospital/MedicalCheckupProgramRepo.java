@@ -13,11 +13,19 @@ import java.util.List;
 public interface MedicalCheckupProgramRepo extends JpaRepository<MedicalCheckupProgram,Long> {
     Page<MedicalCheckupProgram> findByHospitalId(Long hospitalId, Pageable pageable);
 
-    @Query("select distinct mcp from MedicalCheckupProgram mcp " +
-            "join mcp.programCategories pc " +
-            "join pc.medicalCheckupCategory mcc " +
-            "where mcc.id in :categoryIds")
-    List<MedicalCheckupProgram> findByCategoryIds(@Param("categoryIds") List<Long> categoryIds);
+    @Query(" select distinct mcp " +
+            " from MedicalCheckupProgram mcp " +
+            " join fetch mcp.hospital h " +
+            " where mcp.id in  " +
+            " (select mcp.id " +
+            " from MedicalCheckupProgram mcp " +
+            " inner join mcp.programCategories pc " +
+            " inner join pc.medicalCheckupCategory mcc " +
+            " where mcc.id in :categoryIds " +
+            " group by mcp.id " +
+            " having count(mcp.id) >=:size )")
+    List<MedicalCheckupProgram> findByCategoryIds(@Param("categoryIds") List<Long> categoryIds,@Param("size") long size);
+
 
     @Query("select distinct mcp from MedicalCheckupProgram mcp " +
             "join fetch mcp.hospital h " +
