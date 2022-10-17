@@ -94,7 +94,7 @@ class TourItineraryRepositoryTest {
                 TourItineraryElement.builder()
                         .tourItinerary(tourItinerary2)
                         .sequence((short) 1)
-                        .showType(TourItineraryElement.ShowType.MOVE)
+                        .elementType(TourItineraryElement.ElementType.MOVE)
                         .title("일정2의 요소").build()
         );
 

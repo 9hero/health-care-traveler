@@ -16,6 +16,7 @@ import java.util.List;
 @ToString(callSuper = true)
 @NoArgsConstructor
 @Entity
+@Table(name = "tour_package")
 public class TourPackage extends BaseTimeEntity {
 
     @Builder
@@ -64,6 +65,7 @@ public class TourPackage extends BaseTimeEntity {
     @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
     private TourPackageFile mainImage;
 
+    @Setter
     @ToString.Exclude
     @BatchSize(size = 100)
     @OneToMany(mappedBy = "tourPackage",fetch = FetchType.LAZY,cascade = {CascadeType.REMOVE,CascadeType.PERSIST})

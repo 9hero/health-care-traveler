@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaUnitTest
 class TourPlaceListRepositoryTest {
@@ -33,7 +32,7 @@ class TourPlaceListRepositoryTest {
         tourPlaceList = TourPlaceList.builder()
                 .tourPlace(entityProvider.getTourPlace())
                 .tourItineraryElement(entityProvider.getTourItineraryElement())
-                .showType(TourPlaceList.ShowType.THREE)
+                .placeShowType(TourPlaceList.PlaceShowType.THREE)
                 .build();
         // when
         tourPlaceListRepository.save(tourPlaceList);

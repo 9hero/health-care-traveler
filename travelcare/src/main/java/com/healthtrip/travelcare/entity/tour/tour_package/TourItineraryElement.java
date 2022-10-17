@@ -4,9 +4,11 @@ import com.healthtrip.travelcare.entity.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -15,12 +17,12 @@ import java.util.List;
 public class TourItineraryElement extends BaseTimeEntity {
 
     @Builder
-    public TourItineraryElement(Long id, TourItinerary tourItinerary, List<TourPlaceList> tourPlaceLists, String title, ShowType showType, Short sequence) {
+    public TourItineraryElement(Long id, TourItinerary tourItinerary, List<TourPlaceList> tourPlaceLists, String title, ElementType elementType, Short sequence) {
         this.id = id;
         this.tourItinerary = tourItinerary;
         this.tourPlaceLists = tourPlaceLists;
         this.title = title;
-        this.showType = showType;
+        this.elementType = elementType;
         this.sequence = sequence;
     }
 
@@ -37,15 +39,24 @@ public class TourItineraryElement extends BaseTimeEntity {
     @OneToMany(mappedBy = "tourItineraryElement",fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
     private List<TourPlaceList> tourPlaceLists;
 
+
+    public void addTourPlaceList(TourPlaceList tourPlaceLists) {
+        if (this.tourPlaceLists == null){
+            this.tourPlaceLists = new ArrayList<>();
+        }
+        this.tourPlaceLists.add(tourPlaceLists);
+    }
+
     private String title;
 
     // front에서 사용할 타입 게시물타입, 이동타입, 정보타입
     @Enumerated(EnumType.STRING)
-    private ShowType showType;
+    @Column(name = "show_type")
+    private ElementType elementType;
 
     // 일정 순서 1:도착 -> 2:이동 -> 3....n:종료
     private Short sequence;
-    public enum ShowType {
+    public enum ElementType {
         MOVE
     }
 }

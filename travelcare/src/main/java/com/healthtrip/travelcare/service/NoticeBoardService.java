@@ -1,5 +1,6 @@
 package com.healthtrip.travelcare.service;
 
+import com.healthtrip.travelcare.common.CommonUtils;
 import com.healthtrip.travelcare.entity.NoticeBoard;
 import com.healthtrip.travelcare.repository.account.AccountsRepository;
 import com.healthtrip.travelcare.repository.NoticeBoardRepository;
@@ -76,7 +77,7 @@ public class NoticeBoardService {
     @Transactional
     public ResponseEntity addPost(NoticeBoardRequest.AddPost addRequest) {
         // 유저검증 필요
-        Long userId = addRequest.getUserId();
+        Long userId = CommonUtils.getAuthenticatedUserId();
         var account = accountsRepository.getById(userId);
 
         NoticeBoard noticeBoard = NoticeBoard.builder()

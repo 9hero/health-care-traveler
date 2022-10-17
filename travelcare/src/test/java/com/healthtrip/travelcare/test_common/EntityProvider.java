@@ -171,7 +171,7 @@ public class EntityProvider {
                 .tourItinerary(tourItinerary)
                 .sequence((short)1)
                 .title("해운대 출발")
-                .showType(TourItineraryElement.ShowType.MOVE)
+                .elementType(TourItineraryElement.ElementType.MOVE)
                 .build();
         tourItinerary.addItineraryElement(tourItineraryElement);
         tourPlace= TourPlace.builder()

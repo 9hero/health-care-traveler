@@ -13,11 +13,11 @@ import javax.persistence.*;
 public class TourPlaceList extends BaseTimeEntity {
 
     @Builder
-    public TourPlaceList(Long id, TourItineraryElement tourItineraryElement, TourPlace tourPlace, ShowType showType) {
+    public TourPlaceList(Long id, TourItineraryElement tourItineraryElement, TourPlace tourPlace, PlaceShowType placeShowType) {
         this.id = id;
         this.tourItineraryElement = tourItineraryElement;
         this.tourPlace = tourPlace;
-        this.showType = showType;
+        this.placeShowType = placeShowType;
     }
 
     @Id
@@ -33,9 +33,10 @@ public class TourPlaceList extends BaseTimeEntity {
     private TourPlace tourPlace;
 
     @Enumerated(EnumType.STRING)
-    private ShowType showType;
+    @Column(name = "show_type")
+    private PlaceShowType placeShowType;
 
-    public enum ShowType{
+    public enum PlaceShowType {
         THREE,FULL
     }
 }

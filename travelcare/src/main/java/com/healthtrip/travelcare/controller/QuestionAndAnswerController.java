@@ -19,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 @Tag(name = "(비활성)커스텀 여행 문의 API")
-public class CustomTourController {
+public class QuestionAndAnswerController {
     private final String domain = "/tour/custom";
     private final String adminApi = "/admin"+domain;
     private final CustomTravelBoardService customTravelService;

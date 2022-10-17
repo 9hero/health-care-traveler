@@ -23,21 +23,28 @@ public class TourPackageFileService {
     private final TourPackageFileRepository tourPackageFileRepository;
 
     private final AwsS3Service awsS3Service;
-    private static final String IMAGE_DIRECTORY = "images/trip-package"; // 패키지 이미지폴더로 이동예정
+    private static final String IMAGE_DIRECTORY = "images/tour-package"; // 패키지 이미지폴더로 이동예정
 
     @Transactional
-    public void uploadTripImage(List<MultipartFile> files, TourPackage tourPackage) throws Exception {
+    public TourPackageFile uploadTourPackageImage(MultipartFile file) {
+        String fileName = CommonUtils.buildFileName(Objects.requireNonNull(file.getOriginalFilename()),IMAGE_DIRECTORY);
+        String url = awsS3Service.uploadS3File(file,fileName);
+        var tourPackageFile = TourPackageFile.builder()
+                .url(url)
+                .fileSize(file.getSize())
+                .fileName(fileName)
+                .originalName(file.getOriginalFilename())
+                .build();
+        return tourPackageFileRepository.save(tourPackageFile);
+    }
+
+    @Transactional
+    public List<TourPackageFile> uploadTourPackageMultipleImage(List<MultipartFile> files, TourPackage tourPackage){
         List<TourPackageFile> tourPackageFiles = new ArrayList<>();
 
-        // 이렇게되면 패키지 등록 실패해도 파일이 남아있음 실패하면
-        // 이유 : 파일 먼저 생성,패키지 등록하기 때문
-        // 패키지 먼저등록 -> 업데이트 =  기존: 파일생성 + 엔티티저장 = 2 연결
-        // 앤티티저장 -> 파일생성 -> url 업데이트 = 3 연결
-        // 패키지 등록 실패확률 vs 3연결
-        // 고로 파일 널체크하고 들어감
         for (MultipartFile file:files){
-            String fileName = CommonUtils.buildFileName(Objects.requireNonNull(file.getOriginalFilename()), IMAGE_DIRECTORY);
-            String url = awsS3Service.uploadFileV1(file,fileName);
+        String fileName = CommonUtils.buildFileName(Objects.requireNonNull(file.getOriginalFilename()), IMAGE_DIRECTORY);
+        String url = awsS3Service.uploadS3File(file,fileName);
 
         tourPackageFiles.add(TourPackageFile.builder()
                 .url(url)
@@ -49,8 +56,8 @@ public class TourPackageFileService {
                 );
         }
         //saveAll
-        tourPackageFileRepository.saveAll(tourPackageFiles);
-        // updateAll
+        return tourPackageFileRepository.saveAll(tourPackageFiles);
+
     }
 
     @Transactional(readOnly = true)
@@ -92,7 +99,7 @@ public class TourPackageFileService {
         }
         // 2. 이미지 생성
         try {
-            uploadTripImage(files, tourPackage);
+            uploadTourPackageMultipleImage(files, tourPackage);
         }catch (Exception e){
             System.out.println("생성오류"+e); // 이거 로그로 처리
             throw new RuntimeException("업로드 생성오류");

@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,13 +19,14 @@ import java.util.List;
 public class TourOptionController {
 
     private final String domain = "/tour/options";
+    private final String targetDomain = "/tour/package/{id}/options";
     private final String adminApi = "/admin"+domain;
 
     private final TourOptionService tourOptionService;
 
-    @GetMapping(domain)
+    @GetMapping(targetDomain)
     @Operation(summary = "투어 옵션을 모두 불러옵니다.")
-    public List<TourOptionsResponse> getOptions(){
-        return tourOptionService.getOptions();
+    public List<TourOptionsResponse> getOptions(@PathVariable("id") Long tourPackageId){
+        return tourOptionService.getOptions(tourPackageId);
     }
 }

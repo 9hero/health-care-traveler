@@ -11,7 +11,6 @@ public class NoticeBoardRequest {
     @NoArgsConstructor
     @Schema(name = "공지사항 작성 Request")
     public static class AddPost {
-        private Long userId;
         private String title;
         private String announcement;
 

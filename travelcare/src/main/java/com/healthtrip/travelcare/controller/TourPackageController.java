@@ -1,6 +1,6 @@
 package com.healthtrip.travelcare.controller;
 
-import com.healthtrip.travelcare.repository.dto.request.TripPackageRequestDto;
+import com.healthtrip.travelcare.repository.dto.request.TourPackageRequestDto;
 import com.healthtrip.travelcare.repository.dto.response.TourPackageResponse;
 import com.healthtrip.travelcare.service.TourPackageService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,24 +29,23 @@ public class TourPackageController {
         return tpList;
     }
     @SecurityRequirement(name = "no")
-    @Operation(summary = "여행 패키지의 정보를 가져옵니다.",description = "패키지 기본 정보, 이미지는 따로 불러와야 합니다.")
+    @Operation(summary = "여행 패키지의 정보와 이미지들을 가져옵니다.",description = "패키지 기본 정보+메인 이미지+ 투어이미지")
     @GetMapping(domain+"/{id}")
-    public TourPackageResponse.TPBasicInfo tourPackageInfo(@PathVariable("id") Long id) {
-        var tpResponseDto = tpService.tourPackageInfo(id);
-        return tpResponseDto;
+    public TourPackageResponse.tourWithImages tourPackageInfo(@PathVariable("id") Long id) {
+        return tpService.tourPackageDetails(id);
     }
 
-
-
-    @Operation(summary = "패키지를 등록합니다.",description = "이미지 뭉치와 패키지 등록정보를 보내주세요",hidden = true)
-    @PostMapping(adminApi) // 테스트 전
-    public ResponseEntity addTripPack(TripPackageRequestDto tripPackageRequestDto){
+    @Operation(summary = "패키지를 등록합니다.",description = "메인 이미지와 패키지 정보를 보내주세요")
+    @PostMapping(adminApi)
+    public ResponseEntity addTourPack(TourPackageRequestDto tourPackageRequestDto){
         try {
-        return tpService.addTripPack(tripPackageRequestDto);
+        return tpService.addTourPack(tourPackageRequestDto);
         }catch (RuntimeException e){
             e.printStackTrace();
             return ResponseEntity.badRequest().body("오류 발생: "+e.getMessage());
         }
     }
+
+
 
 }

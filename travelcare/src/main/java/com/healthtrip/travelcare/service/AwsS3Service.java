@@ -2,25 +2,25 @@ package com.healthtrip.travelcare.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.healthtrip.travelcare.common.CommonUtils;
+import com.healthtrip.travelcare.common.Exception.CustomException;
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class AwsS3Service {
 
     private final AmazonS3Client amazonS3Client;
@@ -28,12 +28,7 @@ public class AwsS3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
-    public String uploadFileV1(MultipartFile multipartFile, String fileName) throws Exception {
-//        validateFileExists(multipartFile);
-        if(multipartFile.isEmpty()){
-            throw new Exception();
-        }
-//        String fileName = CommonUtils.buildFileName(Objects.requireNonNull(multipartFile.getOriginalFilename()),directory);
+    public String uploadS3File(MultipartFile multipartFile, String fileName){
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentType(multipartFile.getContentType());
         objectMetadata.setContentLength(multipartFile.getSize());
@@ -41,16 +36,10 @@ public class AwsS3Service {
             amazonS3Client.putObject(new PutObjectRequest(bucketName, fileName, inputStream, objectMetadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
         } catch (IOException e) {
-//            throw new FileUploadFailedException();
+            log.error("파일 업로드 실패 AwsS3Service uploadS3File IOExcepton fileName: {}, file: {}",fileName,multipartFile);
+            throw new CustomException("파일 업로드 실패", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
         return amazonS3Client.getUrl(bucketName, fileName).toString();
-    }
-
-    private void validateFileExists(MultipartFile multipartFile) {
-        if (multipartFile.isEmpty()) {
-//            throw new EmptyFileException();
-        }
     }
 
     public boolean deleteFileByNameList(Stream<String> nameList) {

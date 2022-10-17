@@ -223,7 +223,7 @@ public class ReservationService {
 
         boolean isTour = reservationDTO.getTour() != null;
         boolean hospital = reservationDTO.getHospital() != null;
-        // 투어 예약
+        // 투어 예약 서버에서 처리도 생각해보기
         if (isTour){
             TourReservation tourReservation = reserveTour(reservationDTO.getTour(),savedReservation);
             savedReservation.setTourReservation(tourReservation);

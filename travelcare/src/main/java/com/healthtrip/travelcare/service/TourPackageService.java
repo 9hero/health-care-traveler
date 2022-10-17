@@ -1,22 +1,22 @@
 package com.healthtrip.travelcare.service;
 
-import com.healthtrip.travelcare.common.Exception.CustomException;
+import com.healthtrip.travelcare.common.CommonUtils;
 import com.healthtrip.travelcare.entity.account.Account;
 import com.healthtrip.travelcare.entity.tour.tour_package.TourPackage;
 import com.healthtrip.travelcare.repository.account.AccountsRepository;
+import com.healthtrip.travelcare.repository.dto.response.TourPackageFileResponse;
+import com.healthtrip.travelcare.repository.tour.TourItineraryElementRepository;
 import com.healthtrip.travelcare.repository.tour.TourPackageRepository;
-import com.healthtrip.travelcare.repository.dto.request.TripPackageRequestDto;
+import com.healthtrip.travelcare.repository.dto.request.TourPackageRequestDto;
 import com.healthtrip.travelcare.repository.dto.response.TourPackageResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +27,7 @@ public class TourPackageService {
     private final TourPackageFileService tourPackageFileService;
 
     private final AccountsRepository accountsRepository;
-
+    private final TourItineraryElementRepository itineraryElementRepository;
 
     @Transactional(readOnly = true)
     public List<TourPackageResponse.TPBasicInfo> mainPagePackages() {
@@ -46,57 +46,45 @@ public class TourPackageService {
     }
 
     @Transactional(readOnly = true)
-    public TourPackageResponse.TPBasicInfo tourPackageInfo(Long id) {
+    public TourPackageResponse.tourWithImages tourPackageDetails(Long id) {
+        var response = new TourPackageResponse.tourWithImages();
         // 패키지 찾기
-        var tourPackage = tourPackageRepository.findById(id).orElseThrow(() -> {
-            throw new CustomException("tp not found", HttpStatus.BAD_REQUEST);
-        });
+        var tourPackage = tourPackageRepository.getTourPackageAndImages(id);
+        response.setTourPackageResponse(TourPackageResponse.toResponse(tourPackage));
+
+        // 이미지
+        response.setMainImage(TourPackageFileResponse.toResponse(tourPackage.getMainImage()));
+        response.setTourImages(
+            tourPackage.getTourPackageFileList().stream().map(TourPackageFileResponse::toResponse).collect(Collectors.toList())
+        );
+
+
+
         // 패키지
-        return TourPackageResponse.TPBasicInfo.toMainPageDTO(tourPackage);
-        // 이미지는 프론트에서 API로 불러옴
+        return response;
     }
 
 
     @Transactional
-    public ResponseEntity addTripPack(TripPackageRequestDto tripPackageRequestDto) {
-        System.out.println(tripPackageRequestDto);
+    public ResponseEntity addTourPack(TourPackageRequestDto tourPackageRequestDto) {
         // 1. 패키지 생성
-        Optional<Account> account = accountsRepository.findById(tripPackageRequestDto.getAccountId());
-        if(account.isPresent()) {
+        Account account = accountsRepository.getById(CommonUtils.getAuthenticatedUserId());
+        TourPackage tourPackage = tourPackageRequestDto.toEntity(tourPackageRequestDto);
+        // 계정
+        tourPackage.setAccount(account);
+        // 썸네일
+        var mainImage = tourPackageRequestDto.getMainImage();
+        tourPackage.setMainImage(tourPackageFileService.uploadTourPackageImage(mainImage));
 
-            TourPackage tourPackage = tripPackageRequestDto.toEntity(tripPackageRequestDto);
-            tourPackage.setAccount(account.get());
-            TourPackage savedTourPackage = tourPackageRepository.save(tourPackage);
-
-        // 파일 널체크
-            List<MultipartFile> files = tripPackageRequestDto.getMultipartFiles();
-            for (MultipartFile file:files){
-                boolean nullCheck = file.getSize() == 0;
-                boolean equalsCheck =file.getOriginalFilename().equals("");
-
-                if (nullCheck || equalsCheck){
-                    System.out.println("you send void file");
-                    throw new RuntimeException("you send void file");
-                };
-            }
-        // 2. 이미지 생성
-            try {
-            tourPackageFileService.uploadTripImage(files, savedTourPackage);
-            }catch (Exception e){
-                System.out.println("생성오류"+e); // 이거 로그로 처리
-                throw new RuntimeException("업로드 생성오류");
-            }
-            return ResponseEntity.ok("생성완료");
-        }else{
-            return ResponseEntity.status(401).body("패키지를 등록하려는 계정을 찾을 수 없습니다. " +
-                    "관리자에게 문의 해주세요.");
+        // 패키지 이미지 추가
+        var packageImages = tourPackageRequestDto.getPackageImages();
+        if (packageImages != null){
+            var savedTourPackageFileList = tourPackageFileService.uploadTourPackageMultipleImage(packageImages,tourPackage);
+            tourPackage.setTourPackageFileList(savedTourPackageFileList);
         }
+        // 패키지 생성 완료
+        TourPackage savedTourPackage = tourPackageRepository.save(tourPackage);
 
-
-        // 3. 연관관계 설정(여행일자도 한번에 등록시)
-
-
+        return ResponseEntity.ok("생성완료");
     }
-
-
 }

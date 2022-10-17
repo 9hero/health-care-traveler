@@ -21,13 +21,13 @@ public class TourPackageFileController {
     private final TourPackageFileService tourPackageFileService;
 
     // 패키지에서 이미지 가져오기
+    @Tag(name = "투어 패키지 API")
     @Operation(summary ="패키지 번호로 패키지에 포함된 이미지 파일들을 불러옴" )
-    @GetMapping(domain+"/images")
-    public ResponseEntity<List<TripPackageFileResponse.FileInfo>> getImages(@RequestParam Long tourPackageId) {
+    @GetMapping("/tour/package/{id}/file/images")
+    public ResponseEntity<List<TripPackageFileResponse.FileInfo>> getImages(@PathVariable(name = "id") Long tourPackageId) {
         var imageDtoList = tourPackageFileService.getImages(tourPackageId);
         // 이후 문제시 분리
         return ResponseEntity.ok(imageDtoList);
-
     }
 
     // 이미지 추가 & 삭제로 패키지 이미지 수정!

@@ -34,7 +34,7 @@ class TourItineraryElementRepositoryTest {
                 .tourItinerary(entityProvider.getTourItinerary())
                 .sequence((short)1)
                 .title("해운대 출발")
-                .showType(TourItineraryElement.ShowType.MOVE)
+                .elementType(TourItineraryElement.ElementType.MOVE)
                 .build();
         // when
         tourItineraryElementRepository.save(tourItineraryElement);

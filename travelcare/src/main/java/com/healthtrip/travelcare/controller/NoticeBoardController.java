@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,9 +45,10 @@ public class NoticeBoardController {
 
 
     // <관리자 API>
+    // swagger에서 오류 주의
     @Operation(summary = "공지사항 등록")
-    @PostMapping(adminApi)
-    public ResponseEntity addPost(@RequestBody NoticeBoardRequest.AddPost request) {
+    @PostMapping(value = adminApi)
+    public ResponseEntity addPostWithForm(NoticeBoardRequest.AddPost request) {
         return noticeBoardService.addPost(request);
     }
 
