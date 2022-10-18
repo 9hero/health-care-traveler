@@ -14,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
-@Tag(name = "투어패키지파일 API",description = "이미지파일 등")
+@Tag(name = "(비활성)투어패키지파일 API",description = "이미지파일 등")
 public class TourPackageFileController {
     private final String domain = "/tour/package/file";
     private final String adminApi = "/admin"+domain;

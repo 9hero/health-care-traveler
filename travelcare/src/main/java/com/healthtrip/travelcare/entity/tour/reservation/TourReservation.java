@@ -14,15 +14,13 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Entity
-@DynamicUpdate
 @ToString(callSuper = true)
 public class TourReservation extends BaseTimeEntity{
 
     @Builder
-    public TourReservation(Long id, short personCount, List<CustomTravelBoard> customTravelBoard, BigDecimal amount, LocalDateTime reservedTime, TourPackage tourPackage) {
+    public TourReservation(Long id, short personCount, BigDecimal amount, LocalDateTime reservedTime, TourPackage tourPackage) {
         this.id = id;
         this.personCount = personCount;
-        this.customTravelBoard = customTravelBoard;
         this.amount = amount;
         this.reservedTime = reservedTime;
         this.tourPackage = tourPackage;
@@ -34,9 +32,6 @@ public class TourReservation extends BaseTimeEntity{
 
     private short personCount;
 
-    @ToString.Exclude
-    @OneToMany(mappedBy = "tourReservation",fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
-    private List<CustomTravelBoard> customTravelBoard;
 
     // 예약 금액
     private BigDecimal amount;

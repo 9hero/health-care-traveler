@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<Reservation, String> {
-    @Query("select r from Reservation r where r.account.id = ?1")
-    List<Reservation> findByIdAccountId(@NonNull Long id, Pageable pageable);
+    @Query("select r from Reservation r where r.id = ?1 and r.account.id = ?2")
+    Reservation getByIdAndAccountId(@NonNull String id,Long accountId);
 
     @Query("select distinct r from Reservation r " +
             "left join fetch r.reservationRejection " +

@@ -1,13 +1,9 @@
 package com.healthtrip.travelcare.controller;
 
-import com.healthtrip.travelcare.repository.dto.request.CustomTravelRequest;
-import com.healthtrip.travelcare.repository.dto.response.CustomTravelResponse;
-import com.healthtrip.travelcare.service.CustomTravelBoardService;
+import com.healthtrip.travelcare.repository.dto.request.InquiryRequest;
+import com.healthtrip.travelcare.repository.dto.response.ReservationInquiryResponse;
+import com.healthtrip.travelcare.service.ReservationInquiryService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,57 +14,45 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
-@Tag(name = "(비활성)커스텀 여행 문의 API")
+@Tag(name = "여행 문의 API")
 public class QuestionAndAnswerController {
-    private final String domain = "/tour/custom";
+    private final String domain = "/reservation/inquiry";
+    private final String targetDomain = "/reservation/{id}/inquiry";
     private final String adminApi = "/admin"+domain;
-    private final CustomTravelBoardService customTravelService;
+    private final ReservationInquiryService reservationInquiryService;
 
-    // ---커스텀여행--- 어쩌면 status 필요할수도
-    // 현재 테이블은 한 예약에 여러개의 커스텀 여행을 등록할수있음.
-    // 1:1 관계로 해야할수도
-    @ApiResponses({
-            @ApiResponse(responseCode = "Z00",description = "해당 예약 없음 or 등록실패",
-                    content = @Content(examples = @ExampleObject(value = "false"))),
-            @ApiResponse(responseCode = "200",description = "등록성공",
-                    content = @Content(examples = @ExampleObject(value = "true")))
-    })
-    @Operation(summary = "커스텀 여행 등록")
-    @PostMapping(domain)
-    public ResponseEntity reserveCustom(@RequestBody CustomTravelRequest request) {
-        return customTravelService.reserveCustom(request);
+    @Operation(summary = "특정 예약에 대한 문의 등록")
+    @PostMapping(targetDomain)
+    public ResponseEntity<Boolean> reserveInquiry(@PathVariable(name = "id") String id,@RequestBody InquiryRequest request) {
+        return reservationInquiryService.addInquiry(id,request);
     }
 
-    // 현재는 글에서 하나의 답변을 주는식임 새로운 방법필요
-    // 1. 기존 게시판에서 status 추가해서 답변전,답변후,새로운답변 상태를 추가 그래서 알림으로 제공 알림제공시:
-    // 문자나 이메일로 1:1 관리
-    @Operation(summary = "(관리자)커스텀 답변 및 수정")
-    @PatchMapping(adminApi)
-    public ResponseEntity answer(@RequestBody CustomTravelRequest.Answer request) {
-        return customTravelService.answer(request);
+    @Operation(summary = "사용자의 모든 문의를 조회")
+    @GetMapping(domain)
+    public List<ReservationInquiryResponse.InquiryList> myInquiries() {
+        return reservationInquiryService.myInquiries();
+    }
+    @Operation(summary = "(문의 게시글 id로 조회)특정 예약의 문의와 댓글 조회")
+    @GetMapping(domain+"/{id}")
+    public ReservationInquiryResponse.Info myInquiry(@PathVariable(name = "id") Long id) {
+        return reservationInquiryService.getReservationInquiryById(id);
+    }
+    @Operation(summary = "(예약 id로 조회)특정 예약의 문의와 댓글 조회")
+    @GetMapping(targetDomain)
+    public ReservationInquiryResponse.Info myReservationsInquiry(@PathVariable(name = "id") String reservationId) {
+        return reservationInquiryService.reservationInquiry(reservationId);
     }
 
-    @ApiResponses({
-            @ApiResponse(responseCode = "Z00",description = "커스텀 예약 없음",
-                    content = @Content(examples = @ExampleObject(value = "null"))),
-            @ApiResponse(responseCode = "200",description = "조회성공")
-    })
-    @Operation(summary = "내 예약번호에 속한 커스텀 여행 요청들을 조회")
-    @GetMapping(domain+"/me/{reservationId}")
-    public ResponseEntity<List<CustomTravelResponse.Info>> myCustomRequests(@PathVariable Long reservationId) {
-        return customTravelService.myCustomRequests(reservationId);
+    @Operation(summary = "고객 댓글 등록")
+    @PostMapping(domain + "/{id}/comment")
+    public void addComment(@PathVariable(name = "id") Long id,@RequestBody String chat) {
+        reservationInquiryService.addComment(id,chat);
     }
 
-    @ApiResponses({
-            @ApiResponse(responseCode = "Z00",description = "확정된 커스텀여행 요청글 수정불가",
-                    content = @Content(examples = @ExampleObject(value = "false"))),
-            @ApiResponse(responseCode = "200",description = "수정 성공",
-                    content = @Content(examples = @ExampleObject(value = "true")))
-    })
-    @Operation(summary = "고객이 커스텀 여행 제목,질문사항 수정")
-    @PutMapping(domain)
-    public ResponseEntity<Boolean> modifyCustom(@RequestBody CustomTravelRequest.ClientModify request) {
-        return customTravelService.clientModify(request);
+    @Operation(summary = "문의글 제목,문의사항 수정")
+    @PutMapping(domain+"/{id}")
+    public ResponseEntity<Boolean> modifyCustom(@PathVariable(name = "id") Long id,@RequestBody InquiryRequest request) {
+        return reservationInquiryService.clientModifyInquiry(id,request);
     }
 
     @Operation(hidden = true,summary = "(비활성)커스텀 여행 삭제")
@@ -79,17 +63,25 @@ public class QuestionAndAnswerController {
 
 
 
-    @Operation(summary = "(관리자)예약 id로 등록된 커스텀 여행을 모두 조회",description = "제목과 커스텀 예약id를 보내줍니다. 사용법: 예약목록에서 각 예약 마다 커스텀여행불러오기 버튼")
-    @GetMapping(adminApi)
-    // 1. 유저 id로 조회 홈페이지에서 조회
-    // 2. 예약 id로 조회 마이페이지에서 조회 이거랑
-    // 3. 커스텀 여행 id로 조회 마이페이지에서 조회 이거로 결정
-    public ResponseEntity<List<CustomTravelResponse.Info>> getCustomReserve(@RequestParam Long reservationId) {
-        return customTravelService.getReservationById(reservationId);
+    /*
+            관리자 API
+     */
+
+    @Operation(summary = "해당 예약문의 답변")
+    @PatchMapping(adminApi+"/{id}")
+    public boolean answer(@PathVariable(name = "id") Long id,@RequestBody String chat) {
+        return reservationInquiryService.answer(id,chat);
     }
-    @Operation(summary = "(관리자)해당 커스텀 여행 문의 상세사항 조회", description = "커스텀 여행 id,제목,답변, 패키지 예약 id,(필요시: 등록일,수정일) ")
-    @GetMapping(adminApi+"/{customTravelId}")
-    public ResponseEntity<CustomTravelResponse.Info> getCustomTravelDetails(@PathVariable Long customTravelId) {
-        return customTravelService.getCustomTravelDetails(customTravelId);
+
+    @Operation(summary = "예약 모두 조회")
+    @GetMapping(adminApi)
+    public List<ReservationInquiryResponse.InquiryList> getCustomReserve() {
+        return reservationInquiryService.findAllForAdmin();
+    }
+
+    @Operation(summary = "특정 예약의 문의와 댓글 조회")
+    @GetMapping(adminApi+"/{id}")
+    public ReservationInquiryResponse.Info getReservationInquiryByIdForAdmin(@PathVariable(name = "id") Long id) {
+        return reservationInquiryService.getReservationInquiryByIdForAdmin(id);
     }
 }

@@ -1,6 +1,6 @@
 package com.healthtrip.travelcare.repository.tour;
 
-import com.healthtrip.travelcare.repository.tour.CustomTravelBoardRepository;
+import com.healthtrip.travelcare.repository.reservation.ReservationInquiryRepository;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Disabled("불필요 기능")
-class CustomTravelBoardRepositoryTest {
+class ReservationInquiryRepositoryTest {
 
     @Autowired
-    CustomTravelBoardRepository customTravelBoardRepository;
+    ReservationInquiryRepository reservationInquiryRepository;
 
     @Test
     @Transactional
