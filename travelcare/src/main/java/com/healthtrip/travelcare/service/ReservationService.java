@@ -95,7 +95,7 @@ public class ReservationService {
 
                             // 연관관계 설정
                             reservationTourOptions.setTourOption(tourOption);
-                            reservationTourOptions.setReservation(savedReservation);
+                            reservationTourOptions.setTourReservation(tourReservation);
                             return reservationTourOptions;
                         }).collect(Collectors.toList());
                 addedTourOptionsRepository.saveAll(reservationTourOptionsList);
@@ -337,19 +337,20 @@ public class ReservationService {
         }
 
         // 투어예약
-        if (reservation.getTourReservation()!=null){
+        var tourReservation = reservation.getTourReservation();
+        if (tourReservation!=null){
 
         reservationDetailsDTO.setTourReservationDtoResponse(
             TourReservationDtoResponse.toResponse(
-                    reservation.getTourReservation()
+                    tourReservation
             )
         );
         // 투어 추가 옵션
         reservationDetailsDTO.getTourReservationDtoResponse().setTourOptions(
-            reservation.getReservationTourOptions().stream().map(reservationTourOptions -> {
-                var a = ReservationTourOptionsRes.toResponse(reservationTourOptions);
-                a.setOptionName(reservationTourOptions.getTourOption().getOptionName());
-                return a;
+            tourReservation.getReservationTourOptions().stream().map(reservationTourOptions -> {
+                var optionsRes = ReservationTourOptionsRes.toResponse(reservationTourOptions);
+                optionsRes.setOptionName(reservationTourOptions.getTourOption().getOptionName());
+                return optionsRes;
             }).collect(Collectors.toList())
         );
         }
@@ -396,8 +397,16 @@ public class ReservationService {
     }
 
     @Transactional
-    public void setTourOptionPrice(Long id, BigDecimal price) {
-        var reservationTourOptions = reservationTourOptionsRepository.findById(id).get();
+    public void setTourOptionPrice(String reservationId, Long id, BigDecimal price) {
+        var reservationTourOptions = reservationTourOptionsRepository.findByIdWithReservation(id);
+        if(reservationTourOptions.getAmount() != null){
+            throw new CustomException("옵션 가격 수정 API로 다시 시도해주십시오",HttpStatus.BAD_REQUEST);
+        }
+//        var optionAmount = price.multiply(BigDecimal.valueOf(reservationTourOptions.getManCount()));
+
         reservationTourOptions.setAmount(price);
+
+        reservationTourOptions.addTourOptionAmount(price);
+        reservationRepository.findById(reservationId).get().addTourOptionAmount(price);
     }
 }

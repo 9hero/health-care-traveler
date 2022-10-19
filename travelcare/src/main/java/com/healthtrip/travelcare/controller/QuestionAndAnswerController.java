@@ -68,7 +68,7 @@ public class QuestionAndAnswerController {
      */
 
     @Operation(summary = "해당 예약문의 답변")
-    @PatchMapping(adminApi+"/{id}")
+    @PostMapping(adminApi+"/{id}")
     public boolean answer(@PathVariable(name = "id") Long id,@RequestBody String chat) {
         return reservationInquiryService.answer(id,chat);
     }

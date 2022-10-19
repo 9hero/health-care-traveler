@@ -3,10 +3,10 @@ package com.healthtrip.travelcare.service;
 import com.healthtrip.travelcare.common.CommonUtils;
 import com.healthtrip.travelcare.entity.tour.tour_package.TourPackage;
 import com.healthtrip.travelcare.entity.tour.tour_package.TourPackageFile;
+import com.healthtrip.travelcare.repository.dto.response.TourPackageFileResponse;
 import com.healthtrip.travelcare.repository.tour.TourPackageFileRepository;
 import com.healthtrip.travelcare.repository.tour.TourPackageRepository;
-import com.healthtrip.travelcare.repository.dto.request.TripPackageFileRequest;
-import com.healthtrip.travelcare.repository.dto.response.TripPackageFileResponse;
+import com.healthtrip.travelcare.repository.dto.request.TourPackageFileRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +24,7 @@ public class TourPackageFileService {
     private final TourPackageFileRepository tourPackageFileRepository;
 
     private final AwsS3Service awsS3Service;
-    private static final String IMAGE_DIRECTORY = "images/tour-package"; // 패키지 이미지폴더로 이동예정
+    private static final String IMAGE_DIRECTORY = "images/tour/package"; // 패키지 이미지폴더로 이동예정
 
     @Transactional
     public TourPackageFile uploadTourPackageImage(MultipartFile file) {
@@ -61,30 +62,14 @@ public class TourPackageFileService {
     }
 
     @Transactional(readOnly = true)
-    public List<TripPackageFileResponse.FileInfo> getImages(Long tripPackageId) {
+    public List<TourPackageFileResponse> getImages(Long tripPackageId) {
         var files = tourPackageFileRepository.findByTourPackageId(tripPackageId);
-
-//        boolean fileEmpty = files.isEmpty();
-//        if (fileEmpty) {
-//            System.out.println((">>>tripPackage ID: "+tripPackageId+"'s File Empty"));
-//            throw new RuntimeException();
-//        }
-        var imageDtoList = new ArrayList<TripPackageFileResponse.FileInfo>();
-        files.forEach(tourPackageFile -> {
-            imageDtoList.add(
-                    TripPackageFileResponse.FileInfo.builder()
-                            .id(tourPackageFile.getId())
-                            .name(tourPackageFile.getFileName())
-                            .url(tourPackageFile.getUrl())
-                            .build()
-            );
-        });
-        return imageDtoList;
+        return files.stream().map(TourPackageFileResponse::toResponse).collect(Collectors.toList());
     }
 
     @Transactional
-    public void addImage(TripPackageFileRequest request) {
-        TourPackage tourPackage = tourPackageRepository.getById(request.getTripPackageId());
+    public void addImage(Long tourPackageId, TourPackageFileRequest request) {
+        TourPackage tourPackage = tourPackageRepository.getById(tourPackageId);
 
         // 파일 널체크
         List<MultipartFile> files = request.getFiles();

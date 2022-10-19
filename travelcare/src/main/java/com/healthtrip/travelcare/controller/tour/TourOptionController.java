@@ -1,4 +1,4 @@
-package com.healthtrip.travelcare.controller;
+package com.healthtrip.travelcare.controller.tour;
 
 import com.healthtrip.travelcare.repository.dto.response.TourOptionsResponse;
 import com.healthtrip.travelcare.service.TourOptionService;

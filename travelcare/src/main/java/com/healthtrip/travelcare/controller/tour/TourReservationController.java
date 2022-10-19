@@ -1,4 +1,4 @@
-package com.healthtrip.travelcare.controller;
+package com.healthtrip.travelcare.controller.tour;
 
 
 import io.swagger.v3.oas.annotations.tags.Tag;

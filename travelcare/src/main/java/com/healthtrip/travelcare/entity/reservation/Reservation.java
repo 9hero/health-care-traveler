@@ -23,7 +23,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Reservation extends BaseTimeEntity implements Persistable<String> {
     @Builder
-    public Reservation(String id, String title, Short manCount, Status status, BigDecimal amount, PaymentStatus paymentStatus, List<Booker> bookers, TourReservation tourReservation, HospitalReservation hospitalReservation, Account account, List<ReservationTourOptions> reservationTourOptions, List<ReservationRejection> reservationRejection) {
+    public Reservation(String id, String title, Short manCount, Status status, BigDecimal amount, PaymentStatus paymentStatus, List<Booker> bookers, TourReservation tourReservation, HospitalReservation hospitalReservation, Account account, List<ReservationRejection> reservationRejection) {
         this.id = id;
         this.title = title;
         this.manCount = manCount;
@@ -34,7 +34,6 @@ public class Reservation extends BaseTimeEntity implements Persistable<String> {
         this.tourReservation = tourReservation;
         this.hospitalReservation = hospitalReservation;
         this.account = account;
-        this.reservationTourOptions = reservationTourOptions;
         this.reservationRejection = reservationRejection;
     }
 
@@ -49,6 +48,7 @@ public class Reservation extends BaseTimeEntity implements Persistable<String> {
     private Status status;
 
     private BigDecimal amount;
+
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
 
@@ -62,11 +62,6 @@ public class Reservation extends BaseTimeEntity implements Persistable<String> {
 //    @ToString.Exclude
     @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
     private HospitalReservation hospitalReservation;
-
-    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST,mappedBy = "reservation")
-    @BatchSize(size = 10)
-//    @ToString.Exclude
-    private List<ReservationTourOptions> reservationTourOptions;
 
     @BatchSize(size = 100)
     @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST,mappedBy = "reservation")
@@ -108,6 +103,10 @@ public class Reservation extends BaseTimeEntity implements Persistable<String> {
         reservationRejection.add(rejection);
         rejection.setReservation(this);
         this.status = Status.N;
+    }
+
+    public void addTourOptionAmount(BigDecimal price) {
+        this.amount = this.amount.add(price);
     }
 
     // 예약상태

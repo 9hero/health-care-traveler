@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -47,5 +49,13 @@ public class TourItineraryResponse {
                 .details(tourItinerary.getDetails())
                 .notice(tourItinerary.getNotice())
                 .build();
+    }
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class WithElements{
+        TourItineraryResponse tourItineraryResponse;
+        List<TourItineraryElementResponse> tourItineraryElementResponses;
     }
 }

@@ -1,10 +1,10 @@
 package com.healthtrip.travelcare.entity.tour.tour_package;
 
 import com.healthtrip.travelcare.entity.BaseTimeEntity;
+import com.healthtrip.travelcare.repository.dto.request.TourItineraryElementRequest;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
@@ -59,4 +59,11 @@ public class TourItineraryElement extends BaseTimeEntity {
     public enum ElementType {
         MOVE
     }
+
+    public void updateElement(TourItineraryElementRequest request) {
+        this.title = request.getTitle();
+        this.elementType = request.getElementType();
+        this.sequence = request.getSequence();
+    }
+
 }

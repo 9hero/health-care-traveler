@@ -67,9 +67,9 @@ public class ReservationController {
     }
 
     @Operation(summary = "투어 추가옵션 가격설정")
-    @PostMapping(admin+"/tour/option/{id}")
-    public void reservationTourOptionSetPrice(@PathVariable("id") Long id, BigDecimal price) {
-        reservationService.setTourOptionPrice(id,price);
+    @PostMapping(admin+"{reservationId}/tour/option/{id}")
+    public void reservationTourOptionSetPrice(@PathVariable("reservationId") String reservationId,@PathVariable("id") Long optionId, BigDecimal price) {
+        reservationService.setTourOptionPrice(reservationId,optionId,price);
     }
 
 }

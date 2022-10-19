@@ -26,6 +26,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
             "left join fetch r.hospitalReservation " +
             "left join fetch r.tourReservation where r.account.id = :id")
     List<Reservation> findMyReservations(@Param ("id")@NonNull Long id);
+
     @Query("select distinct r from Reservation r " +
             "left join fetch r.hospitalReservation " +
             "left join fetch r.tourReservation " +

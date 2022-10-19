@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 @RestController
-@Tag(name = "결제 API")
+@Tag(name = "아임 포트 결제 API")
 public class PaymentController {
     private final String domain = "/payment";
     private final String adminApi = "/admin"+domain;

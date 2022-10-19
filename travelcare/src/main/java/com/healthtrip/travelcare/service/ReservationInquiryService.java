@@ -125,12 +125,16 @@ public class ReservationInquiryService {
     @Transactional
     public void addComment(Long id, String chat) {
         var inquiry = reservationInquiryRepository.getByIdAndAccountId(id,CommonUtils.getAuthenticatedUserId());
+        if (inquiry!=null){
 
         chatRepository.save(ReservationInquiryChat.builder()
                 .chat(chat)
                 .reservationInquiry(inquiry)
                 .writer(ReservationInquiryChat.Writer.customer)
                 .build());
+        }else {
+            throw new CustomException("해당 문의 없음", HttpStatus.NOT_FOUND);
+        }
     }
 
 

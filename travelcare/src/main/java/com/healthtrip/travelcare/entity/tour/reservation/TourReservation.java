@@ -3,9 +3,10 @@ package com.healthtrip.travelcare.entity.tour.reservation;
 import javax.persistence.*;
 
 import com.healthtrip.travelcare.entity.BaseTimeEntity;
+import com.healthtrip.travelcare.entity.reservation.ReservationTourOptions;
 import com.healthtrip.travelcare.entity.tour.tour_package.TourPackage;
 import lombok.*;
-import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.BatchSize;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -32,6 +33,10 @@ public class TourReservation extends BaseTimeEntity{
 
     private short personCount;
 
+    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST,mappedBy = "tourReservation")
+    @BatchSize(size = 10)
+//    @ToString.Exclude
+    private List<ReservationTourOptions> reservationTourOptions;
 
     // 예약 금액
     private BigDecimal amount;
@@ -41,4 +46,8 @@ public class TourReservation extends BaseTimeEntity{
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
     private TourPackage tourPackage;
+
+    public void addTourOptionAmount(BigDecimal price) {
+        this.amount = this.amount.add(price);
+    }
 }

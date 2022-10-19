@@ -24,6 +24,7 @@ public class PaymentService {
     private final IamportClient iamportClient;
     private final ReservationRepository reservationRepository;
     private final PackageTourPaymentRepository packageTourPaymentRepository;
+
     public String verify(String imp_uid, String merchant_uid) throws IamportResponseException, IOException {
         // 결제내역 조회
         IamportResponse<Payment> result = iamportClient.paymentByImpUid(imp_uid);
@@ -32,10 +33,20 @@ public class PaymentService {
         // 주문내역 조회
         var infoOptional = reservationRepository.findById(merchant_uid);
         if (infoOptional.isPresent()) {
-            // 실제 결제금액과 예약 상품 금액 비교
+
             var reservationInfo = infoOptional.get();
+            // 실제 결제금액과 예약 상품 금액 비교
+//            payment.getCurrency();
+            var paidAmount = payment.getAmount(); // 고객의 총 결제 금액
+            var tour = reservationInfo.getTourReservation();
+            var hospital = reservationInfo.getHospitalReservation();
+
+            // 비교
+            var total = tour.getAmount().add(hospital.getAmount());
+            int confirm = paidAmount.compareTo(total);
+
             // 성공
-            if (result.getResponse().getAmount().compareTo(reservationInfo.getAmount()) == 0) {
+            if (confirm == 0) {
                 // 결제내역 DB 저장
                 PackageTourPayment entity = PackageTourPayment.builder()
                         .payType(payment.getPayMethod())
@@ -44,11 +55,12 @@ public class PaymentService {
                         .tourReservation(reservationInfo.getTourReservation())
                         .amount(payment.getAmount())
                         .build();
-                boolean saved = savePackageTourPayment(entity) != null;
+                boolean saved = (savePackageTourPayment(entity) != null);
 
                 // 예약 결제완료
 //                reservationInfo.paid();
                 if (saved){
+                    reservationInfo.paid();
                     return "결제완료";
                 }else {
                     return "결제완료, 결제정보등록실패 코드와 함께 관리자에게 반드시 문의해주십쇼 코드: "+imp_uid;

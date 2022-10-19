@@ -1,10 +1,7 @@
 package com.healthtrip.travelcare.entity.tour.tour_package;
 
 import com.healthtrip.travelcare.entity.BaseTimeEntity;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -31,6 +28,7 @@ public class TourPlaceImage extends BaseTimeEntity {
     @ToString.Exclude
     @JoinColumn
     @ManyToOne(fetch = FetchType.LAZY)
+    @Setter
     private TourPlace tourPlace;
 
     private String url;

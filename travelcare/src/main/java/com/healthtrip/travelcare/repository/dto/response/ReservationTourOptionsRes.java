@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
@@ -21,12 +22,14 @@ public class ReservationTourOptionsRes implements Serializable {
     private Short manCount;
     private String requesterName;
     private String optionName;
+    private BigDecimal optionAmount;
     public static ReservationTourOptionsRes toResponse(ReservationTourOptions reservationTourOptions) {
         return ReservationTourOptionsRes.builder()
                 .reservationTourOptionId(reservationTourOptions.getId())
                 .day(reservationTourOptions.getDay())
                 .manCount(reservationTourOptions.getManCount())
                 .requesterName(reservationTourOptions.getRequesterName())
+                .optionAmount(reservationTourOptions.getAmount())
                 .build();
     }
 }

@@ -2,6 +2,7 @@ package com.healthtrip.travelcare.entity.reservation;
 
 import com.healthtrip.travelcare.entity.BaseTimeEntity;
 import com.healthtrip.travelcare.entity.tour.reservation.TourOption;
+import com.healthtrip.travelcare.entity.tour.reservation.TourReservation;
 import lombok.*;
 
 import javax.persistence.*;
@@ -13,9 +14,9 @@ import java.math.BigDecimal;
 @ToString
 public class ReservationTourOptions extends BaseTimeEntity {
     @Builder
-    public ReservationTourOptions(Long id, Reservation reservation, TourOption tourOption, String day, Short manCount, String requesterName, BigDecimal amount) {
+    public ReservationTourOptions(Long id, TourReservation tourReservation, TourOption tourOption, String day, Short manCount, String requesterName, BigDecimal amount) {
         this.id = id;
-        this.reservation = reservation;
+        this.tourReservation = tourReservation;
         this.tourOption = tourOption;
         this.day = day;
         this.manCount = manCount;
@@ -30,10 +31,10 @@ public class ReservationTourOptions extends BaseTimeEntity {
     @ToString.Exclude
     @JoinColumn
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
-    private Reservation reservation;
+    private TourReservation tourReservation;
 
-    public void setReservation(Reservation reservation) {
-        this.reservation = reservation;
+    public void setTourReservation(TourReservation tourReservation) {
+        this.tourReservation = tourReservation;
     }
 
     @ToString.Exclude
@@ -53,4 +54,8 @@ public class ReservationTourOptions extends BaseTimeEntity {
 
     @Setter
     private BigDecimal amount;
+
+    public void addTourOptionAmount(BigDecimal price) {
+        this.tourReservation.addTourOptionAmount(price);
+    }
 }
