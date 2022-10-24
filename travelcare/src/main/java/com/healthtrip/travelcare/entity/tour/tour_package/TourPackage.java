@@ -75,7 +75,7 @@ public class TourPackage extends BaseTimeEntity {
     @BatchSize(size = 10)
     @OneToMany(mappedBy = "tourPackage",fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
     private List<TourItinerary> tourItineraryList;
-
+    
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "tourPackage",cascade = CascadeType.PERSIST)
     private List<TourPackageTendency> tendencyList;
 

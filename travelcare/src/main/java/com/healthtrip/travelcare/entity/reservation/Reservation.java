@@ -56,7 +56,9 @@ public class Reservation extends BaseTimeEntity implements Persistable<String> {
     @ToString.Exclude
     @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST,mappedBy = "reservation")
     private List<Booker> bookers;
+
 //    @ToString.Exclude
+    @JoinColumn
     @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
     private TourReservation tourReservation;
 //    @ToString.Exclude

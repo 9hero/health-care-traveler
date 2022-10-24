@@ -1,15 +1,12 @@
 package com.healthtrip.travelcare.repository.reservation;
 
 import com.healthtrip.travelcare.entity.reservation.Reservation;
-import com.healthtrip.travelcare.entity.reservation.ReservationTourOptions;
-import com.healthtrip.travelcare.repository.dto.response.ReservationDtoResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.lang.NonNull;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<Reservation, String> {
@@ -41,4 +38,12 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
             "left join fetch r.bookers " +
             "where r.id = :reservationId")
     Reservation findMyReservationInfo(@Param("reservationId") String reservationId);
+
+
+    //temp
+    @Query("select distinct r from Reservation r " +
+            "join r.tourReservation tr " +
+            "join tr.reservationTourOptions rto " +
+            "where rto.id = :addedTourOptionId")
+    Reservation findByAddedTourOptionId(@Param("addedTourOptionId") Long reservationTourOptionId);
 }

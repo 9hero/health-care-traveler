@@ -38,5 +38,12 @@ class TourReservationRepositoryTest {
         assertThat(savedTourReservation.getId()).isNotNull();
     }
 
+    @Test
+    @Transactional
+    @DisplayName("Reservation LAZY 테스트 ")
+    void lazyGet() {
+        var a = tourReservationRepository.findById(82L).get();
+        System.out.println(a.getAmount());
+    }
 
 }
