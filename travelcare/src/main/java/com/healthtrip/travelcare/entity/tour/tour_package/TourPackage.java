@@ -4,11 +4,10 @@ import javax.persistence.*;
 
 import com.healthtrip.travelcare.entity.account.Account;
 import com.healthtrip.travelcare.entity.BaseTimeEntity;
-import com.healthtrip.travelcare.repository.dto.response.TourPackageResponse;
 import lombok.*;
 import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.DynamicUpdate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -20,7 +19,7 @@ import java.util.List;
 public class TourPackage extends BaseTimeEntity {
 
     @Builder
-    public TourPackage(Long id, Account account, String title, String description, String standardOffer, String nonOffer, String notice, TourPackagePrices prices, TourPackageFile mainImage, List<TourPackageFile> tourPackageFileList, List<TourItinerary> tourItineraryList) {
+    public TourPackage(Long id, Account account, String title, String description, String standardOffer, String nonOffer, String notice, TourPackagePrices prices, TourPackageFile mainImage, List<TourPackageFile> tourPackageFileList, List<TourItinerary> tourItineraryList, List<TourPackageTendency> tendencyList) {
         this.id = id;
         this.account = account;
         this.title = title;
@@ -32,6 +31,7 @@ public class TourPackage extends BaseTimeEntity {
         this.mainImage = mainImage;
         this.tourPackageFileList = tourPackageFileList;
         this.tourItineraryList = tourItineraryList;
+        this.tendencyList = tendencyList;
     }
 
     @Id
@@ -76,9 +76,18 @@ public class TourPackage extends BaseTimeEntity {
     @OneToMany(mappedBy = "tourPackage",fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
     private List<TourItinerary> tourItineraryList;
 
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "tourPackage",cascade = CascadeType.PERSIST)
+    private List<TourPackageTendency> tendencyList;
+
     public void setAccount(Account account){
         this.account = account;
     }
 
 
+    public void addTendency(TourPackageTendency tendency) {
+        if (tendencyList == null) {
+            tendencyList = new ArrayList<>();
+        }
+        tendencyList.add(tendency);
+    }
 }

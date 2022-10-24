@@ -3,6 +3,8 @@ package com.healthtrip.travelcare.service;
 import com.healthtrip.travelcare.common.CommonUtils;
 import com.healthtrip.travelcare.entity.account.Account;
 import com.healthtrip.travelcare.entity.tour.tour_package.TourPackage;
+import com.healthtrip.travelcare.entity.tour.tour_package.TourPackageTendency;
+import com.healthtrip.travelcare.repository.TendencyRepository;
 import com.healthtrip.travelcare.repository.account.AccountsRepository;
 import com.healthtrip.travelcare.repository.dto.response.TourPackageFileResponse;
 import com.healthtrip.travelcare.repository.tour.TourItineraryElementRepository;
@@ -28,6 +30,8 @@ public class TourPackageService {
 
     private final AccountsRepository accountsRepository;
     private final TourItineraryElementRepository itineraryElementRepository;
+    private final TendencyRepository tendencyRepository;
+
 
     @Transactional(readOnly = true)
     public List<TourPackageResponse.TPBasicInfo> mainPagePackages() {
@@ -35,7 +39,7 @@ public class TourPackageService {
         List<TourPackageResponse.TPBasicInfo> basicPackageInfoDTOS = new ArrayList<>();
 
         // 레포지에서 정보 꺼내오기
-        List<TourPackage> tourPackageList = tourPackageRepository.findAll();
+        List<TourPackage> tourPackageList = tourPackageRepository.mainPageTourPackage();
 
         // 정보 dto에 담기
         tourPackageList.forEach(tourPackage -> {
@@ -86,5 +90,22 @@ public class TourPackageService {
         TourPackage savedTourPackage = tourPackageRepository.save(tourPackage);
 
         return ResponseEntity.ok("생성완료");
+    }
+
+    @Transactional
+    public void addTendency(Long id, Long tendencyId) {
+        var tourPackage= tourPackageRepository.getById(id);
+        var tendency=tendencyRepository.getById(tendencyId);
+        var tourPackageTendency = TourPackageTendency.builder()
+                .tourPackage(tourPackage)
+                .tendency(tendency)
+                .build();
+        tourPackage.addTendency(tourPackageTendency);
+    }
+
+    @Transactional(readOnly = true)
+    public void searchWithUserTendency() {
+        CommonUtils.getAuthenticatedUserId();
+        tourPackageRepository.searchWithUserTendency(CommonUtils.getAuthenticatedUserId());
     }
 }

@@ -24,4 +24,11 @@ public interface TourPackageRepository extends JpaRepository<TourPackage,Long> {
             "where tp.id = :id")
     TourPackage getTourPackageAndImages(@Param("id")Long TourPackageId);
 
+    @Query("select tp from TourPackage tp " +
+            "join fetch tp.mainImage " +
+            "join tp.tendencyList tl " +
+            "join tl.tendency t " +
+            "where t.id = :tendencyId"
+    )
+    List<TourPackage> searchWithUserTendency(@Param("tendencyId")Long tendencyId);
 }

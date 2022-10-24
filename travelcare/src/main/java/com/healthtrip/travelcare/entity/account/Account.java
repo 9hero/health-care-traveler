@@ -45,7 +45,6 @@ public class Account extends BaseTimeEntity implements UserDetails {
     @ToString.Exclude
     private List<NoticeBoard> noticeBoard;
 
-
     @Enumerated(value = EnumType.STRING)
     private Status status;
 

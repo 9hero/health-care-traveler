@@ -1,16 +1,20 @@
 package com.healthtrip.travelcare.service;
 
+import com.healthtrip.travelcare.common.CommonUtils;
 import com.healthtrip.travelcare.common.Exception.CustomException;
 import com.healthtrip.travelcare.common.Sender;
 import com.healthtrip.travelcare.config.security.jwt.JwtProvider;
 import com.healthtrip.travelcare.entity.account.*;
 import com.healthtrip.travelcare.entity.account.AccountAddress;
 import com.healthtrip.travelcare.entity.location.Country;
+import com.healthtrip.travelcare.repository.TendencyRepository;
 import com.healthtrip.travelcare.repository.account.*;
 import com.healthtrip.travelcare.repository.dto.request.AccountRequest;
 import com.healthtrip.travelcare.repository.dto.request.MailRequest;
+import com.healthtrip.travelcare.repository.dto.request.PersonalityRequest;
 import com.healthtrip.travelcare.repository.dto.request.RefreshTokenRequest;
 import com.healthtrip.travelcare.repository.dto.response.AccountResponse;
+import com.healthtrip.travelcare.repository.dto.response.TendencyResponse;
 import com.healthtrip.travelcare.repository.location.CountryRepository;
 import com.healthtrip.travelcare.repository.vo.AccountTimeTokenVO;
 import io.jsonwebtoken.Claims;
@@ -49,6 +53,8 @@ public class AccountService implements UserDetailsService {
     private final AccountCommonRepository accountCommonRepository;
     private final AccountTimeTokenRepository accountTimeTokenRepository;
 
+    private final PersonalityRepository personalityRepository;
+    private final TendencyRepository tendencyRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -286,5 +292,47 @@ public class AccountService implements UserDetailsService {
         }
 
         return null;
+    }
+
+    @Transactional
+    public TendencyResponse setPersonality(PersonalityRequest request) {
+        var es = request.getExtroversionScore();
+        var os = request.getOpennessScore();
+        var fs = request.getFriendlinessScore();
+        // 인덱스 한번 사용 해보자
+        var extroLevel = scoreToLevel(
+                es
+        );
+        var openLevel = scoreToLevel(
+                os
+        );
+        var friendlyLevel = scoreToLevel(
+                fs
+        );
+        // 순서 주의 f -> o -> e
+        var tendency = tendencyRepository.findByLevels(friendlyLevel,openLevel,extroLevel);
+        if (tendency != null) {
+            var accountCommon = accountCommonRepository.findById(CommonUtils.getAuthenticatedUserId()).orElseThrow(() -> {throw new CustomException("로그인되어있지 않음",HttpStatus.UNAUTHORIZED);});
+            var personality = Personality.builder()
+                    .friendlinessScore(fs)
+                    .extroversionScore(es)
+                    .opennessScore(os)
+                    .tendency(tendency)
+                    .build();
+            accountCommon.setPersonality(personality);
+        }
+        return TendencyResponse.toResponse(tendency);
+    }
+
+    private Tendency.ScoreLevel scoreToLevel(Short score) {
+        if (score !=null && score > 0){
+            if (score>=3){
+                return Tendency.ScoreLevel.H;
+            }else {
+                return Tendency.ScoreLevel.L;
+            }
+        }else {
+            throw new CustomException("found no personality score", HttpStatus.BAD_REQUEST);
+        }
     }
 }

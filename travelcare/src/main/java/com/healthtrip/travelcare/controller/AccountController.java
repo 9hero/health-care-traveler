@@ -2,8 +2,10 @@ package com.healthtrip.travelcare.controller;
 
 import com.healthtrip.travelcare.common.Exception.CustomException;
 import com.healthtrip.travelcare.repository.dto.request.AccountRequest;
+import com.healthtrip.travelcare.repository.dto.request.PersonalityRequest;
 import com.healthtrip.travelcare.repository.dto.request.RefreshTokenRequest;
 import com.healthtrip.travelcare.repository.dto.response.AccountResponse;
+import com.healthtrip.travelcare.repository.dto.response.TendencyResponse;
 import com.healthtrip.travelcare.service.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -100,6 +102,11 @@ public class AccountController {
     }
 
 
+    @Operation(summary = "심리유형 결과 저장 후 받기(save & get)")
+    @PostMapping("/personality")
+    public TendencyResponse setPersonality(@RequestBody PersonalityRequest request) {
+        return accountService.setPersonality(request);
+    }
     //   <  Admin's method for managing accounts  >
     // 1. 유저 조회
     // 1-1 일반유저, 기관유저

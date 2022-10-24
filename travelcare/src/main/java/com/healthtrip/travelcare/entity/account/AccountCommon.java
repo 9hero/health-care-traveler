@@ -37,6 +37,14 @@ public class AccountCommon extends BaseTimeEntity {
     //cascade=ALL 할시 예약자가 빌려쓰던 주소가 같이 사라짐 정책에 따라 결정 1. 계정 삭제시 예약자 데이터도 삭제 2. 예약자 데이터는 남김
     private AccountAddress accountAddress;
 
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
+    @JoinColumn
+    private Personality personality;
+
+    public void setPersonality(Personality personality) {
+        this.personality = personality;
+    }
+
     private String phone;
     private String emergencyContact;
 

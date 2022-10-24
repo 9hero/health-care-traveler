@@ -1,5 +1,6 @@
 package com.healthtrip.travelcare.controller.tour;
 
+import com.healthtrip.travelcare.repository.dto.request.TendencyRequest;
 import com.healthtrip.travelcare.repository.dto.request.TourPackageRequestDto;
 import com.healthtrip.travelcare.repository.dto.response.TourPackageResponse;
 import com.healthtrip.travelcare.service.TourPackageService;
@@ -46,6 +47,15 @@ public class TourPackageController {
         }
     }
 
+    @Operation(summary = "패키지에 심리 성향을 추가합니다.")
+    @PostMapping(adminApi+"/{id}/tendency")
+    public void addTourPackageTendency(@PathVariable("id")Long id,@RequestBody Long tendencyId){
+        tpService.addTendency(id,tendencyId);
+    }
 
-
+    @Operation(summary = "유저 성향에 맞는 패키지를 조회합니다.")
+    @GetMapping
+    public void searchWithUserTendency() {
+        tpService.searchWithUserTendency();
+    }
 }
