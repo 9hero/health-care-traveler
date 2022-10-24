@@ -16,12 +16,13 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @ToString(callSuper = true)
-public class TourReservation extends BaseTimeEntity{
+public class TourReservation extends BaseTimeEntity {
 
     @Builder
-    public TourReservation(Long id, short personCount, BigDecimal amount, LocalDateTime reservedTime, TourPackage tourPackage) {
+    public TourReservation(Long id, short personCount, List<ReservationTourOptions> reservationTourOptions, BigDecimal amount, LocalDateTime reservedTime, TourPackage tourPackage) {
         this.id = id;
         this.personCount = personCount;
+        this.reservationTourOptions = reservationTourOptions;
         this.amount = amount;
         this.reservedTime = reservedTime;
         this.tourPackage = tourPackage;
@@ -50,4 +51,5 @@ public class TourReservation extends BaseTimeEntity{
     public void addTourOptionAmount(BigDecimal price) {
         this.amount = this.amount.add(price);
     }
+
 }

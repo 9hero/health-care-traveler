@@ -139,6 +139,7 @@ public class EntityProvider {
                 .amount(BigDecimal.TEN)
                 .personCount((short) 1)
                 .reservedTime(LocalDateTime.now())
+//                .reservation(getReservation())
                 .build();
         tourBooker = TourBooker.builder()
                 .tourReservation(tourReservation)

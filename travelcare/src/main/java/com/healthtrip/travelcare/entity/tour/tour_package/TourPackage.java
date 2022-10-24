@@ -76,6 +76,8 @@ public class TourPackage extends BaseTimeEntity {
     @OneToMany(mappedBy = "tourPackage",fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
     private List<TourItinerary> tourItineraryList;
 
+//    private TourPackagePropensity tourPropensity;
+
     public void setAccount(Account account){
         this.account = account;
     }

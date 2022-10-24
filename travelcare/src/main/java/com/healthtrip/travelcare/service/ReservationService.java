@@ -397,7 +397,7 @@ public class ReservationService {
     }
 
     @Transactional
-    public void setTourOptionPrice(String reservationId, Long id, BigDecimal price) {
+    public void setTourOptionPrice(Long id, BigDecimal price) {
         var reservationTourOptions = reservationTourOptionsRepository.findByIdWithReservation(id);
         if(reservationTourOptions.getAmount() != null){
             throw new CustomException("옵션 가격 수정 API로 다시 시도해주십시오",HttpStatus.BAD_REQUEST);
@@ -407,6 +407,6 @@ public class ReservationService {
         reservationTourOptions.setAmount(price);
 
         reservationTourOptions.addTourOptionAmount(price);
-        reservationRepository.findById(reservationId).get().addTourOptionAmount(price);
+        reservationRepository.findByAddedTourOptionId(id).addTourOptionAmount(price);
     }
 }

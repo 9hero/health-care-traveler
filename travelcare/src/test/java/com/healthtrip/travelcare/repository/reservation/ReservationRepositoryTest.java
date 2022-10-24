@@ -8,11 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.math.BigDecimal;
-import java.util.stream.Collectors;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaUnitTest
 class ReservationRepositoryTest {
@@ -70,5 +66,12 @@ class ReservationRepositoryTest {
         // when
         System.out.println("break");
         // then
+    }
+
+    @Test
+    @DisplayName("옵션 불러오기 테스트")
+    void reservationAndTourOption() {
+        var a = reservationRepository.findByAddedTourOptionId(40L);
+        a.getTourReservation().getReservationTourOptions();
     }
 }
