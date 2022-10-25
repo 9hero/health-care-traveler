@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 public interface TendencyRepository extends JpaRepository<Tendency,Long> {
 
     @Query("select t from Tendency t " +
+            "join fetch t.imageFile " +
             "where t.friendlinessLevel = :f " +
             "and t.opennessLevel = :o " +
             "and t.extroversionLevel = :e ")

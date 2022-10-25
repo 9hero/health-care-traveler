@@ -304,6 +304,10 @@ public class AccountService implements UserDetailsService {
 
     @Transactional
     public TendencyResponse setPersonality(PersonalityRequest request) {
+        var accountCommon = accountCommonRepository.findWithPersonality(CommonUtils.getAuthenticatedUserId());
+        if (accountCommon.getPersonality() != null) {
+            return null;
+        }
         var es = request.getExtroversionScore();
         var os = request.getOpennessScore();
         var fs = request.getFriendlinessScore();
@@ -320,7 +324,6 @@ public class AccountService implements UserDetailsService {
         // 순서 주의 f -> o -> e
         var tendency = tendencyRepository.findByLevels(friendlyLevel,openLevel,extroLevel);
         if (tendency != null) {
-            var accountCommon = accountCommonRepository.findById(CommonUtils.getAuthenticatedUserId()).orElseThrow(() -> {throw new CustomException("로그인되어있지 않음",HttpStatus.UNAUTHORIZED);});
             var personality = Personality.builder()
                     .friendlinessScore(fs)
                     .extroversionScore(es)
