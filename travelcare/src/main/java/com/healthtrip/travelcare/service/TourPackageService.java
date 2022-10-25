@@ -34,12 +34,20 @@ public class TourPackageService {
 
 
     @Transactional(readOnly = true)
-    public List<TourPackageResponse.TPBasicInfo> mainPagePackages() {
+    public List<TourPackageResponse.TPBasicInfo> mainPagePackages(Long tendencyId) {
         // dto 초기화
         List<TourPackageResponse.TPBasicInfo> basicPackageInfoDTOS = new ArrayList<>();
 
         // 레포지에서 정보 꺼내오기
-        List<TourPackage> tourPackageList = tourPackageRepository.mainPageTourPackage();
+        List<TourPackage> tourPackageList;
+        if (tendencyId !=null){
+            tourPackageList = tourPackageRepository.searchWithUserTendency(tendencyId);
+            if (tourPackageList.isEmpty()) {
+                tourPackageList = tourPackageRepository.mainPageTourPackage();
+            }
+        }else {
+            tourPackageList = tourPackageRepository.mainPageTourPackage();
+        }
 
         // 정보 dto에 담기
         tourPackageList.forEach(tourPackage -> {
@@ -62,8 +70,6 @@ public class TourPackageService {
             tourPackage.getTourPackageFileList().stream().map(TourPackageFileResponse::toResponse).collect(Collectors.toList())
         );
 
-
-
         // 패키지
         return response;
     }
@@ -74,6 +80,7 @@ public class TourPackageService {
         // 1. 패키지 생성
         Account account = accountsRepository.getById(CommonUtils.getAuthenticatedUserId());
         TourPackage tourPackage = tourPackageRequestDto.toEntity(tourPackageRequestDto);
+
         // 계정
         tourPackage.setAccount(account);
         // 썸네일
@@ -86,6 +93,18 @@ public class TourPackageService {
             var savedTourPackageFileList = tourPackageFileService.uploadTourPackageMultipleImage(packageImages,tourPackage);
             tourPackage.setTourPackageFileList(savedTourPackageFileList);
         }
+
+        // 패키지 성향 추가
+        var tendencyId= tourPackageRequestDto.getTendencyId();
+        if (tendencyId != null) {
+            var tendency = tendencyRepository.getById(tendencyId);
+            var tourPackageTendency = TourPackageTendency.builder()
+                    .tourPackage(tourPackage)
+                    .tendency(tendency)
+                    .build();
+            tourPackage.addTendency(tourPackageTendency);
+        }
+
         // 패키지 생성 완료
         TourPackage savedTourPackage = tourPackageRepository.save(tourPackage);
 
@@ -103,9 +122,5 @@ public class TourPackageService {
         tourPackage.addTendency(tourPackageTendency);
     }
 
-    @Transactional(readOnly = true)
-    public void searchWithUserTendency() {
-        CommonUtils.getAuthenticatedUserId();
-        tourPackageRepository.searchWithUserTendency(CommonUtils.getAuthenticatedUserId());
-    }
+
 }

@@ -248,6 +248,7 @@ public class AccountService implements UserDetailsService {
         RefreshToken refreshTokenEntity = jwtProvider.issueRefreshToken(account);
         // 객체 저장
         refreshTokenRepository.save(refreshTokenEntity);
+
         // refresh 토큰 만료 기간이 필요하다면 issueRefreshToken에서 refreshTokenExpirationAt 추가
         AccountResponse accountResponse = AccountResponse.builder()
                 .id(account.getId())
@@ -258,6 +259,13 @@ public class AccountService implements UserDetailsService {
                 .refreshTokenId(refreshTokenEntity.getId())
                 .refreshToken(refreshTokenEntity.getRefreshToken())
                 .build();
+
+        if (account.getAuthorities().contains(Account.UserRole.ROLE_COMMON)){
+            accountResponse.setTendencyId(
+            personalityRepository.findTendencyIdByAccountId(account.getId())
+            );
+        }
+
         return accountResponse;
     }
 
@@ -324,9 +332,11 @@ public class AccountService implements UserDetailsService {
         return TendencyResponse.toResponse(tendency);
     }
 
-    private Tendency.ScoreLevel scoreToLevel(Short score) {
+    private Tendency.ScoreLevel scoreToLevel(Float score) {
         if (score !=null && score > 0){
-            if (score>=3){
+            // 소숫점 2자리까지만 유효
+            var levelCut = Math.round(score*100)/100.0;
+            if (levelCut>=3){
                 return Tendency.ScoreLevel.H;
             }else {
                 return Tendency.ScoreLevel.L;

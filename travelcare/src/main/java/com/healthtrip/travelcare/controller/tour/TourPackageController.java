@@ -1,10 +1,10 @@
 package com.healthtrip.travelcare.controller.tour;
 
-import com.healthtrip.travelcare.repository.dto.request.TendencyRequest;
 import com.healthtrip.travelcare.repository.dto.request.TourPackageRequestDto;
 import com.healthtrip.travelcare.repository.dto.response.TourPackageResponse;
 import com.healthtrip.travelcare.service.TourPackageService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +25,8 @@ public class TourPackageController {
     @SecurityRequirement(name = "no")
     @Operation(summary = "메인 화면을 위한 여행 패키지 리스트를 불러옵니다")
     @GetMapping(domain)
-    public List<TourPackageResponse.TPBasicInfo> mainPageTourPackages(){
-        var tpList = tpService.mainPagePackages();
+    public List<TourPackageResponse.TPBasicInfo> mainPageTourPackages(@Parameter(description = "심리 유형 id(optional)") @RequestParam(required = false) Long tendencyId){
+        var tpList = tpService.mainPagePackages(tendencyId);
         return tpList;
     }
     @SecurityRequirement(name = "no")
@@ -49,13 +49,8 @@ public class TourPackageController {
 
     @Operation(summary = "패키지에 심리 성향을 추가합니다.")
     @PostMapping(adminApi+"/{id}/tendency")
-    public void addTourPackageTendency(@PathVariable("id")Long id,@RequestBody Long tendencyId){
+    public void addTourPackageTendency(@PathVariable("id")Long id,@RequestParam Long tendencyId){
         tpService.addTendency(id,tendencyId);
     }
 
-    @Operation(summary = "유저 성향에 맞는 패키지를 조회합니다.")
-    @GetMapping
-    public void searchWithUserTendency() {
-        tpService.searchWithUserTendency();
-    }
 }

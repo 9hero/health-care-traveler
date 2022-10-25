@@ -7,12 +7,13 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 
+@Setter
 @Getter
 @NoArgsConstructor
 @Schema(name = "로그인 Response")
 public class AccountResponse {
     @Builder
-    public AccountResponse(Long id, String email, Account.Status status, Account.UserRole userRole, String jwt, Long refreshTokenId, String refreshToken) {
+    public AccountResponse(Long id, String email, Account.Status status, Account.UserRole userRole, String jwt, Long refreshTokenId, String refreshToken, Long tendencyId) {
         this.id = id;
         this.email = email;
         this.status = status;
@@ -20,6 +21,7 @@ public class AccountResponse {
         this.jwt = jwt;
         this.refreshTokenId = refreshTokenId;
         this.refreshToken = refreshToken;
+        this.tendencyId = tendencyId;
     }
 
     private Long id;
@@ -36,6 +38,8 @@ public class AccountResponse {
     private Long refreshTokenId;
 
     private String refreshToken;
+
+    private Long tendencyId;
 
     @Builder
     @Data

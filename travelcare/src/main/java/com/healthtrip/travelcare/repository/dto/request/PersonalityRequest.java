@@ -11,10 +11,10 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PersonalityRequest {
 
-    private Short friendlinessScore;
+    private Float friendlinessScore;
 
-    private Short extroversionScore;
+    private Float extroversionScore;
 
-    private Short opennessScore;
+    private Float opennessScore;
 
 }

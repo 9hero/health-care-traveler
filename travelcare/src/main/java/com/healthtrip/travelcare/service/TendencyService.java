@@ -3,7 +3,6 @@ package com.healthtrip.travelcare.service;
 import com.healthtrip.travelcare.common.CommonUtils;
 import com.healthtrip.travelcare.entity.GeneralFile;
 import com.healthtrip.travelcare.entity.account.Tendency;
-import com.healthtrip.travelcare.entity.tour.tour_package.TourPackageFile;
 import com.healthtrip.travelcare.repository.TendencyRepository;
 import com.healthtrip.travelcare.repository.dto.request.TendencyRequest;
 import com.healthtrip.travelcare.repository.dto.response.TendencyResponse;
@@ -30,11 +29,11 @@ public class TendencyService {
     @Transactional
     public void addTendency(TendencyRequest tendencyRequest) {
         GeneralFile generalFile = null;
-        if (tendencyRequest.getMultipartFile()!=null){
-            var file = tendencyRequest.getMultipartFile();
-            String IMAGE_DIRECTORY = "/images/tendency";
+        if (tendencyRequest.getImageFile()!=null){
+            var file = tendencyRequest.getImageFile();
+            String IMAGE_DIRECTORY = "images/tendency";
             String fileName = CommonUtils.buildFileName(Objects.requireNonNull(file.getOriginalFilename()), IMAGE_DIRECTORY);
-            var url = awsS3Service.uploadS3File(tendencyRequest.getMultipartFile(),fileName);
+            var url = awsS3Service.uploadS3File(tendencyRequest.getImageFile(),fileName);
             generalFile = GeneralFile.builder()
                     .url(url)
                     .fileSize(file.getSize())

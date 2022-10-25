@@ -21,6 +21,7 @@ public class TourPackageRequestDto {
     private String nonOffer;
     private String notice;
     private TourPackagePrices price;
+    private Long tendencyId;
 
     @Schema(description = "메인 이미지(썸네일)")
     private MultipartFile mainImage;

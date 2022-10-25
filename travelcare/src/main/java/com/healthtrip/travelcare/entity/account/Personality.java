@@ -13,7 +13,7 @@ import javax.persistence.*;
 public class Personality extends BaseTimeEntity {
 
     @Builder
-    public Personality(Long id, Tendency tendency, short friendlinessScore, short extroversionScore, short opennessScore) {
+    public Personality(Long id, Tendency tendency, Float friendlinessScore, Float extroversionScore, Float opennessScore) {
         this.id = id;
         this.tendency = tendency;
         this.friendlinessScore = friendlinessScore;
@@ -29,9 +29,9 @@ public class Personality extends BaseTimeEntity {
     @JoinColumn
     private Tendency tendency;
 
-    private short friendlinessScore;
+    private Float friendlinessScore;
 
-    private short extroversionScore;
+    private Float extroversionScore;
 
-    private short opennessScore;
+    private Float opennessScore;
 }

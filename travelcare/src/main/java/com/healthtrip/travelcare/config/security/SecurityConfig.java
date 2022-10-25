@@ -66,27 +66,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // address
                 .antMatchers("/api/address/**").authenticated()
 
-                //reservation date
-
                 // notice board
-                .antMatchers(HttpMethod.GET,"/api/notice-board/**").permitAll()
+                .antMatchers(HttpMethod.GET,"/api/notice-board/*").permitAll()
 
-                // trip pack file
+                //reservation
+                .antMatchers("/api/reservation/**").authenticated()
+
+                // account
+                .antMatchers("/api/account/personality").authenticated()
+
+
+                // tour package
+                .antMatchers(HttpMethod.GET,"/api/tour/package/**").permitAll()
+                // tour pack file
                 .antMatchers(HttpMethod.GET,"/api/tour/package/file/images").permitAll()
 
-                // tour payment
-//                .antMatchers(HttpMethod.POST)
+                // payment
+                .antMatchers(HttpMethod.POST,"/api/payment/verification").authenticated()
                 // tour option
                 .antMatchers("/api/tour/options/**").permitAll()
-                // trip package
-                .antMatchers(HttpMethod.GET,"/api/tour/package/**").permitAll()
-
-                // reservation
-                .antMatchers("/api/tour/reservation/**").authenticated()
-
-                .antMatchers("/api/reservation/**").permitAll()
-                // custom reservation
-                .antMatchers("/api/tour/custom/**").authenticated()
 
                 // hospital temp
                 .antMatchers("/api/hospitals/**").permitAll()
