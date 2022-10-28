@@ -1,10 +1,10 @@
 package com.healthtrip.travelcare.controller;
 
-import com.healthtrip.travelcare.common.Exception.CustomException;
 import com.healthtrip.travelcare.repository.dto.request.AccountRequest;
 import com.healthtrip.travelcare.repository.dto.request.PersonalityRequest;
 import com.healthtrip.travelcare.repository.dto.request.RefreshTokenRequest;
 import com.healthtrip.travelcare.repository.dto.response.AccountResponse;
+import com.healthtrip.travelcare.repository.dto.response.PersonalityResponse;
 import com.healthtrip.travelcare.repository.dto.response.TendencyResponse;
 import com.healthtrip.travelcare.service.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,10 +15,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -102,16 +100,18 @@ public class AccountController {
     }
 
 
+    // 심리
+    @Operation(summary = "내 심리유형 보기")
+    @GetMapping("/personality")
+    public PersonalityResponse getMyPersonalty() {
+        return accountService.getMyPersonality();
+    }
+
     @Operation(summary = "심리유형 결과 저장 후 받기(save & get)")
     @PostMapping("/personality")
     public TendencyResponse setPersonality(@RequestBody PersonalityRequest request) {
         return accountService.setPersonality(request);
     }
-    //   <  Admin's method for managing accounts  >
-    // 1. 유저 조회
-    // 1-1 일반유저, 기관유저
 
-    // 2. 유저 수정,삭제
-    // 3. 유저 상태변경(차단 등)
 }
 

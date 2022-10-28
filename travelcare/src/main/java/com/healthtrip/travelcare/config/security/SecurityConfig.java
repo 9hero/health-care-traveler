@@ -3,6 +3,7 @@ package com.healthtrip.travelcare.config.security;
 import com.healthtrip.travelcare.config.security.jwt.JwtCheckFilter;
 import com.healthtrip.travelcare.config.security.jwt.JwtLoginFilter;
 import com.healthtrip.travelcare.config.security.jwt.JwtProvider;
+import com.healthtrip.travelcare.entity.account.Account;
 import com.healthtrip.travelcare.service.AccountService;
 import com.navercorp.lucy.security.xss.servletfilter.XssEscapeServletFilter;
 import lombok.RequiredArgsConstructor;
@@ -60,14 +61,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/account/**","/favicon.ico").permitAll()
+                .antMatchers("/favicon.ico").permitAll()
                 .antMatchers("/api/admin/**").hasRole("ADMIN")
 
                 // address
                 .antMatchers("/api/address/**").authenticated()
-
-                // notice board
-                .antMatchers(HttpMethod.GET,"/api/notice-board/*").permitAll()
 
                 //reservation
                 .antMatchers("/api/reservation/**").authenticated()
@@ -75,14 +73,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // account
                 .antMatchers("/api/account/personality").authenticated()
 
+                // payment
+                .antMatchers(HttpMethod.POST,"/api/payment/verification").authenticated()
 
+                /*   common api   */
+                // account
+                .antMatchers("/api/account/**").permitAll()
+                // notice board
+                .antMatchers(HttpMethod.GET,"/api/notice-board").permitAll()
                 // tour package
                 .antMatchers(HttpMethod.GET,"/api/tour/package/**").permitAll()
                 // tour pack file
                 .antMatchers(HttpMethod.GET,"/api/tour/package/file/images").permitAll()
 
-                // payment
-                .antMatchers(HttpMethod.POST,"/api/payment/verification").authenticated()
                 // tour option
                 .antMatchers("/api/tour/options/**").permitAll()
 

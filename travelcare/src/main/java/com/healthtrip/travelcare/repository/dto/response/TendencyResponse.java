@@ -6,15 +6,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class TendencyResponse {
 
-    private Long id;
+    private Long tendencyId;
 
     private String name;
 
@@ -32,7 +30,7 @@ public class TendencyResponse {
 
     public static TendencyResponse toResponse(Tendency tendency) {
         return TendencyResponse.builder()
-                .id(tendency.getId())
+                .tendencyId(tendency.getId())
                 .name(tendency.getName())
                 .description(tendency.getDescription())
                 .imageUrl(tendency.getImageFile().getUrl())

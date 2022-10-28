@@ -14,6 +14,7 @@ import com.healthtrip.travelcare.repository.dto.request.MailRequest;
 import com.healthtrip.travelcare.repository.dto.request.PersonalityRequest;
 import com.healthtrip.travelcare.repository.dto.request.RefreshTokenRequest;
 import com.healthtrip.travelcare.repository.dto.response.AccountResponse;
+import com.healthtrip.travelcare.repository.dto.response.PersonalityResponse;
 import com.healthtrip.travelcare.repository.dto.response.TendencyResponse;
 import com.healthtrip.travelcare.repository.location.CountryRepository;
 import com.healthtrip.travelcare.repository.vo.AccountTimeTokenVO;
@@ -347,5 +348,12 @@ public class AccountService implements UserDetailsService {
         }else {
             throw new CustomException("found no personality score", HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public PersonalityResponse getMyPersonality() {
+        var accountCommon = accountCommonRepository.findWithPersonality(CommonUtils.getAuthenticatedUserId());
+        return PersonalityResponse.toEntity(accountCommon.getPersonality());
+
     }
 }
