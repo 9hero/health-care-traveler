@@ -43,7 +43,7 @@ public class TourPackageFileController {
     }
 
     @Operation(summary = "파일 이미지 번호로 이미지 삭제")
-    @DeleteMapping(adminApi+"/images/{id}")
+    @DeleteMapping(adminApi+"/images")
     public void deleteImage(@RequestBody List<Long> fileIds) {
         tourPackageFileService.deleteImage(fileIds);
     }

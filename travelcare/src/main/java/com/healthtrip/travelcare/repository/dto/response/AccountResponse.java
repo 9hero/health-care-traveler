@@ -43,6 +43,8 @@ public class AccountResponse {
 
     @Builder
     @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class EmailCheck {
         private Long id;
         private boolean emailExist;

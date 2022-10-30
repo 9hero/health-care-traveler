@@ -62,7 +62,11 @@ public class TourPackageService {
         var response = new TourPackageResponse.tourWithImages();
         // 패키지 찾기
         var tourPackage = tourPackageRepository.getTourPackageAndImages(id);
-        response.setTourPackageResponse(TourPackageResponse.toResponse(tourPackage));
+        if (tourPackage != null){
+            response.setTourPackageResponse(TourPackageResponse.toResponse(tourPackage));
+        }else {
+            return null;
+        }
 
         // 이미지
         response.setMainImage(TourPackageFileResponse.toResponse(tourPackage.getMainImage()));
@@ -83,9 +87,6 @@ public class TourPackageService {
 
         // 계정
         tourPackage.setAccount(account);
-        // 썸네일
-        var mainImage = tourPackageRequestDto.getMainImage();
-        tourPackage.setMainImage(tourPackageFileService.uploadTourPackageImage(mainImage));
 
         // 패키지 이미지 추가
         var packageImages = tourPackageRequestDto.getPackageImages();
@@ -107,6 +108,11 @@ public class TourPackageService {
 
         // 패키지 생성 완료
         TourPackage savedTourPackage = tourPackageRepository.save(tourPackage);
+        // 썸네일
+        var mainImage = tourPackageRequestDto.getMainImage();
+        if (mainImage != null) {
+            tourPackage.setMainImage(tourPackageFileService.uploadTourPackageImage(mainImage,savedTourPackage));
+        }
 
         return ResponseEntity.ok("생성완료");
     }
