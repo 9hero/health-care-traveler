@@ -27,7 +27,7 @@ public class TourPackageFileService {
     private static final String IMAGE_DIRECTORY = "images/tour/package"; // 패키지 이미지폴더로 이동예정
 
     @Transactional
-    public TourPackageFile uploadTourPackageImage(MultipartFile file) {
+    public TourPackageFile uploadTourPackageImage(MultipartFile file,TourPackage tourPackage) {
         String fileName = CommonUtils.buildFileName(Objects.requireNonNull(file.getOriginalFilename()),IMAGE_DIRECTORY);
         String url = awsS3Service.uploadS3File(file,fileName);
         var tourPackageFile = TourPackageFile.builder()
@@ -35,6 +35,7 @@ public class TourPackageFileService {
                 .fileSize(file.getSize())
                 .fileName(fileName)
                 .originalName(file.getOriginalFilename())
+                .tourPackage(tourPackage)
                 .build();
         return tourPackageFileRepository.save(tourPackageFile);
     }
@@ -95,11 +96,13 @@ public class TourPackageFileService {
     @Transactional
     public void deleteImage(List<Long> ids) {
         List<TourPackageFile> files = tourPackageFileRepository.findAllById(ids);
+        if (files.isEmpty()){
+            return;
+        }
         var nameList = files.stream().map(TourPackageFile::getFileName);
         boolean result = awsS3Service.deleteFileByNameList(nameList);
         if(result){
-        tourPackageFileRepository.deleteAllById(ids);
-            System.out.println("성공");
+            tourPackageFileRepository.deleteAllById(ids);
         }
     }
 }
