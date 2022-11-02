@@ -1,21 +1,17 @@
 package com.healthtrip.travelcare.controller;
 
-import com.healthtrip.travelcare.entity.reservation.ReservationRejection;
-import com.healthtrip.travelcare.repository.dto.request.ReservationRejectionReq;
 import com.healthtrip.travelcare.repository.dto.request.ReservationRequest;
+import com.healthtrip.travelcare.repository.dto.request.ReservationTourOptionsRequest;
 import com.healthtrip.travelcare.repository.dto.response.ReservationDtoResponse;
-import com.healthtrip.travelcare.repository.dto.response.ReservationPersonResponse;
 import com.healthtrip.travelcare.service.ReservationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.query.Param;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -43,5 +39,17 @@ public class ReservationController {
         return reservationService.findMyReservationDetail(reservationId);
     }
 
+    @Operation(summary = "내 예약에 투어 추가요청사항 등록",description = "예약 상세내용을 확인합니다.")
+    @PostMapping(domain+"/{id}/tour/option/")
+    public void addRevTourOption(@PathVariable("id") String reservationId,
+                                 @RequestBody ReservationTourOptionsRequest reservationTourOptionsRequest){
+        reservationService.addRevTourOption(reservationId,reservationTourOptionsRequest);
+    }
 
+    @PutMapping(domain+"/tour/option/{revOptId}")
+    @Operation(summary = "투어의 추가 요청사항을 수정합니다")
+    public void updateAddedTourOption(@PathVariable("revOptId") Long addedOptionId,
+                                      @RequestBody ReservationTourOptionsRequest reservationTourOptionsRequest) {
+        reservationService.updateReservationTourOption(addedOptionId, reservationTourOptionsRequest);
+    }
 }

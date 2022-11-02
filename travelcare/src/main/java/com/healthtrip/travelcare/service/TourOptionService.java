@@ -1,5 +1,7 @@
 package com.healthtrip.travelcare.service;
 
+import com.healthtrip.travelcare.entity.tour.reservation.TourOption;
+import com.healthtrip.travelcare.repository.dto.request.ReservationTourOptionsRequest;
 import com.healthtrip.travelcare.repository.dto.response.TourOptionsResponse;
 import com.healthtrip.travelcare.repository.tour.TourOptionRepository;
 import com.healthtrip.travelcare.repository.tour.TourPackageRepository;

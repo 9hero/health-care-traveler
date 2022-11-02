@@ -3,6 +3,7 @@ package com.healthtrip.travelcare.entity.reservation;
 import com.healthtrip.travelcare.entity.BaseTimeEntity;
 import com.healthtrip.travelcare.entity.tour.reservation.TourOption;
 import com.healthtrip.travelcare.entity.tour.reservation.TourReservation;
+import com.healthtrip.travelcare.repository.dto.request.ReservationTourOptionsRequest;
 import lombok.*;
 
 import javax.persistence.*;
@@ -52,10 +53,22 @@ public class ReservationTourOptions extends BaseTimeEntity {
 
     private String requesterName;
 
-    @Setter
     private BigDecimal amount;
 
-    public void addTourOptionAmount(BigDecimal price) {
-        this.tourReservation.addTourOptionAmount(price);
+    public void setConfirmedAmount(BigDecimal newPrice) {
+        this.amount = newPrice;
+        this.tourReservation.addTourOptionAmount(newPrice);
+    }
+
+    public void updateByRequest(ReservationTourOptionsRequest updateRequest) {
+        this.day = updateRequest.getDay();
+        this.requesterName = updateRequest.getRequesterName();
+        this.manCount = updateRequest.getManCount();
+    }
+
+    public void updateNewPrice(BigDecimal newPrice) {
+        // oldPrice null 주의
+        tourReservation.optionAmountUpdate(this.amount,newPrice); // oldPrice, newPrice
+        this.amount = newPrice;
     }
 }

@@ -19,6 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class TourReservationDtoResponse implements Serializable {
+    private Long tourReservationId;
     private Long packageId;
     private BigDecimal amount;
     private Short manCount;
@@ -26,7 +27,8 @@ public class TourReservationDtoResponse implements Serializable {
     private List<ReservationTourOptionsRes> tourOptions;
     public static TourReservationDtoResponse toResponse(TourReservation tourReservation) {
         return TourReservationDtoResponse.builder()
-                .packageId(tourReservation.getId())
+                .tourReservationId(tourReservation.getId())
+                .packageId(tourReservation.getTourPackage().getId())
                 .amount(tourReservation.getAmount())
                 .manCount(tourReservation.getPersonCount())
                 .tourReservedTime(tourReservation.getReservedTime())
@@ -35,7 +37,8 @@ public class TourReservationDtoResponse implements Serializable {
     public static TourReservationDtoResponse toResponse(TourReservation tourReservation,
                                                         List<ReservationTourOptionsRes> tourOptions) {
         return TourReservationDtoResponse.builder()
-                .packageId(tourReservation.getId())
+                .tourReservationId(tourReservation.getId())
+                .packageId(tourReservation.getTourPackage().getId())
                 .amount(tourReservation.getAmount())
                 .manCount(tourReservation.getPersonCount())
                 .tourReservedTime(tourReservation.getReservedTime())

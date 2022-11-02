@@ -1,5 +1,6 @@
 package com.healthtrip.travelcare.controller.admin;
 
+import com.healthtrip.travelcare.entity.reservation.Reservation;
 import com.healthtrip.travelcare.repository.dto.request.ReservationRejectionReq;
 import com.healthtrip.travelcare.repository.dto.request.ReservationRequest;
 import com.healthtrip.travelcare.repository.dto.response.ReservationDtoResponse;
@@ -25,11 +26,15 @@ public class ReservationAdminController {
     private final ReservationService reservationService;
 
     /* 어드민 API */
-    @Operation(summary = "예약 모두 조회",description = "예약을 모두 확인합니다.")
+    @Operation(summary = "모든 예약 조회",description = "옵션에 따라 예약을 모두 확인합니다.")
     @GetMapping(admin)
-    public List<ReservationDtoResponse> getReservationAll() {
-        return reservationService.findAll();
+    public List<ReservationDtoResponse> getReservationAll(
+            @Parameter(description = "(optional)<br/>" +
+                    "B:관리자 답변이 필요한 예약<br/>" +
+                    "N:반려한 예약") @RequestParam(required = false) Reservation.Status status) {
+        return reservationService.findAll(status);
     }
+
     @Operation(summary = "예약 상세 보기",description = "예약 상세내용을 확인합니다.")
     @GetMapping(admin+"/{id}")
     public ReservationDtoResponse.RVDetails myReservationInfoForAdmin(@PathVariable("id") String reservationId) {
@@ -47,10 +52,9 @@ public class ReservationAdminController {
     }
 
     @Operation(summary = "투어 추가옵션 가격설정")
-    @PostMapping(admin+"/tour/option/{id}")
+    @PutMapping(admin+"/tour/option/{id}")
     public void reservationTourOptionSetPrice(@PathVariable("id") Long optionId, BigDecimal price) {
-        reservationService.setTourOptionPrice(
-                optionId,price);
+        reservationService.setTourOptionPrice(optionId,price);
     }
 
 }

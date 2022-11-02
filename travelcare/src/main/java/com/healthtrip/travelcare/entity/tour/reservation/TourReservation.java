@@ -10,6 +10,7 @@ import org.hibernate.annotations.BatchSize;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -52,4 +53,15 @@ public class TourReservation extends BaseTimeEntity {
         this.amount = this.amount.add(price);
     }
 
+    public void addRevTourOption(ReservationTourOptions revTourOption) {
+        revTourOption.setTourReservation(this);
+        if (this.reservationTourOptions == null) {
+            this.reservationTourOptions = new ArrayList<ReservationTourOptions>();
+        }
+        this.reservationTourOptions.add(revTourOption);
+    }
+
+    public void optionAmountUpdate(BigDecimal oldPrice,BigDecimal newPrice) {
+        this.amount = this.amount.subtract(oldPrice).add(newPrice);
+    }
 }

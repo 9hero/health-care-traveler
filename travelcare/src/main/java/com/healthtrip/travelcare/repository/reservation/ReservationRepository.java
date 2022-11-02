@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.lang.NonNull;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<Reservation, String> {
@@ -39,11 +40,27 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
             "where r.id = :reservationId")
     Reservation findMyReservationInfo(@Param("reservationId") String reservationId);
 
+    @Query("select distinct r from Reservation r " +
+            "join fetch r.tourReservation tr " +
+            "left join fetch tr.reservationTourOptions rto " +
+            "where r.id = :id and r.account.id = :accountId")
+    Reservation findByIdWithTourReservation(@Param("id") String reservationId,
+                                            @Param("accountId") Long accountId);
 
     //temp
     @Query("select distinct r from Reservation r " +
             "join r.tourReservation tr " +
-            "join tr.reservationTourOptions rto " +
+            "left join tr.reservationTourOptions rto " +
             "where rto.id = :addedTourOptionId")
-    Reservation findByAddedTourOptionId(@Param("addedTourOptionId") Long reservationTourOptionId);
+    Reservation findByRevTourOptionId(@Param("addedTourOptionId") Long reservationTourOptionId);
+
+    @Query("select distinct r from Reservation r " +
+            "join fetch r.tourReservation tr " +
+            "join fetch tr.reservationTourOptions rto " +
+            "where rto.id = :addedTourOptionId " +
+            "and r.account.id = :accountId")
+    Reservation findByRevTourOptionIdForUpdate(@Param("addedTourOptionId") Long reservationTourOptionId,
+                                               @Param("accountId") Long accountId);
+
+    List<Reservation> findAllByStatus(@Param("status")Reservation.Status status);
 }

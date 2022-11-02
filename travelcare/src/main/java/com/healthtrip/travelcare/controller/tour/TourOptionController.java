@@ -5,10 +5,7 @@ import com.healthtrip.travelcare.service.TourOptionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,7 +15,7 @@ import java.util.List;
 @Tag(name = "투어 패키지 API")
 public class TourOptionController {
 
-    private final String domain = "/tour/options";
+    private final String domain = "/tour/package/options";
     private final String targetDomain = "/tour/package/{id}/options";
     private final String adminApi = "/admin"+domain;
 
@@ -29,4 +26,5 @@ public class TourOptionController {
     public List<TourOptionsResponse> getOptions(@PathVariable("id") Long tourPackageId){
         return tourOptionService.getOptions(tourPackageId);
     }
+
 }

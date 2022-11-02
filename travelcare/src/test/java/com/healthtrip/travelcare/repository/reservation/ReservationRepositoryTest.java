@@ -68,10 +68,4 @@ class ReservationRepositoryTest {
         // then
     }
 
-    @Test
-    @DisplayName("옵션 불러오기 테스트")
-    void reservationAndTourOption() {
-        var a = reservationRepository.findByAddedTourOptionId(40L);
-        a.getTourReservation().getReservationTourOptions();
-    }
 }

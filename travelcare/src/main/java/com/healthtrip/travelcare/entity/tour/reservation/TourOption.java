@@ -1,9 +1,8 @@
 package com.healthtrip.travelcare.entity.tour.reservation;
 
 import com.healthtrip.travelcare.entity.BaseTimeEntity;
-import com.healthtrip.travelcare.entity.reservation.Reservation;
 import com.healthtrip.travelcare.entity.tour.tour_package.TourPackage;
-import lombok.AllArgsConstructor;
+import com.healthtrip.travelcare.repository.dto.request.ReservationTourOptionsRequest;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,4 +28,6 @@ public class TourOption extends BaseTimeEntity {
     @JoinColumn
     @ManyToOne(fetch = FetchType.LAZY,optional = false)
     private TourPackage tourPackage;
+
+
 }

@@ -107,9 +107,13 @@ public class Reservation extends BaseTimeEntity implements Persistable<String> {
         this.status = Status.N;
     }
 
-    public void addTourOptionAmount(BigDecimal price) {
-        this.amount = this.amount.add(price);
+    /**
+     Before use this method, should use ReservationTourOptions.setConfirmedAmount()
+     */
+    public void updateTourRevAmount() {
+        this.amount = this.hospitalReservation.getAmount().add(this.getTourReservation().getAmount());
     }
+
 
     // 예약상태
     public enum Status{

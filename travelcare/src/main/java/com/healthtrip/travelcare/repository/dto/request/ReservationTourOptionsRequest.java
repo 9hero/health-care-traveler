@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TourOptionsRequest {
+public class ReservationTourOptionsRequest {
 
     private Long tourOptionId;
     private String day;

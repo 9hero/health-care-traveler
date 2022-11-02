@@ -10,5 +10,6 @@ public interface ReservationTourOptionsRepository extends JpaRepository<Reservat
     @Query("select rto from ReservationTourOptions rto " +
             "join fetch rto.tourReservation " +
             "where rto.id = :id")
-    ReservationTourOptions findByIdWithReservation(@Param("id") Long id);
+    ReservationTourOptions findByIdWithTourReservation(@Param("id") Long id);
+
 }

@@ -38,7 +38,7 @@ public class ReservationRequest {
         private Short infantCount;
         private LocalDateTime reservedAt;
         private BigDecimal tourTotalAmount;
-        private List<TourOptionsRequest> tourOptions;
+        private List<ReservationTourOptionsRequest> tourOptions;
     }
     @NoArgsConstructor
     @Getter

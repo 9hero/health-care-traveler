@@ -26,7 +26,7 @@ public class TourItineraryController {
     private final TourItineraryService tourItineraryService;
 
     @Tag(name = "투어 패키지 API")
-    @Operation(summary = "패키지 id로 일정을 가져옵니다")
+    @Operation(summary = "패키지 id로 일정과 구성요소를 가져옵니다(구성요소의 장소제외")
     @GetMapping("/tour/package/{id}/itinerary")
     public List<TourItineraryResponse.WithElements> getTourItineraries(@PathVariable(name = "id") Long tourPackageId) {
         return tourItineraryService.getTourItineraries(tourPackageId);

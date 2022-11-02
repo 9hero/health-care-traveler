@@ -5,14 +5,12 @@ import com.healthtrip.travelcare.common.Exception.CustomException;
 import com.healthtrip.travelcare.entity.account.Account;
 import com.healthtrip.travelcare.entity.hospital.HospitalReservation;
 import com.healthtrip.travelcare.entity.reservation.*;
+import com.healthtrip.travelcare.entity.tour.reservation.TourOption;
 import com.healthtrip.travelcare.entity.tour.reservation.TourReservation;
 import com.healthtrip.travelcare.repository.account.AccountsRepository;
-import com.healthtrip.travelcare.repository.dto.request.BookerRequest;
-import com.healthtrip.travelcare.repository.dto.request.ReservationAddCheckupRequest;
-import com.healthtrip.travelcare.repository.dto.request.ReservationRejectionReq;
+import com.healthtrip.travelcare.repository.dto.request.*;
 import com.healthtrip.travelcare.repository.dto.response.*;
 import com.healthtrip.travelcare.repository.hospital.HospitalReservationRepository;
-import com.healthtrip.travelcare.repository.dto.request.ReservationRequest;
 import com.healthtrip.travelcare.repository.hospital.MedicalCheckupOptionalRepo;
 import com.healthtrip.travelcare.repository.hospital.MedicalCheckupProgramRepo;
 import com.healthtrip.travelcare.repository.reservation.AddedCheckupRepository;
@@ -42,7 +40,7 @@ import java.util.stream.Collectors;
 public class ReservationService {
     private final AccountsRepository accountsRepository;
     private final ReservationRepository reservationRepository;
-    private final ReservationTourOptionsRepository reservationTourOptionsRepository;
+    private final ReservationTourOptionsRepository revTourOptionsRepository;
     private final BookerRepository bookerRepository;
     private final TourPackageRepository tourPackageRepository;
     private final TourReservationRepository tourReservationRepository;
@@ -385,8 +383,14 @@ public class ReservationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ReservationDtoResponse> findAll() {
-        return reservationRepository.findAll().stream().map(reservation -> {
+    public List<ReservationDtoResponse> findAll(Reservation.Status status) {
+        List<Reservation> reservationList = null;
+        if (status == null) {
+            reservationList = reservationRepository.findAll();
+        }else {
+            reservationList = reservationRepository.findAllByStatus(status);
+        }
+        return reservationList.stream().map(reservation -> {
                     var dto = ReservationDtoResponse.toResponse(reservation);
                     if (!reservation.getReservationRejection().isEmpty()) {
                         dto.setRejection(reservation.getReservationRejection().get(0).getReason());
@@ -397,16 +401,68 @@ public class ReservationService {
     }
 
     @Transactional
-    public void setTourOptionPrice(Long id, BigDecimal price) {
-        var reservationTourOptions = reservationTourOptionsRepository.findByIdWithReservation(id);
-        if(reservationTourOptions.getAmount() != null){
-            throw new CustomException("옵션 가격 수정 API로 다시 시도해주십시오",HttpStatus.BAD_REQUEST);
+    public void setTourOptionPrice(Long id, BigDecimal newPrice) {
+        var revTourOptions = revTourOptionsRepository.findByIdWithTourReservation(id);
+        var oldPrice = revTourOptions.getAmount();
+        if(oldPrice != null){
+            revTourOptions.updateNewPrice(newPrice);
+//            throw new CustomException("옵션 가격 수정 API로 다시 시도해주십시오",HttpStatus.BAD_REQUEST);
+        }else {
+            revTourOptions.setConfirmedAmount(newPrice);
         }
-//        var optionAmount = price.multiply(BigDecimal.valueOf(reservationTourOptions.getManCount()));
 
-        reservationTourOptions.setAmount(price);
-
-        reservationTourOptions.addTourOptionAmount(price);
-        reservationRepository.findByAddedTourOptionId(id).addTourOptionAmount(price);
+        reservationRepository.findByRevTourOptionId(id).updateTourRevAmount();
     }
+
+
+    @Transactional
+    public void addRevTourOption(String reservationId, ReservationTourOptionsRequest request) {
+        var reservation = reservationRepository.findByIdWithTourReservation(reservationId,CommonUtils.getAuthenticatedUserId());
+        if (reservation != null && !reservation.getPaymentStatus().equals(Reservation.PaymentStatus.Y)) {
+            var reservationTourOptions= request.toReservationTourOptions();
+            var tourOption = tourOptionRepository.getById(request.getTourOptionId());
+
+            // 투어 예약에 추가요청사항 등록
+            reservation.getTourReservation().addRevTourOption(reservationTourOptions);
+
+            // 투어 예약의 옵션명 등록
+            reservationTourOptions.setTourOption(tourOption);
+
+            revTourOptionsRepository.save(reservationTourOptions);
+        }
+    }
+
+    @Transactional
+    public void updateReservationTourOption(Long revTourOptionId, ReservationTourOptionsRequest updateRequest) {
+        Reservation reservation = reservationRepository.findByRevTourOptionIdForUpdate(revTourOptionId, CommonUtils.getAuthenticatedUserId());
+        if (reservation != null) {
+
+            var tourOptionId = updateRequest.getTourOptionId();
+            TourOption tourOption = null;
+
+            // db null check 필요
+            if (tourOptionId != null){
+                tourOption = tourOptionRepository.getById(updateRequest.getTourOptionId());
+            }
+
+            // id 같은거 찾아서 size 1개짜리 list로 변환
+            var selected = reservation.getTourReservation().getReservationTourOptions().stream()
+                    .filter(reservationTourOptions -> reservationTourOptions.getId().equals(revTourOptionId))
+                    .collect(Collectors.toList());
+
+            // 선택한 옵션 변경
+            for (ReservationTourOptions options : selected){
+                // 관리자가 값을 이미 정한 경우 요청사항을 바꿀 수 없음
+                if (options.getAmount() == null){
+                    options.updateByRequest(updateRequest);
+                    // 만약 투어옵션도 바꾼다면 여기서 변경
+                    if (tourOption != null) {
+                        options.setTourOption(tourOption);
+                    }
+                }
+            }
+        }
+    }
+
+
 }

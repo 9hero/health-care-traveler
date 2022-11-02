@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "예약 API")
 public class TourReservationController {
 
-    private final String domain = "/tour/reservation";
+    private final String domain = "/reservation/tour";
     private final String adminApi = "/admin"+domain;
 
 }
