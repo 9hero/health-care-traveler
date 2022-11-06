@@ -2,6 +2,7 @@ package com.healthtrip.travelcare.entity.tour;
 
 import com.healthtrip.travelcare.common.CommonUtils;
 import com.healthtrip.travelcare.entity.BaseTimeEntity;
+import com.healthtrip.travelcare.entity.reservation.Reservation;
 import com.healthtrip.travelcare.entity.tour.reservation.TourReservation;
 import lombok.*;
 import org.springframework.data.domain.Persistable;
@@ -14,14 +15,14 @@ import java.time.LocalDateTime;
 @Entity
 @NoArgsConstructor
 @Getter
-@Table(name = "tour_payment")
+@Table(name = "reservation_payment")
 @ToString(callSuper = true)
-public class PackageTourPayment extends BaseTimeEntity implements Persistable<String> {
+public class ReservationPayment extends BaseTimeEntity implements Persistable<String> {
     private static final String ID_TYPE = "TP";
     @Builder
-    public PackageTourPayment(String id, TourReservation tourReservation, BigDecimal amount, String currency, String payType, LocalDateTime paymentDate) {
+    public ReservationPayment(String id, Reservation reservation, BigDecimal amount, String currency, String payType, LocalDateTime paymentDate) {
         this.id = id;
-        this.tourReservation = tourReservation;
+        this.reservation = reservation;
         this.amount = amount;
         this.currency = currency;
         this.payType = payType;
@@ -30,10 +31,11 @@ public class PackageTourPayment extends BaseTimeEntity implements Persistable<St
 
     @Id
     private String id;
+
     @ToString.Exclude
     @OneToOne(fetch = FetchType.LAZY,optional = false,cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "tour_reservation_id")
-    private TourReservation tourReservation;
+    @JoinColumn(name = "reservation_id")
+    private Reservation reservation;
     @Column(name = "paid_amount")
     private BigDecimal amount;
     private String currency;

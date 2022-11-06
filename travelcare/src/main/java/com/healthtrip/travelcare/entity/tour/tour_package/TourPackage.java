@@ -4,6 +4,7 @@ import javax.persistence.*;
 
 import com.healthtrip.travelcare.entity.account.Account;
 import com.healthtrip.travelcare.entity.BaseTimeEntity;
+import com.healthtrip.travelcare.repository.dto.request.TourPackageRequestDto;
 import lombok.*;
 import org.hibernate.annotations.BatchSize;
 
@@ -90,5 +91,13 @@ public class TourPackage extends BaseTimeEntity {
             tendencyList = new ArrayList<>();
         }
         tendencyList.add(tendency);
+    }
+
+    public void updateEntityByRequest(TourPackageRequestDto.UpdateTP tourPackageRequestDto) {
+        this.title = tourPackageRequestDto.getTitle();
+        this.description = tourPackageRequestDto.getDescription();
+        this.standardOffer = tourPackageRequestDto.getStandardOffer();
+        this.nonOffer = tourPackageRequestDto.getNonOffer();
+        this.notice = tourPackageRequestDto.getNotice();
     }
 }

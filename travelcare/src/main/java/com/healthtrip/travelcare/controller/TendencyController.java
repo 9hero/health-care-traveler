@@ -31,4 +31,10 @@ public class TendencyController {
     public void addTendency(@Parameter(name = "Form으로 파일과 함께 보내주세요") TendencyRequest tendencyRequest) {
         tendencyService.addTendency(tendencyRequest);
     }
+    @Operation(summary = "성향수정",hidden = true)
+    @PutMapping("/admin/tendency")
+    public void modifyTendency(TendencyRequest tendencyRequest) {
+        // 성향 정보 수정이 사용자 점수에 반영되게 해야함
+        tendencyService.modifyTendency(tendencyRequest);
+    }
 }

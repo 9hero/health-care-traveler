@@ -129,4 +129,10 @@ public class TourPackageService {
     }
 
 
+    @Transactional
+    public void modifyTourPackage(Long tourPackageId, TourPackageRequestDto.UpdateTP request) {
+        TourPackage tourPackage = tourPackageRepository.findById(tourPackageId).get();
+        tourPackage.updateEntityByRequest(request);
+        tourPackageRepository.save(tourPackage);
+    }
 }

@@ -130,7 +130,7 @@ public class ReservationInquiryService {
         chatRepository.save(ReservationInquiryChat.builder()
                 .chat(chat)
                 .reservationInquiry(inquiry)
-                .writer(ReservationInquiryChat.Writer.customer)
+                .writer(ReservationInquiryChat.Writer.C)
                 .build());
         }else {
             throw new CustomException("해당 문의 없음", HttpStatus.NOT_FOUND);
@@ -147,7 +147,7 @@ public class ReservationInquiryService {
         chatRepository.save(ReservationInquiryChat.builder()
                 .chat(chat)
                 .reservationInquiry(inquiry)
-                .writer(ReservationInquiryChat.Writer.admin)
+                .writer(ReservationInquiryChat.Writer.A)
                 .build());
         return true;
     }
@@ -156,5 +156,24 @@ public class ReservationInquiryService {
     public List<ReservationInquiryResponse.InquiryList> findAllForAdmin() {
         List<ReservationInquiry> reservationInquiryList = reservationInquiryRepository.findAllForAdmin();
         return reservationInquiryList.stream().map(ReservationInquiryResponse.InquiryList::toResponse).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void modifyAnswer(Long id, String chat) {
+        ReservationInquiryChat reservationInquiryChat = chatRepository.findById(id).get();
+        if (reservationInquiryChat.getWriter() == ReservationInquiryChat.Writer.A){
+            reservationInquiryChat.modifyChat(chat);
+            chatRepository.save(reservationInquiryChat);
+        }
+    }
+    @Transactional
+    public void modifyComment(Long id, String chat) {
+        ReservationInquiryChat reservationInquiryChat = chatRepository.findById(id).orElseThrow(() -> {
+            throw new CustomException("해당 댓글 찾을 수 없음",HttpStatus.NOT_FOUND);
+        });
+        if (reservationInquiryChat.getWriter() == ReservationInquiryChat.Writer.C) {
+            reservationInquiryChat.modifyChat(chat);
+            chatRepository.save(reservationInquiryChat);
+        }
     }
 }

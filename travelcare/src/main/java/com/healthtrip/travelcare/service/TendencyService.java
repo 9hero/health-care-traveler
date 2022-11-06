@@ -54,4 +54,8 @@ public class TendencyService {
         }
         tendencyRepository.save(tendency);
     }
+
+    public void modifyTendency(TendencyRequest tendencyRequest) {
+
+    }
 }

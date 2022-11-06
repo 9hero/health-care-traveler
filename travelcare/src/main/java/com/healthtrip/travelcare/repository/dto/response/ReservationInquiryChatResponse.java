@@ -13,16 +13,17 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class ReservationInquiryChatResponse {
-
+    private Long chatId;
     private String chat;
-    private ReservationInquiryChat.Writer writer;
+    private String writer;
     private LocalDateTime writeAt;
     private LocalDateTime updateAt;
     public static ReservationInquiryChatResponse toResponse(ReservationInquiryChat reservationInquiryChat) {
            return ReservationInquiryChatResponse.builder()
+                   .chatId(reservationInquiryChat.getId())
                     .chat(reservationInquiryChat.getChat())
                     .writeAt(reservationInquiryChat.getCreatedAt())
-                    .writer(reservationInquiryChat.getWriter())
+                    .writer(reservationInquiryChat.getWriter().getWriterName())
                     .updateAt(reservationInquiryChat.getUpdatedAt())
                     .build();
     }

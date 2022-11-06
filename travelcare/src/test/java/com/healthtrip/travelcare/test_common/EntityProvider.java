@@ -8,7 +8,7 @@ import com.healthtrip.travelcare.entity.hospital.*;
 import com.healthtrip.travelcare.entity.location.Country;
 import com.healthtrip.travelcare.entity.reservation.Booker;
 import com.healthtrip.travelcare.entity.reservation.Reservation;
-import com.healthtrip.travelcare.entity.tour.PackageTourPayment;
+import com.healthtrip.travelcare.entity.tour.ReservationPayment;
 import com.healthtrip.travelcare.entity.tour.reservation.*;
 import com.healthtrip.travelcare.entity.tour.tour_package.*;
 import lombok.Getter;
@@ -38,7 +38,7 @@ public class EntityProvider {
     private final TourPackageDate tourPackageDate;
     private final TourReservation tourReservation;
     private final TourBooker tourBooker;
-    private final PackageTourPayment packageTourPayment;
+    private final ReservationPayment reservationPayment;
 
     private final HospitalAddress hospitalAddress;
     private final Hospital hospital;
@@ -151,7 +151,7 @@ public class EntityProvider {
                 .firstName("borne")
                 .gender(Booker.Gender.M)
                 .build();
-        packageTourPayment = PackageTourPayment.builder()
+        reservationPayment = ReservationPayment.builder()
                 .tourReservation(tourReservation)
                 .amount(BigDecimal.valueOf(550L))
                 .paymentDate(LocalDateTime.now())

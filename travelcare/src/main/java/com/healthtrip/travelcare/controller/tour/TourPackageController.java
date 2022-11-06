@@ -47,6 +47,13 @@ public class TourPackageController {
         }
     }
 
+    @Operation(summary = "패키지를 수정합니다.", description = "덮어씌우기 방식, 수정항목: 패키지명,소개,기본제공,불포함 사항, 주의 사항 <br/> 주의 put 방식이라 null 항목의 데이터는 삭제 됩니다.")
+    @PutMapping(adminApi+"/{id}")
+    public void modifyTourPackage(@PathVariable("id")Long tourPackageId,@RequestBody TourPackageRequestDto.UpdateTP tourPackageRequestDto) {
+        tpService.modifyTourPackage(tourPackageId,tourPackageRequestDto);
+
+    }
+
     @Operation(summary = "패키지에 심리 성향을 추가합니다.")
     @PostMapping(adminApi+"/{id}/tendency")
     public void addTourPackageTendency(@PathVariable("id")Long id,@RequestParam Long tendencyId){

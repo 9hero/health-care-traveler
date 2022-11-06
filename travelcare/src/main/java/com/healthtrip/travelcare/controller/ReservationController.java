@@ -46,8 +46,8 @@ public class ReservationController {
         reservationService.addRevTourOption(reservationId,reservationTourOptionsRequest);
     }
 
-    @PutMapping(domain+"/tour/option/{revOptId}")
-    @Operation(summary = "투어의 추가 요청사항을 수정합니다")
+    @PutMapping(domain+"/tour/option/{id}")
+    @Operation(summary = "투어 예약의 추가 요청사항을 수정합니다")
     public void updateAddedTourOption(@PathVariable("revOptId") Long addedOptionId,
                                       @RequestBody ReservationTourOptionsRequest reservationTourOptionsRequest) {
         reservationService.updateReservationTourOption(addedOptionId, reservationTourOptionsRequest);

@@ -35,9 +35,19 @@ public class ReservationInquiryChat extends BaseTimeEntity {
     private Writer writer;
     private String chat;
 
+    public void modifyChat(String chat) {
+        this.chat = chat;
+    }
+
     @Getter
     public enum Writer{
-        admin,
-        customer
+        A("관리자"),
+        C("고객");
+
+        private final String writerName;
+
+        Writer(String writerName) {
+            this.writerName = writerName;
+        }
     }
 }

@@ -226,7 +226,7 @@ public class ReservationService {
             TourReservation tourReservation = reserveTour(reservationDTO.getTour(),savedReservation);
             savedReservation.setTourReservation(tourReservation);
             // 투어
-            tourTotalAmount = reservation.getTourReservation().getAmount();
+            tourTotalAmount = savedReservation.getTourReservation().getAmount();
         }
 
         // 검진예약
@@ -238,7 +238,7 @@ public class ReservationService {
             HospitalReservation hospitalReservation = reserveHospital(reservationDTO.getHospital(),hospitalBookers);
             savedReservation.setHospitalReservation(hospitalReservation);
             // 검진
-            hospitalTotalAmount = reservation.getHospitalReservation().getAmount();
+            hospitalTotalAmount = savedReservation.getHospitalReservation().getAmount();
         }
         if(!(isTour || hospital)){
             throw new CustomException("예약 정보 없음",HttpStatus.BAD_REQUEST);

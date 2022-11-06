@@ -81,6 +81,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/account/**").permitAll()
                 // notice board
                 .antMatchers(HttpMethod.GET,"/api/notice-board").permitAll()
+                .antMatchers(HttpMethod.GET,"/api/notice-board/*").permitAll()
                 // tour package
                 .antMatchers(HttpMethod.GET,"/api/tour/package/**").permitAll()
                 // tour pack file

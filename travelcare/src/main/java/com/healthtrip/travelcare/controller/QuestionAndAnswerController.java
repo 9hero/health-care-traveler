@@ -27,7 +27,7 @@ public class QuestionAndAnswerController {
         return reservationInquiryService.addInquiry(id,request);
     }
 
-    @Operation(summary = "사용자의 모든 문의를 조회")
+    @Operation(summary = "내 문의 모두 보기")
     @GetMapping(domain)
     public List<ReservationInquiryResponse.InquiryList> myInquiries() {
         return reservationInquiryService.myInquiries();
@@ -48,7 +48,11 @@ public class QuestionAndAnswerController {
     public void addComment(@PathVariable(name = "id") Long id,@RequestBody String chat) {
         reservationInquiryService.addComment(id,chat);
     }
-
+    @Operation(summary = "고객 댓글 수정") // 본인 댓글인지 확인 필요
+    @PutMapping(domain + "/comment/{id}")
+    public void modifyComment(@PathVariable(name = "id") Long id,@RequestBody String chat) {
+        reservationInquiryService.modifyComment(id,chat);
+    }
     @Operation(summary = "문의글 제목,문의사항 수정")
     @PutMapping(domain+"/{id}")
     public ResponseEntity<Boolean> modifyCustom(@PathVariable(name = "id") Long id,@RequestBody InquiryRequest request) {
@@ -71,6 +75,12 @@ public class QuestionAndAnswerController {
     @PostMapping(adminApi+"/{id}")
     public boolean answer(@PathVariable(name = "id") Long id,@RequestBody String chat) {
         return reservationInquiryService.answer(id,chat);
+    }
+
+    @Operation(summary = "관리자 답변 수정")
+    @PutMapping(adminApi+"/comment/{id}")
+    public void modifyAnswer(@PathVariable(name = "id") Long id,@RequestBody String chat) {
+        reservationInquiryService.modifyAnswer(id,chat);
     }
 
     @Operation(summary = "예약 모두 조회")

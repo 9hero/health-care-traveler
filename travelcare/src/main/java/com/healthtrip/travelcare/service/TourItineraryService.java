@@ -147,4 +147,11 @@ public class TourItineraryService {
         var element= elementRepository.getById(elementId);
         element.updateElement(request);
     }
+
+    @Transactional
+    public void updateItinerary(Long itineraryId, TourItineraryRequest updateRequest) {
+        TourItinerary tourItinerary = tourItineraryRepository.findById(itineraryId).get();
+        tourItinerary.updateEntityByRequest(updateRequest);
+        tourItineraryRepository.save(tourItinerary);
+    }
 }

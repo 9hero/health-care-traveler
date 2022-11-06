@@ -15,6 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 //@Tag(name = "투어 일정 API")
+@Tag(name = "투어 패키지 API")
 public class TourItineraryController {
 
     private final String domain = "/tour/package/itinerary";
@@ -40,6 +41,14 @@ public class TourItineraryController {
                                    @RequestBody List<TourItineraryRequest> tourItineraryRequests) {
         tourItineraryService.addTourItinerary(tourPackageId,tourItineraryRequests );
     }
+
+    @Operation(summary = "해당 일정를 수정합니다", description = "덮어씌우기 방식, 주의 사항 <br/> 주의 put 방식이라 null 항목의 데이터는 삭제 됩니다.")
+    @PutMapping(admin+"/{id}")
+    public void updateItinerary(@PathVariable(name = "id") Long itineraryId,
+                                   @RequestBody TourItineraryRequest updateRequest) {
+        tourItineraryService.updateItinerary(itineraryId,updateRequest );
+    }
+
 
     @Tag(name = "투어 패키지 API")
     @Operation(summary = "패키지에 일정과 요소를 추가합니다")

@@ -40,4 +40,15 @@ public class TourPackageRequestDto {
 //                .mainImage()
                 .build();
     }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    public static class UpdateTP {
+        private String title;
+        private String description;
+        private String standardOffer;
+        private String nonOffer;
+        private String notice;
+    }
 }

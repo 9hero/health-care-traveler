@@ -1,6 +1,7 @@
 package com.healthtrip.travelcare.entity.tour.tour_package;
 
 import com.healthtrip.travelcare.entity.BaseTimeEntity;
+import com.healthtrip.travelcare.repository.dto.request.TourItineraryRequest;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -63,4 +64,12 @@ public class TourItinerary extends BaseTimeEntity {
         itineraryElements.add(tourItineraryElement);
     }
 
+    public void updateEntityByRequest(TourItineraryRequest updateRequest) {
+        this.day = updateRequest.getDay();
+        this.location = updateRequest.getLocation();
+        this.specificLocations = updateRequest.getSpecificLocations();
+        this.accommodation = updateRequest.getAccommodation();
+        this.details = updateRequest.getDetails();
+        this.notice = updateRequest.getNotice();
+    }
 }

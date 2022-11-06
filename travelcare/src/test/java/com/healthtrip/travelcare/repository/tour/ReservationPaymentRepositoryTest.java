@@ -1,9 +1,8 @@
 package com.healthtrip.travelcare.repository.tour;
 
 import com.healthtrip.travelcare.annotation.DataJpaUnitTest;
-import com.healthtrip.travelcare.entity.tour.PackageTourPayment;
+import com.healthtrip.travelcare.entity.tour.ReservationPayment;
 import com.healthtrip.travelcare.entity.tour.reservation.TourReservation;
-import com.healthtrip.travelcare.repository.tour.PackageTourPaymentRepository;
 import com.healthtrip.travelcare.test_common.EntityProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -18,10 +17,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaUnitTest
 @Disabled("예약 date 삭제전")
-class PackageTourPaymentRepositoryTest {
+class ReservationPaymentRepositoryTest {
 
     @Autowired
-    PackageTourPaymentRepository packageTourPaymentRepository;
+    ReservationPaymentRepository reservationPaymentRepository;
 
     private EntityProvider entityProvider;
     @BeforeEach
@@ -32,14 +31,14 @@ class PackageTourPaymentRepositoryTest {
     @DisplayName("저장")
     void save() {
         // given
-        PackageTourPayment packageTourPayment = entityProvider.getPackageTourPayment();
-//        packageTourPayment.getTourReservation().idGenerate();
+        ReservationPayment reservationPayment = entityProvider.getReservationPayment();
+//        reservationPayment.getTourReservation().idGenerate();
 
         //when
         for (  int i = 0; i<4;i++){
-            boolean conflict = packageTourPaymentRepository.existsById(packageTourPayment.idGenerate());
+            boolean conflict = reservationPaymentRepository.existsById(reservationPayment.idGenerate());
             if (!conflict) {
-                packageTourPaymentRepository.save(packageTourPayment);
+                reservationPaymentRepository.save(reservationPayment);
                 break;
             }else {
                 System.out.println("중복"+i);
@@ -48,7 +47,7 @@ class PackageTourPaymentRepositoryTest {
         }
 
         // then
-        assertThat(packageTourPayment.getId()).isNotBlank();
+        assertThat(reservationPayment.getId()).isNotBlank();
     }
 
     @Test
@@ -56,28 +55,28 @@ class PackageTourPaymentRepositoryTest {
     void uniqueConflict() {
         // given
         // 기존 저장된 데이터로 가정
-        PackageTourPayment oldPackageTourPayment = entityProvider.getPackageTourPayment();
-        TourReservation tourReservation = oldPackageTourPayment.getTourReservation();
-        oldPackageTourPayment.testIdGenerate();
+        ReservationPayment oldReservationPayment = entityProvider.getReservationPayment();
+        var tourReservation = oldReservationPayment.getReservation();
+        oldReservationPayment.testIdGenerate();
 //        tourReservation.idGenerate();
 
         // 새로 등록할 데이터
-        var newTourReservation=entityProvider.getNewTourResrvation();
+        var newTourReservation=entityProvider.getReservation();
 //        newTourReservation.TESTidGenerate();
-        PackageTourPayment newPackageTourPayment = PackageTourPayment.builder()
-                .tourReservation(newTourReservation)
+        ReservationPayment newReservationPayment = ReservationPayment.builder()
+                .reservation(newTourReservation)
                 .amount(BigDecimal.valueOf(550L))
                 .paymentDate(LocalDateTime.now())
                 .currency("USD")
                 .payType("CARD")
                 .build();
-        while (!oldPackageTourPayment.getId().equals(newPackageTourPayment.testIdGenerate())){
+        while (!oldReservationPayment.getId().equals(newReservationPayment.testIdGenerate())){
             System.out.println("gg");
         };
 
         //when
-        packageTourPaymentRepository.save(oldPackageTourPayment);
-        boolean conflict = packageTourPaymentRepository.existsById(newPackageTourPayment.getId());
+        reservationPaymentRepository.save(oldReservationPayment);
+        boolean conflict = reservationPaymentRepository.existsById(newReservationPayment.getId());
 
         // then
         assertThat(conflict).isTrue();
