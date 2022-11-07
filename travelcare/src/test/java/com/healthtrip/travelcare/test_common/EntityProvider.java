@@ -152,7 +152,7 @@ public class EntityProvider {
                 .gender(Booker.Gender.M)
                 .build();
         reservationPayment = ReservationPayment.builder()
-                .tourReservation(tourReservation)
+                .reservation(getReservation())
                 .amount(BigDecimal.valueOf(550L))
                 .paymentDate(LocalDateTime.now())
                 .currency("USD")

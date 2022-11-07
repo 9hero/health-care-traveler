@@ -6,4 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ReservationPaymentRepository extends JpaRepository<ReservationPayment,String> {
 
     boolean existsById(String id);
+
+    ReservationPayment findByReservationId(String merchantId);
 }

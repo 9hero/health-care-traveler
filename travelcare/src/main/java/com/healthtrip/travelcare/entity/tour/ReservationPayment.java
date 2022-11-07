@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @Table(name = "reservation_payment")
 @ToString(callSuper = true)
 public class ReservationPayment extends BaseTimeEntity implements Persistable<String> {
-    private static final String ID_TYPE = "TP";
+    private static final String ID_TYPE = "P";
     @Builder
     public ReservationPayment(String id, Reservation reservation, BigDecimal amount, String currency, String payType, LocalDateTime paymentDate) {
         this.id = id;

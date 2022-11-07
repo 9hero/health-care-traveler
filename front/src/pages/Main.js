@@ -14,7 +14,7 @@ function Main() {
   return (
     <MainBlock>
       <Header></Header>
-      <PackageList></PackageList>
+      {/* <PackageList></PackageList> */}
       <NoticeBoard />
       <Footer />
     </MainBlock>

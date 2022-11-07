@@ -353,6 +353,9 @@ public class AccountService implements UserDetailsService {
     @Transactional(readOnly = true)
     public PersonalityResponse getMyPersonality() {
         var accountCommon = accountCommonRepository.findWithPersonality(CommonUtils.getAuthenticatedUserId());
+        if (accountCommon.getPersonality() ==null){
+            return null;
+        }
         return PersonalityResponse.toEntity(accountCommon.getPersonality());
 
     }

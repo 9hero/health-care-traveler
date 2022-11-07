@@ -9,7 +9,7 @@ public interface AccountCommonRepository extends JpaRepository<AccountCommon,Lon
 
     @Query("select ac from AccountCommon ac " +
             "left join fetch ac.personality p " +
-            "join fetch p.tendency " +
+            "left join fetch p.tendency " +
             "where ac.userId = :userId")
     AccountCommon findWithPersonality(@Param("userId") Long userId);
 }

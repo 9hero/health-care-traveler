@@ -114,6 +114,11 @@ public class Reservation extends BaseTimeEntity implements Persistable<String> {
         this.amount = this.hospitalReservation.getAmount().add(this.getTourReservation().getAmount());
     }
 
+    public void paymentFail() {
+        this.status = Status.D;
+        paymentStatus = PaymentStatus.F;
+    }
+
 
     // 예약상태
     public enum Status{
@@ -122,12 +127,15 @@ public class Reservation extends BaseTimeEntity implements Persistable<String> {
         @Schema(description = "예약 불가능")
         N,
         @Schema(description = "답변전:Before")
-        B
+        B,
+        @Schema(description = "결제 완료:Done")
+        D
     }
     public void permit(){
         this.status = Status.Y;
     }
     public void paid() {
+        this.status = Status.D;
         this.paymentStatus = PaymentStatus.Y;
     }
     public enum PaymentStatus{
@@ -135,6 +143,8 @@ public class Reservation extends BaseTimeEntity implements Persistable<String> {
         N,
         @Schema(description = "결제완료")
         Y,
+        @Schema(description = "결제실패:Fail")
+        F,
         @Schema(description = "환불완료")
         R
     }
