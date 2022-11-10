@@ -1,6 +1,7 @@
 package com.healthtrip.travelcare.entity.reservation;
 
 import com.healthtrip.travelcare.entity.BaseTimeEntity;
+import com.healthtrip.travelcare.entity.account.Account;
 import com.healthtrip.travelcare.entity.tour.reservation.ReservationInquiry;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,11 +17,12 @@ public class ReservationInquiryChat extends BaseTimeEntity {
     @Builder
     public ReservationInquiryChat(Long id,
                                   ReservationInquiry reservationInquiry,
-                                  Writer writer, String chat) {
+                                  Writer writer, String chat, Account account) {
         this.id = id;
         this.reservationInquiry = reservationInquiry;
         this.writer = writer;
         this.chat = chat;
+        this.account = account;
     }
 
     @Id
@@ -34,6 +36,10 @@ public class ReservationInquiryChat extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Writer writer;
     private String chat;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private Account account;
 
     public void modifyChat(String chat) {
         this.chat = chat;

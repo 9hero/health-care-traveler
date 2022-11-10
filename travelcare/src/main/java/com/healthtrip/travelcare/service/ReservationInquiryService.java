@@ -4,6 +4,7 @@ import com.healthtrip.travelcare.common.CommonUtils;
 import com.healthtrip.travelcare.common.Exception.CustomException;
 import com.healthtrip.travelcare.entity.reservation.ReservationInquiryChat;
 import com.healthtrip.travelcare.entity.tour.reservation.ReservationInquiry;
+import com.healthtrip.travelcare.repository.account.AccountsRepository;
 import com.healthtrip.travelcare.repository.dto.response.ReservationInquiryChatResponse;
 import com.healthtrip.travelcare.repository.reservation.ReservationInquiryChatRepo;
 import com.healthtrip.travelcare.repository.reservation.ReservationRepository;
@@ -30,6 +31,8 @@ public class ReservationInquiryService {
     private final ReservationInquiryRepository reservationInquiryRepository;
 
     private final ReservationInquiryChatRepo chatRepository;
+    private final AccountsRepository accountsRepository;
+
     @Transactional
     public ResponseEntity<Boolean> addInquiry(String id, InquiryRequest request) {
 
@@ -88,6 +91,7 @@ public class ReservationInquiryService {
                 ).collect(Collectors.toList());
             }
             return ReservationInquiryResponse.Info.builder()
+                    .inquiryId(inquiry.getId())
                     .title(inquiry.getTitle())
                     .question(inquiry.getQuestion())
                     .chatList(chatList)
@@ -124,13 +128,15 @@ public class ReservationInquiryService {
 
     @Transactional
     public void addComment(Long id, String chat) {
-        var inquiry = reservationInquiryRepository.getByIdAndAccountId(id,CommonUtils.getAuthenticatedUserId());
+        var userId = CommonUtils.getAuthenticatedUserId();
+        var inquiry = reservationInquiryRepository.getByIdAndAccountId(id,userId);
         if (inquiry!=null){
 
         chatRepository.save(ReservationInquiryChat.builder()
                 .chat(chat)
                 .reservationInquiry(inquiry)
                 .writer(ReservationInquiryChat.Writer.C)
+                .account(accountsRepository.getById(userId))
                 .build());
         }else {
             throw new CustomException("해당 문의 없음", HttpStatus.NOT_FOUND);
@@ -168,7 +174,7 @@ public class ReservationInquiryService {
     }
     @Transactional
     public void modifyComment(Long id, String chat) {
-        ReservationInquiryChat reservationInquiryChat = chatRepository.findById(id).orElseThrow(() -> {
+        ReservationInquiryChat reservationInquiryChat = chatRepository.findByIdAndAccountId(id,CommonUtils.getAuthenticatedUserId()).orElseThrow(() -> {
             throw new CustomException("해당 댓글 찾을 수 없음",HttpStatus.NOT_FOUND);
         });
         if (reservationInquiryChat.getWriter() == ReservationInquiryChat.Writer.C) {

@@ -59,14 +59,6 @@ public class QuestionAndAnswerController {
         return reservationInquiryService.clientModifyInquiry(id,request);
     }
 
-    @Operation(hidden = true,summary = "(비활성)커스텀 여행 삭제")
-    @DeleteMapping(domain+"/{customTravelId}")
-    public ResponseEntity deleteCustom(@PathVariable Long customTravelId) {
-        return null;
-    }
-
-
-
     /*
             관리자 API
      */
