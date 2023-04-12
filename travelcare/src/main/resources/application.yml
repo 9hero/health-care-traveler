@@ -6,4 +6,4 @@ spring:
       max-request-size:
         20MB
   config:
-    import: optional:credential.yml,aws.yml,mail.yml,env.yml
+    import: optional:executable.yml
